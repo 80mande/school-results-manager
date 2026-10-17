@@ -3,189 +3,365 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#123b70">
 
-  <title>EduRecord | School Results Management</title>
+  <title>EduRecord | School Management</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    :root {
+      --primary: #1746a2;
+      --primary-dark: #10377f;
+      --background: #f3f6fb;
+      --white: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --green: #15803d;
+      --red: #b91c1c;
+    }
+
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #243247;
-      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
     }
 
-    header {
-      background: #123b70;
-      color: white;
-      padding: 22px 16px;
-      text-align: center;
-    }
-
-    .logo {
-      font-size: 30px;
-      font-weight: bold;
-    }
-
-    header p {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #dbeafe;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 35px auto;
-      padding: 0 18px;
-    }
-
-    .welcome {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .welcome h1 {
-      font-size: 27px;
-      margin-bottom: 10px;
-    }
-
-    .welcome p {
-      color: #64748b;
-      line-height: 1.6;
-    }
-
-    .portals {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 18px;
-    }
-
-    .card, .login-card {
-      background: white;
-      border-radius: 14px;
-      padding: 25px 20px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(20, 40, 80, 0.07);
-      border: 1px solid #e2e8f0;
-    }
-
-    .icon {
-      font-size: 36px;
-      margin-bottom: 15px;
-    }
-
-    .card h2 {
-      font-size: 19px;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #64748b;
-      min-height: 45px;
+    button, input {
+      font: inherit;
     }
 
     button {
-      width: 100%;
-      margin-top: 20px;
-      padding: 13px;
-      background: #123b70;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
-      background: #1d4f91;
+    .hidden {
+      display: none !important;
     }
 
-    .student button {
-      background: #087f5b;
+    .topbar {
+      background: var(--primary);
+      color: white;
+      padding: 17px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .student button:hover {
-      background: #066747;
-    }
-
-    .login-card {
-      max-width: 430px;
-      margin: 25px auto;
-      text-align: left;
-    }
-
-    .login-card h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .login-card > p {
-      text-align: center;
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 7px;
-      font-size: 14px;
+    .brand {
+      font-size: 23px;
       font-weight: bold;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 11px;
+      font-weight: normal;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 25px auto;
+      padding: 0 16px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 36px 16px;
+      background: var(--primary);
+      color: white;
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin: 0 0 12px;
+    }
+
+    .hero p {
+      line-height: 1.6;
+      margin: 0 auto;
+      max-width: 600px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 23px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.045);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 21px;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .portal {
+      padding: 24px 18px;
+      text-align: center;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .portal-icon {
+      font-size: 35px;
+    }
+
+    .portal h3 {
+      margin-bottom: 8px;
+    }
+
+    .portal p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 11px 16px;
+      border-radius: 7px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .btn-secondary {
+      background: #e8eef9;
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: #dbe6fa;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--red);
+    }
+
+    .btn-danger:hover {
+      background: #fecaca;
+    }
+
+    .btn-small {
+      padding: 8px 10px;
+      font-size: 12px;
+      margin: 2px;
     }
 
     input {
       width: 100%;
       padding: 12px;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 7px;
+      margin: 7px 0 15px;
+      background: white;
+      color: var(--text);
     }
 
     input:focus {
-      outline: 2px solid #93c5fd;
-      border-color: #123b70;
+      outline: 2px solid #bfdbfe;
+      border-color: var(--primary);
     }
 
-    #login-status, #connection-status {
-      margin-top: 15px;
+    label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .login-box {
+      max-width: 430px;
+      margin: 35px auto;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 23px;
+    }
+
+    .stat {
+      padding: 21px;
+      border-radius: 10px;
+      background: white;
+      border: 1px solid var(--border);
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 30px;
+      margin-top: 10px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .help {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: -8px;
+      margin-bottom: 15px;
+    }
+
+    .notice {
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 7px;
       font-size: 14px;
       line-height: 1.5;
-      overflow-wrap: anywhere;
     }
 
-    #login-status {
+    .notice-info {
+      background: #eff6ff;
+      color: #1e40af;
+    }
+
+    .notice-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .notice-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .notice-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .active {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .inactive {
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      background: #f8fafc;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 12px;
+    }
+
+    .footer {
       text-align: center;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    footer {
-      text-align: center;
-      padding: 25px 15px;
-      color: #64748b;
+      padding: 25px 12px;
+      color: var(--muted);
       font-size: 13px;
     }
 
-    @media (max-width: 500px) {
-      main {
-        margin-top: 25px;
+    @media (max-width: 700px) {
+      .portal-grid {
+        grid-template-columns: 1fr;
       }
 
-      .welcome h1 {
-        font-size: 23px;
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: auto;
+      }
+
+      .hero h1 {
+        font-size: 27px;
+      }
+
+      .card {
+        padding: 17px;
       }
     }
   </style>
@@ -193,330 +369,581 @@
 
 <body>
 
-  <header>
-    <div class="logo">EduRecord</div>
-    <p>School Results Management System</p>
+  <header class="topbar">
+    <div class="brand">
+      EduRecord
+      <small>School Results Management System</small>
+    </div>
+
+    <div id="topbarActions" class="hidden">
+      <span id="userLabel" style="margin-right:12px;"></span>
+      <button class="btn btn-secondary" onclick="logout()">
+        Logout
+      </button>
+    </div>
   </header>
 
-  <main>
-    <section class="welcome">
+  <!-- HOMEPAGE -->
+
+  <main id="homePage" class="container">
+
+    <section class="hero">
       <h1>Welcome to EduRecord</h1>
       <p>
-        A simple way to manage school results.
-        Select your portal to continue.
+        A smarter way to manage school records, assessments
+        and academic results.
       </p>
     </section>
 
-    <section class="portals" id="portals">
+    <div id="connectionMessage"
+         class="notice notice-info">
+      Connecting to EduRecord...
+    </div>
 
-      <div class="card">
-        <div class="icon">🏫</div>
-        <h2>Administrator</h2>
-        <p>Manage schools, students, teachers, classes and results.</p>
-        <button onclick="openAdminLogin()">
+    <div class="portal-grid">
+
+      <div class="portal">
+        <div class="portal-icon">🛡️</div>
+        <h3>Administrator Portal</h3>
+        <p>Manage schools and school records.</p>
+        <button class="btn" onclick="showLogin()">
           Administrator Login
         </button>
       </div>
 
-      <div class="card">
-        <div class="icon">👨‍🏫</div>
-        <h2>Teacher</h2>
-        <p>Enter scores for your assigned subjects and classes.</p>
-        <button onclick="showComingSoon('Teacher Login')">
+      <div class="portal">
+        <div class="portal-icon">👩‍🏫</div>
+        <h3>Teacher Portal</h3>
+        <p>Enter assessments and manage assigned classes.</p>
+        <button class="btn btn-secondary"
+                onclick="showComingSoon()">
           Teacher Login
         </button>
       </div>
 
-      <div class="card student">
-        <div class="icon">🎓</div>
-        <h2>Student Portal</h2>
-        <p>View, download and print your published school results.</p>
-        <button onclick="showComingSoon('Student Portal')">
-          Check My Result
+      <div class="portal">
+        <div class="portal-icon">🎓</div>
+        <h3>Student Portal</h3>
+        <p>View published academic results.</p>
+        <button class="btn btn-secondary"
+                onclick="showComingSoon()">
+          Student Portal
         </button>
       </div>
 
-    </section>
+    </div>
+  </main>
 
-    <section id="admin-login" class="login-card hidden">
+  <!-- LOGIN -->
+
+  <section id="loginPage" class="container hidden">
+
+    <div class="card login-box">
       <h2>Administrator Login</h2>
 
-      <p>Sign in using your registered administrator email and password.</p>
+      <p class="muted">
+        Sign in with your registered administrator email and password.
+      </p>
 
-      <form id="login-form">
-        <label for="email">Email Address</label>
+      <div id="loginMessage" class="hidden notice"></div>
+
+      <form id="loginForm">
+        <label for="loginEmail">Email Address</label>
         <input
+          id="loginEmail"
           type="email"
-          id="email"
           autocomplete="username"
           placeholder="Enter your email"
           required
         >
 
-        <label for="password">Password</label>
+        <label for="loginPassword">Password</label>
         <input
+          id="loginPassword"
           type="password"
-          id="password"
           autocomplete="current-password"
           placeholder="Enter your password"
           required
         >
 
-        <button type="submit" id="login-button">
-          Sign In
+        <button id="loginButton"
+                class="btn"
+                type="submit"
+                style="width:100%;">
+          Login
         </button>
       </form>
 
-      <p id="login-status" role="status" aria-live="polite"></p>
-
-      <button type="button" onclick="closeAdminLogin()">
-        Back to Portals
+      <button class="btn btn-secondary"
+              onclick="showHome()">
+        Back to Homepage
       </button>
-    </section>
+    </div>
 
-    <section id="admin-welcome" class="login-card hidden">
-      <h2>Administrator Verified</h2>
-      <p id="admin-details"></p>
+  </section>
 
-      <p>
-        Your login has been verified. The administration dashboard
-        will be built in the next stage.
-      </p>
+  <!-- ACCESS DENIED -->
 
-      <button type="button" onclick="signOutAdmin()">
+  <section id="deniedPage" class="container hidden">
+    <div class="card">
+      <h2>Access Restricted</h2>
+
+      <div class="notice notice-error">
+        This account does not have permission to access the
+        Owner Dashboard. Only the EduRecord platform owner can
+        manage registered schools here.
+      </div>
+
+      <button class="btn" onclick="logout()">
         Sign Out
       </button>
+    </div>
+  </section>
 
-      <p id="signout-status" role="status" aria-live="polite"></p>
-    </section>
+  <!-- OWNER DASHBOARD -->
 
-    <p id="connection-status" role="status" aria-live="polite">
-      Connecting to EduRecord...
-    </p>
-  </main>
+  <section id="dashboardPage" class="container hidden">
 
-  <footer>
-    &copy; 2026 EduRecord. All rights reserved.
+    <div class="section-title">
+      <div>
+        <h1 style="margin-bottom:5px;">Owner Dashboard</h1>
+        <p class="muted" style="margin-top:0;">
+          Manage schools registered on EduRecord.
+        </p>
+      </div>
+
+      <button class="btn btn-secondary"
+              onclick="loadSchools()">
+        Refresh
+      </button>
+    </div>
+
+    <div id="dashboardMessage" class="hidden notice"></div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <span>Total Schools</span>
+        <strong id="totalSchools">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Active Schools</span>
+        <strong id="activeSchools">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Inactive Schools</span>
+        <strong id="inactiveSchools">0</strong>
+      </div>
+
+    </div>
+
+    <!-- REGISTER SCHOOL -->
+
+    <div class="card">
+
+      <h2>🏫 Register a School</h2>
+
+      <p class="muted">
+        Enter the basic information for the new school.
+      </p>
+
+      <form id="schoolForm">
+
+        <div class="form-grid">
+
+          <div class="full-width">
+            <label for="schoolName">School Name</label>
+            <input
+              id="schoolName"
+              type="text"
+              placeholder="e.g. Al-Huda International School"
+              maxlength="150"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="schoolCode">School Code</label>
+            <input
+              id="schoolCode"
+              type="text"
+              placeholder="e.g. ALHUDA001"
+              maxlength="50"
+              pattern="[A-Za-z0-9_-]+"
+              title="Use letters, numbers, hyphens or underscores."
+              required
+            >
+            <p class="help">
+              Use a unique code for each school.
+            </p>
+          </div>
+
+          <div>
+            <label for="schoolSubdomain">Subdomain Name</label>
+            <input
+              id="schoolSubdomain"
+              type="text"
+              placeholder="e.g. alhuda"
+              maxlength="50"
+              pattern="[a-z0-9]+(-[a-z0-9]+)*"
+              title="Use lowercase letters, numbers and single hyphens."
+              required
+            >
+            <p class="help">
+              Use lowercase letters, numbers and hyphens.
+            </p>
+          </div>
+
+        </div>
+
+        <div id="subdomainPreview"
+             class="notice notice-info">
+          Enter a subdomain name to see its preview.
+        </div>
+
+        <button id="registerButton"
+                class="btn"
+                type="submit">
+          Register School
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- SCHOOL DIRECTORY -->
+
+    <div class="card">
+
+      <div class="section-title">
+        <div>
+          <h2>📋 Registered Schools</h2>
+          <p class="muted">
+            View and manage your registered schools.
+          </p>
+        </div>
+      </div>
+
+      <label for="schoolSearch">Search Schools</label>
+      <input
+        id="schoolSearch"
+        type="search"
+        placeholder="Search by school name or code..."
+      >
+
+      <div id="schoolListMessage"
+           class="notice notice-info">
+        Loading registered schools...
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>School Name</th>
+              <th>School Code</th>
+              <th>Subdomain</th>
+              <th>Status</th>
+              <th>Registered</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="schoolsTableBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="notice notice-warning">
+      <strong>Important:</strong>
+      Registering a school here creates its database record.
+      It does not yet create the school's administrator account,
+      provision a real subdomain, or configure custom branding.
+      Those features will be added separately.
+    </div>
+
+  </section>
+
+  <footer class="footer">
+    EduRecord &copy; <span id="currentYear"></span>.
+    School Results Management System.
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // --------------------------------------------------
+  // SUPABASE CONFIGURATION
+  // --------------------------------------------------
 
-  <script>
-    // EduRecord Supabase settings
-    const SUPABASE_URL =
-      "https://dukqweogkftgvbrhzjkk.supabase.co";
+  const SUPABASE_URL =
+    "https://dukqweogkftgvbrhzjkk.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
 
-    let supabaseClient = null;
+  let supabaseClient = null;
+  let currentSchools = [];
+  let currentUser = null;
+  let loadingSchools = false;
 
-    const connectionStatus =
-      document.getElementById("connection-status");
+  const $ = (id) => document.getElementById(id);
 
-    const loginStatus =
-      document.getElementById("login-status");
+  // --------------------------------------------------
+  // GENERAL HELPERS
+  // --------------------------------------------------
 
-    function openAdminLogin() {
-      document.getElementById("portals").classList.add("hidden");
-      document.querySelector(".welcome").classList.add("hidden");
-      document.getElementById("admin-login").classList.remove("hidden");
-      loginStatus.textContent = "";
+  function setNotice(element, message, type = "info") {
+    element.textContent = message;
+    element.className = "notice notice-" + type;
+    element.classList.remove("hidden");
+  }
+
+  function hideNotice(element) {
+    element.classList.add("hidden");
+  }
+
+  function showPage(pageId) {
+    const pages = [
+      "homePage",
+      "loginPage",
+      "dashboardPage",
+      "deniedPage"
+    ];
+
+    pages.forEach(id => {
+      $(id).classList.toggle("hidden", id !== pageId);
+    });
+  }
+
+  function showHome() {
+    showPage("homePage");
+  }
+
+  function showLogin() {
+    showPage("loginPage");
+    hideNotice($("loginMessage"));
+  }
+
+  function showComingSoon() {
+    alert("This portal has not been built yet. It will be added in a future update.");
+  }
+
+  function normalizeSchoolCode(value) {
+    return value.trim().toUpperCase();
+  }
+
+  function normalizeSubdomain(value) {
+    return value.trim().toLowerCase();
+  }
+
+  function updateSubdomainPreview() {
+    const slug = normalizeSubdomain($("schoolSubdomain").value);
+    const preview = $("subdomainPreview");
+
+    if (!slug) {
+      preview.textContent =
+        "Enter a subdomain name to see its preview.";
+      return;
     }
 
-    function closeAdminLogin() {
-      document.getElementById("admin-login").classList.add("hidden");
-      document.getElementById("portals").classList.remove("hidden");
-      document.querySelector(".welcome").classList.remove("hidden");
-      loginStatus.textContent = "";
-    }
+    preview.textContent =
+      "Proposed school address: " + slug +
+      ".yourdomain.com (preview only; your actual domain must be configured separately).";
+  }
 
-    function showComingSoon(portal) {
-      alert(portal + " has not been built yet.");
-    }
+  $("schoolSubdomain").addEventListener(
+    "input",
+    updateSubdomainPreview
+  );
 
-    async function initializeEduRecord() {
-      try {
-        if (!window.supabase) {
-          throw new Error("The Supabase library did not load.");
-        }
+  // --------------------------------------------------
+  // CONNECTION
+  // --------------------------------------------------
 
-        supabaseClient = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_PUBLISHABLE_KEY
-        );
+  async function initializeEduRecord() {
+    const message = $("connectionMessage");
 
-        const response = await fetch(
-          SUPABASE_URL + "/auth/v1/health",
-          {
-            method: "GET",
-            headers: {
-              apikey: SUPABASE_PUBLISHABLE_KEY
-            }
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Supabase returned HTTP " + response.status);
-        }
-
-        connectionStatus.textContent =
-          "EduRecord connection successful!";
-        connectionStatus.style.color = "green";
-
-        // Check whether a session already exists.
-        const { data, error } =
-          await supabaseClient.auth.getSession();
-
-        if (error) {
-          throw error;
-        }
-
-        if (data.session) {
-          await verifyAdministrator(data.session.user);
-        }
-
-      } catch (error) {
-        connectionStatus.textContent =
-          "Connection problem: " + error.message;
-        connectionStatus.style.color = "red";
-
-        console.error("EduRecord initialization error:", error);
+    try {
+      if (!window.supabase) {
+        throw new Error("The Supabase library did not load. Check your internet connection.");
       }
+
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      const response = await fetch(
+        SUPABASE_URL + "/auth/v1/health",
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_PUBLISHABLE_KEY
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Supabase returned HTTP " + response.status);
+      }
+
+      setNotice(
+        message,
+        "EduRecord connection successful!",
+        "success"
+      );
+
+      const { data, error } =
+        await supabaseClient.auth.getSession();
+
+      if (error) throw error;
+
+      if (data.session) {
+        await verifyCurrentUser(data.session.user);
+      }
+
+    } catch (error) {
+      console.error("Initialization error:", error);
+
+      setNotice(
+        message,
+        "Could not connect to EduRecord. Check your internet connection and Supabase configuration.",
+        "error"
+      );
     }
+  }
 
-    async function verifyAdministrator(user) {
-      loginStatus.textContent = "Checking administrator permissions...";
-      loginStatus.style.color = "#475569";
+  // --------------------------------------------------
+  // AUTHENTICATION AND ROLE CHECK
+  // --------------------------------------------------
 
-      try {
-        const { data: profile, error } = await supabaseClient
+  async function verifyCurrentUser(user) {
+    currentUser = user;
+
+    try {
+      const { data: profile, error } =
+        await supabaseClient
           .from("profiles")
           .select("role, full_name")
           .eq("id", user.id)
           .single();
 
-        if (error) {
-          throw error;
-        }
+      if (error) throw error;
 
-        if (
-          !profile ||
-          !["owner", "school_admin"].includes(profile.role)
-        ) {
-          await supabaseClient.auth.signOut();
-
-          throw new Error(
-            "This account does not have administrator permissions."
-          );
-        }
-
-        document.getElementById("admin-login").classList.add("hidden");
-        document.getElementById("portals").classList.add("hidden");
-        document.querySelector(".welcome").classList.add("hidden");
-
-        document.getElementById("admin-welcome").classList.remove("hidden");
-
-        document.getElementById("admin-details").textContent =
-          "Signed in as " +
-          (profile.full_name || "Administrator") +
-          ". Role: " + profile.role + ".";
-
-        loginStatus.textContent = "";
-
-      } catch (error) {
-        loginStatus.textContent =
-          "Login verification failed: " + error.message;
-
-        loginStatus.style.color = "red";
-
-        console.error("Administrator verification error:", error);
+      if (!profile) {
+        throw new Error("Your user profile could not be found.");
       }
+
+      if (profile.role !== "owner") {
+        $("topbarActions").classList.remove("hidden");
+
+        $("userLabel").textContent =
+          profile.full_name || user.email || "User";
+
+        showPage("deniedPage");
+        return;
+      }
+
+      $("topbarActions").classList.remove("hidden");
+
+      $("userLabel").textContent =
+        profile.full_name || "EduRecord Owner";
+
+      showPage("dashboardPage");
+
+      await loadSchools();
+
+    } catch (error) {
+      console.error("Profile verification error:", error);
+
+      await supabaseClient.auth.signOut();
+
+      currentUser = null;
+
+      $("topbarActions").classList.add("hidden");
+
+      showPage("loginPage");
+
+      setNotice(
+        $("loginMessage"),
+        "Unable to verify your account. Check that your profile exists and has the correct role.",
+        "error"
+      );
     }
+  }
 
-    document.getElementById("login-form").addEventListener(
-      "submit",
-      async function (event) {
-        event.preventDefault();
+  $("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-        if (!supabaseClient) {
-          loginStatus.textContent =
-            "EduRecord is not connected. Refresh the page and try again.";
-          loginStatus.style.color = "red";
-          return;
-        }
+    const button = $("loginButton");
 
-        const email =
-          document.getElementById("email").value.trim();
+    button.disabled = true;
+    button.textContent = "Signing in...";
 
-        const password =
-          document.getElementById("password").value;
+    hideNotice($("loginMessage"));
 
-        const loginButton =
-          document.getElementById("login-button");
+    try {
+      const email = $("loginEmail").value.trim();
+      const password = $("loginPassword").value;
 
-        loginButton.disabled = true;
-        loginButton.textContent = "Signing in...";
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
 
-        loginStatus.textContent = "Signing in securely...";
-        loginStatus.style.color = "#475569";
+      if (error) throw error;
 
-        try {
-          const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-              email: email,
-              password: password
-            });
+      await verifyCurrentUser(data.user);
 
-          if (error) {
-            throw error;
-          }
+    } catch (error) {
+      console.error("Login error:", error);
 
-          await verifyAdministrator(data.user);
+      setNotice(
+        $("loginMessage"),
+        error.message || "Login failed. Please try again.",
+        "error"
+      );
 
-        } catch (error) {
-          loginStatus.textContent =
-            "Sign-in failed: " + error.message;
-
-          loginStatus.style.color = "red";
-
-        } finally {
-          loginButton.disabled = false;
-          loginButton.textContent = "Sign In";
-        }
-      }
-    );
-
-    async function signOutAdmin() {
-      const signoutStatus =
-        document.getElementById("signout-status");
-
-      try {
-        const { error } = await supabaseClient.auth.signOut();
-
-        if (error) {
-          throw error;
-        }
-
-        document.getElementById("admin-welcome").classList.add("hidden");
-        document.getElementById("portals").classList.remove("hidden");
-        document.querySelector(".welcome").classList.remove("hidden");
-
-        document.getElementById("email").value = "";
-        document.getElementById("password").value = "";
-
-        signoutStatus.textContent = "";
-
-      } catch (error) {
-        signoutStatus.textContent =
-          "Could not sign out: " + error.message;
-
-        signoutStatus.style.color = "red";
-      }
+    } finally {
+      button.disabled = false;
+      button.textContent = "Login";
     }
+  });
 
-    initializeEduRecord();
-  </script>
+  async function logout() {
+    if (!supabaseClient) return;
 
-</body>
-</html>
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) throw error;
+
+      currentUser = null;
+
+      $("topbarActions").classList.add("hidden");
+
+      $("loginForm").reset();
+      $("schoolForm").reset();
+
+      showPage("homePage");
+
+    } catch (error) {
+      alert("Could not sign out: " + error.message);
+    }
+  }
+
+  // --------------------------------------------------
+  // OWNER DASHBOARD
+  // --------------------------------------------------
+
+  async function loadSchools() {
+    if (!currentUser || loadingSchools) return;
+
+    loadingSchools = true;
+
+    setNotice(
+      $("schoolListMessage"),
+      "L
