@@ -241,5 +241,48 @@
 
   checkEduRecordConnection();
 </script>
+  <p id="connection-status" style="text-align:center;padding:10px;">
+  Connecting to EduRecord...
+</p>
+
+<script>
+const https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/ = "YOUR_SUPABASE_PROJECT_URL";
+const sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+async function checkConnection() {
+  const status = document.getElementById("connection-status");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(
+      SUPABASE_URL + "/auth/v1/health",
+      {
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY
+        },
+        signal: controller.signal
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    status.textContent = "EduRecord connection successful!";
+    status.style.color = "green";
+
+  } catch (error) {
+    status.textContent = "Connection failed. Check your settings and internet.";
+    status.style.color = "red";
+    console.error("Connection error:", error);
+
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+checkConnection();
+</script>
 </body>
   </html>
