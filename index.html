@@ -775,19 +775,46 @@
         SUPABASE_PUBLISHABLE_KEY
       );
 
-      const response = await fetch(
-        SUPABASE_URL + "/auth/v1/health",
-        {
-          method: "GET",
-          headers: {
-            apikey: SUPABASE_PUBLISHABLE_KEY
-          }
-        }
-      );
+      async function initializeEduRecord() {
+  const message = $("connectionMessage");
 
-      if (!response.ok) {
-        throw new Error("Supabase returned HTTP " + response.status);
-      }
+  try {
+    if (!window.supabase) {
+      throw new Error("Supabase library did not load.");
+    }
+
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    setNotice(
+      message,
+      "EduRecord connection successful!",
+      "success"
+    );
+
+    const { data, error } =
+      await supabaseClient.auth.getSession();
+
+    if (error) {
+      throw error;
+    }
+
+    if (data.session) {
+      await verifyCurrentUser(data.session.user);
+    }
+
+  } catch (error) {
+    console.error("EduRecord initialization error:", error);
+
+    setNotice(
+      message,
+      "Connection error: " + error.message,
+      "error"
+    );
+  }
+}
 
       setNotice(
         message,
