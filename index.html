@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#123b70">
+
   <title>EduRecord | School Results Management</title>
 
   <style>
@@ -117,6 +118,13 @@
       background: #066747;
     }
 
+    #connection-status {
+      text-align: center;
+      padding: 12px;
+      margin: 20px auto;
+      font-size: 14px;
+    }
+
     footer {
       text-align: center;
       padding: 25px 15px;
@@ -137,6 +145,7 @@
 </head>
 
 <body>
+
   <header>
     <div class="logo">EduRecord</div>
     <p>School Results Management System</p>
@@ -152,6 +161,7 @@
     </section>
 
     <section class="portals">
+
       <div class="card">
         <div class="icon">🏫</div>
         <h2>Administrator</h2>
@@ -178,7 +188,12 @@
           Check My Result
         </button>
       </div>
+
     </section>
+
+    <p id="connection-status" aria-live="polite">
+      Connecting to EduRecord...
+    </p>
   </main>
 
   <footer>
@@ -192,97 +207,78 @@
       );
     }
   </script>
-  <!-- EduRecord: Supabase Connection -->
-<p id="connection-status" style="text-align:center; padding:10px;">
-  Connecting to EduRecord...
-</p>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase JavaScript library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-  const  https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/ = "YOUR_PROJECT_URL";
-  const sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi = "YOUR_SB_PUBLISHABLE_KEY";
+  <!-- EduRecord Supabase Connection -->
+  <script>
+    // REPLACE VALUE 1: Your Supabase Project URL
+    const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/";
 
+    // REPLACE VALUE 2: Your Supabase Publishable Key
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
 
-  async function checkEduRecordConnection() {
+    async function checkEduRecordConnection() {
+      const status = document.getElementById("connection-status");
+      const controller = new AbortController();
+
+      const timeoutId = setTimeout(function () {
+        controller.abort();
+      }, 10000);
+
       try {
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
-    const status = document.getElementById("connection-status");
-
-    try {
-      const response = await fetch(
-        `${SUPABASE_URL}/auth/v1/health`,
-        {
-          headers: {
-            apikey: SUPABASE_PUBLISHABLE_KEY
-          }
+        if (
+          SUPABASE_URL === "https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/" ||
+          SUPABASE_PUBLISHABLE_KEY === "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi"
+        ) {
+          throw new Error("Please enter your Supabase URL and publishable key.");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Connection could not be verified.");
+        const response = await fetch(
+          SUPABASE_URL.replace(/\/+$/, "") + "/auth/v1/health",
+          {
+            method: "GET",
+            headers: {
+              apikey: SUPABASE_PUBLISHABLE_KEY
+            },
+            signal: controller.signal
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Supabase returned HTTP " + response.status);
+        }
+
+        if (!window.supabase) {
+          throw new Error("Supabase JavaScript library did not load.");
+        }
+
+        const supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        status.textContent = "EduRecord connection successful!";
+        status.style.color = "green";
+
+        console.log("EduRecord Supabase client initialized.");
+
+      } catch (error) {
+        status.textContent =
+          "Connection failed. Check your Supabase settings or internet.";
+
+        status.style.color = "red";
+
+        console.error("EduRecord connection error:", error);
+
+      } finally {
+        clearTimeout(timeoutId);
       }
-
-      status.textContent = "EduRecord database connection successful!";
-      status.style.color = "green";
-
-      console.log("EduRecord Supabase client initialized.");
-    } catch (error) {
-      status.textContent =
-        "Connection failed. Please check your Supabase settings.";
-      status.style.color = "red";
-
-      console.error("EduRecord connection error:", error);
-    }
-  }
-
-  checkEduRecordConnection();
-</script>
-  <p id="connection-status" style="text-align:center;padding:10px;">
-  Connecting to EduRecord...
-</p>
-
-<script>
-const https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/ = "YOUR_SUPABASE_PROJECT_URL";
-const sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi = "YOUR_SUPABASE_PUBLISHABLE_KEY";
-
-async function checkConnection() {
-  const status = document.getElementById("connection-status");
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000);
-
-  try {
-    const response = await fetch(
-      SUPABASE_URL + "/auth/v1/health",
-      {
-        headers: {
-          apikey: SUPABASE_PUBLISHABLE_KEY
-        },
-        signal: controller.signal
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
     }
 
-    status.textContent = "EduRecord connection successful!";
-    status.style.color = "green";
+    checkEduRecordConnection();
+  </script>
 
-  } catch (error) {
-    status.textContent = "Connection failed. Check your settings and internet.";
-    status.style.color = "red";
-    console.error("Connection error:", error);
-
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-checkConnection();
-</script>
 </body>
-  </html>
+</html>
