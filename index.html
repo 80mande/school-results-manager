@@ -205,40 +205,47 @@
     }
   </script>
 
-  <!-- Supabase JavaScript library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase JavaScript library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- EduRecord Supabase connection -->
-  <script>
-    const SUPABASE_URL =
-      "https://dukqweogkftgvbrhzjkk.supabase.co";
+<!-- EduRecord connection -->
+<script>
+  const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
 
-    async function checkEduRecordConnection() {
-      const status = document.getElementById("connection-status");
-      const controller = new AbortController();
+  const status = document.getElementById("connection-status");
 
-      const timeoutId = setTimeout(function () {
-        controller.abort();
-      }, 10000);
+  status.textContent = "Checking EduRecord connection...";
 
-      try {
-        const response = await fetch(
-          SUPABASE_URL + "/auth/v1/health",
-          {
-            method: "GET",
-            headers: {
-              apikey: SUPABASE_PUBLISHABLE_KEY
-            },
-            signal: controller.signal
+  async function checkEduRecordConnection() {
+    try {
+      const response = await fetch(
+        SUPABASE_URL + "/auth/v1/health",
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_PUBLISHABLE_KEY
           }
-        );
-
-        if (!response.ok) {
-          throw new Error("Supabase returned HTTP " + response.status);
         }
+      );
 
-        if (!window.supabase) {
-          throw new Error("Sup
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+
+      status.textContent = "EduRecord connection successful!";
+      status.style.color = "green";
+
+    } catch (error) {
+      status.textContent = "Connection failed: " + error.message;
+      status.style.color = "red";
+      console.error(error);
+    }
+  }
+
+  checkEduRecordConnection();
+</script>
+
+</body>
+</html>
