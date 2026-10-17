@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#123b70">
+
   <title>EduRecord | School Results Management</title>
 
   <style>
@@ -30,7 +31,6 @@
     .logo {
       font-size: 30px;
       font-weight: bold;
-      letter-spacing: 0.5px;
     }
 
     header p {
@@ -66,7 +66,7 @@
       gap: 18px;
     }
 
-    .card {
+    .card, .login-card {
       background: white;
       border-radius: 14px;
       padding: 25px 20px;
@@ -92,7 +92,7 @@
       min-height: 45px;
     }
 
-    .card button {
+    button {
       width: 100%;
       margin-top: 20px;
       padding: 13px;
@@ -105,7 +105,7 @@
       cursor: pointer;
     }
 
-    .card button:hover {
+    button:hover {
       background: #1d4f91;
     }
 
@@ -117,12 +117,59 @@
       background: #066747;
     }
 
-    #connection-status {
+    .login-card {
+      max-width: 430px;
+      margin: 25px auto;
+      text-align: left;
+    }
+
+    .login-card h2 {
       text-align: center;
-      padding: 12px;
-      margin: 20px auto;
+      margin-bottom: 10px;
+    }
+
+    .login-card > p {
+      text-align: center;
+      color: #64748b;
       font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #93c5fd;
+      border-color: #123b70;
+    }
+
+    #login-status, #connection-status {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.5;
       overflow-wrap: anywhere;
+    }
+
+    #login-status {
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
     }
 
     footer {
@@ -145,6 +192,7 @@
 </head>
 
 <body>
+
   <header>
     <div class="logo">EduRecord</div>
     <p>School Results Management System</p>
@@ -154,17 +202,18 @@
     <section class="welcome">
       <h1>Welcome to EduRecord</h1>
       <p>
-        A simple and secure way to manage school results.
+        A simple way to manage school results.
         Select your portal to continue.
       </p>
     </section>
 
-    <section class="portals">
+    <section class="portals" id="portals">
+
       <div class="card">
         <div class="icon">🏫</div>
         <h2>Administrator</h2>
-        <p>Manage students, teachers, subjects, classes and results.</p>
-        <button onclick="showMessage('Administrator')">
+        <p>Manage schools, students, teachers, classes and results.</p>
+        <button onclick="openAdminLogin()">
           Administrator Login
         </button>
       </div>
@@ -173,7 +222,7 @@
         <div class="icon">👨‍🏫</div>
         <h2>Teacher</h2>
         <p>Enter scores for your assigned subjects and classes.</p>
-        <button onclick="showMessage('Teacher')">
+        <button onclick="showComingSoon('Teacher Login')">
           Teacher Login
         </button>
       </div>
@@ -182,13 +231,66 @@
         <div class="icon">🎓</div>
         <h2>Student Portal</h2>
         <p>View, download and print your published school results.</p>
-        <button onclick="showMessage('Student Portal')">
+        <button onclick="showComingSoon('Student Portal')">
           Check My Result
         </button>
       </div>
+
     </section>
 
-    <p id="connection-status" aria-live="polite">
+    <section id="admin-login" class="login-card hidden">
+      <h2>Administrator Login</h2>
+
+      <p>Sign in using your registered administrator email and password.</p>
+
+      <form id="login-form">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          autocomplete="username"
+          placeholder="Enter your email"
+          required
+        >
+
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          required
+        >
+
+        <button type="submit" id="login-button">
+          Sign In
+        </button>
+      </form>
+
+      <p id="login-status" role="status" aria-live="polite"></p>
+
+      <button type="button" onclick="closeAdminLogin()">
+        Back to Portals
+      </button>
+    </section>
+
+    <section id="admin-welcome" class="login-card hidden">
+      <h2>Administrator Verified</h2>
+      <p id="admin-details"></p>
+
+      <p>
+        Your login has been verified. The administration dashboard
+        will be built in the next stage.
+      </p>
+
+      <button type="button" onclick="signOutAdmin()">
+        Sign Out
+      </button>
+
+      <p id="signout-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <p id="connection-status" role="status" aria-live="polite">
       Connecting to EduRecord...
     </p>
   </main>
@@ -197,55 +299,224 @@
     &copy; 2026 EduRecord. All rights reserved.
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    function showMessage(portal) {
-      alert(
-        portal + " will be available after we build the login system."
-      );
+    // EduRecord Supabase settings
+    const SUPABASE_URL =
+      "https://dukqweogkftgvbrhzjkk.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
+
+    let supabaseClient = null;
+
+    const connectionStatus =
+      document.getElementById("connection-status");
+
+    const loginStatus =
+      document.getElementById("login-status");
+
+    function openAdminLogin() {
+      document.getElementById("portals").classList.add("hidden");
+      document.querySelector(".welcome").classList.add("hidden");
+      document.getElementById("admin-login").classList.remove("hidden");
+      loginStatus.textContent = "";
     }
-  </script>
 
-<!-- Supabase JavaScript library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    function closeAdminLogin() {
+      document.getElementById("admin-login").classList.add("hidden");
+      document.getElementById("portals").classList.remove("hidden");
+      document.querySelector(".welcome").classList.remove("hidden");
+      loginStatus.textContent = "";
+    }
 
-<!-- EduRecord connection -->
-<script>
-  const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co";
+    function showComingSoon(portal) {
+      alert(portal + " has not been built yet.");
+    }
 
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
-
-  const status = document.getElementById("connection-status");
-
-  status.textContent = "Checking EduRecord connection...";
-
-  async function checkEduRecordConnection() {
-    try {
-      const response = await fetch(
-        SUPABASE_URL + "/auth/v1/health",
-        {
-          method: "GET",
-          headers: {
-            apikey: SUPABASE_PUBLISHABLE_KEY
-          }
+    async function initializeEduRecord() {
+      try {
+        if (!window.supabase) {
+          throw new Error("The Supabase library did not load.");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("HTTP " + response.status);
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const response = await fetch(
+          SUPABASE_URL + "/auth/v1/health",
+          {
+            method: "GET",
+            headers: {
+              apikey: SUPABASE_PUBLISHABLE_KEY
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Supabase returned HTTP " + response.status);
+        }
+
+        connectionStatus.textContent =
+          "EduRecord connection successful!";
+        connectionStatus.style.color = "green";
+
+        // Check whether a session already exists.
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.session) {
+          await verifyAdministrator(data.session.user);
+        }
+
+      } catch (error) {
+        connectionStatus.textContent =
+          "Connection problem: " + error.message;
+        connectionStatus.style.color = "red";
+
+        console.error("EduRecord initialization error:", error);
       }
-
-      status.textContent = "EduRecord connection successful!";
-      status.style.color = "green";
-
-    } catch (error) {
-      status.textContent = "Connection failed: " + error.message;
-      status.style.color = "red";
-      console.error(error);
     }
-  }
 
-  checkEduRecordConnection();
-</script>
+    async function verifyAdministrator(user) {
+      loginStatus.textContent = "Checking administrator permissions...";
+      loginStatus.style.color = "#475569";
+
+      try {
+        const { data: profile, error } = await supabaseClient
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        if (
+          !profile ||
+          !["owner", "school_admin"].includes(profile.role)
+        ) {
+          await supabaseClient.auth.signOut();
+
+          throw new Error(
+            "This account does not have administrator permissions."
+          );
+        }
+
+        document.getElementById("admin-login").classList.add("hidden");
+        document.getElementById("portals").classList.add("hidden");
+        document.querySelector(".welcome").classList.add("hidden");
+
+        document.getElementById("admin-welcome").classList.remove("hidden");
+
+        document.getElementById("admin-details").textContent =
+          "Signed in as " +
+          (profile.full_name || "Administrator") +
+          ". Role: " + profile.role + ".";
+
+        loginStatus.textContent = "";
+
+      } catch (error) {
+        loginStatus.textContent =
+          "Login verification failed: " + error.message;
+
+        loginStatus.style.color = "red";
+
+        console.error("Administrator verification error:", error);
+      }
+    }
+
+    document.getElementById("login-form").addEventListener(
+      "submit",
+      async function (event) {
+        event.preventDefault();
+
+        if (!supabaseClient) {
+          loginStatus.textContent =
+            "EduRecord is not connected. Refresh the page and try again.";
+          loginStatus.style.color = "red";
+          return;
+        }
+
+        const email =
+          document.getElementById("email").value.trim();
+
+        const password =
+          document.getElementById("password").value;
+
+        const loginButton =
+          document.getElementById("login-button");
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Signing in...";
+
+        loginStatus.textContent = "Signing in securely...";
+        loginStatus.style.color = "#475569";
+
+        try {
+          const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          await verifyAdministrator(data.user);
+
+        } catch (error) {
+          loginStatus.textContent =
+            "Sign-in failed: " + error.message;
+
+          loginStatus.style.color = "red";
+
+        } finally {
+          loginButton.disabled = false;
+          loginButton.textContent = "Sign In";
+        }
+      }
+    );
+
+    async function signOutAdmin() {
+      const signoutStatus =
+        document.getElementById("signout-status");
+
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) {
+          throw error;
+        }
+
+        document.getElementById("admin-welcome").classList.add("hidden");
+        document.getElementById("portals").classList.remove("hidden");
+        document.querySelector(".welcome").classList.remove("hidden");
+
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+
+        signoutStatus.textContent = "";
+
+      } catch (error) {
+        signoutStatus.textContent =
+          "Could not sign out: " + error.message;
+
+        signoutStatus.style.color = "red";
+      }
+    }
+
+    initializeEduRecord();
+  </script>
 
 </body>
 </html>
