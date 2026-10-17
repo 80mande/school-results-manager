@@ -7,7 +7,24 @@
   <title>EduRecord | School Management</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.addEventListener("load", function () {
+  var box = document.getElementById("connectionMessage");
 
+  if (!box) {
+    alert("Test result: connectionMessage was not found.");
+    return;
+  }
+
+  if (window.supabase) {
+    box.textContent = "Test passed: Supabase library loaded.";
+    box.style.color = "green";
+  } else {
+    box.textContent = "Test failed: Supabase library did not load.";
+    box.style.color = "red";
+  }
+});
+</script>
   <style>
     :root {
       --primary: #1746a2;
