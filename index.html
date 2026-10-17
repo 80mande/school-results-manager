@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+but<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -192,5 +192,53 @@
       );
     }
   </script>
+  <!-- EduRecord: Supabase Connection -->
+<p id="connection-status" style="text-align:center; padding:10px;">
+  Connecting to EduRecord...
+</p>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const  https://dukqweogkftgvbrhzjkk.supabase.co/rest/v1/ = "YOUR_PROJECT_URL";
+  const sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi = "YOUR_SB_PUBLISHABLE_KEY";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  async function checkEduRecordConnection() {
+    const status = document.getElementById("connection-status");
+
+    try {
+      const response = await fetch(
+        `${SUPABASE_URL}/auth/v1/health`,
+        {
+          headers: {
+            apikey: SUPABASE_PUBLISHABLE_KEY
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Connection could not be verified.");
+      }
+
+      status.textContent = "EduRecord database connection successful!";
+      status.style.color = "green";
+
+      console.log("EduRecord Supabase client initialized.");
+    } catch (error) {
+      status.textContent =
+        "Connection failed. Please check your Supabase settings.";
+      status.style.color = "red";
+
+      console.error("EduRecord connection error:", error);
+    }
+  }
+
+  checkEduRecordConnection();
+</script>
 </body>
   </html>
