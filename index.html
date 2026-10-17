@@ -8,22 +8,41 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-window.addEventListener("load", function () {
+<script>
+window.addEventListener("error", function(event) {
   var box = document.getElementById("connectionMessage");
 
-  if (!box) {
-    alert("Test result: connectionMessage was not found.");
-    return;
-  }
-
-  if (window.supabase) {
-    box.textContent = "Test passed: Supabase library loaded.";
-    box.style.color = "green";
-  } else {
-    box.textContent = "Test failed: Supabase library did not load.";
+  if (box) {
+    box.textContent =
+      "JavaScript error: " + event.message +
+      " (line " + event.lineno + ")";
     box.style.color = "red";
   }
 });
+
+window.addEventListener("unhandledrejection", function(event) {
+  var box = document.getElementById("connectionMessage");
+
+  if (box) {
+    box.textContent =
+      "Application error: " +
+      (event.reason?.message || String(event.reason));
+    box.style.color = "red";
+  }
+});
+
+window.addEventListener("load", function() {
+  setTimeout(function() {
+    var box = document.getElementById("connectionMessage");
+
+    if (box && box.textContent.includes("Connecting")) {
+      box.textContent =
+        "Supabase loaded, but application startup did not finish.";
+      box.style.color = "red";
+    }
+  }, 3000);
+});
+</script>
 </script>
   <style>
     :root {
