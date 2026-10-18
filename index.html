@@ -798,4 +798,112 @@
       await verifyCurrentUser(data.user);
 
     } catch (error) {
-   
+      console.error("Login error:", error);
+
+      setNotice(
+        $("loginMessage"),
+        error.message || "Login failed. Please try again.",
+        "error"
+      );
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "Login";
+    }
+  });
+
+  async function logout() {
+    if (!supabaseClient) return;
+
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) throw error;
+
+      currentUser = null;
+      clearUser();
+      $("loginForm").reset();
+      $("schoolForm").reset();
+      showHome();
+
+    } catch (error) {
+      alert("Could not sign out: " + error.message);
+    }
+  }
+
+  async function loadSchools() {
+    if (!currentUser || loadingSchools) return;
+
+    loadingSchools = true;
+
+    setNotice(
+      $("schoolListMessage"),
+      "Loading registered schools...",
+      "info"
+    );
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("schools")
+        .select(
+          "id, school_name, school_code, subdomain, is_active, created_at"
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      currentSchools = data || [];
+
+      $("totalSchools").textContent = currentSchools.length;
+      $("activeSchools").textContent =
+        currentSchools.filter(school => school.is_active).length;
+      $("inactiveSchools").textContent =
+        currentSchools.filter(school => !school.is_active).length;
+
+      renderSchools();
+
+      $("schoolListMessage").classList.add("hidden");
+      $("dashboardMessage").classList.add("hidden");
+
+    } catch (error) {
+      console.error("Loading schools error:", error);
+
+      setNotice(
+        $("schoolListMessage"),
+        "Could not load schools: " + error.message,
+        "error"
+      );
+
+    } finally {
+      loadingSchools = false;
+    }
+  }
+
+  function renderSchools() {
+    const query = $("schoolSearch").value.trim().toLowerCase();
+
+    const schools = currentSchools.filter(school =>
+      [
+        school.school_name,
+        school.school_code,
+        school.subdomain
+      ].some(value =>
+        String(value || "").toLowerCase().includes(query)
+      )
+    );
+
+    if (!schools.length) {
+      $("schoolsTableBody").innerHTML =
+        '<tr><td colspan="6" class="muted">' +
+        (currentSchools.length
+          ? "No matching schools found."
+          : "No schools registered yet.") +
+        "</td></tr>";
+      return;
+    }
+
+    $("schoolsTableBody").innerHTML = schools.map(school => {
+      const status = school.is_active
+        ? '<span class="status active">Active</span>'
+        : '<span class="status inactive">Inactive</span>';
+
