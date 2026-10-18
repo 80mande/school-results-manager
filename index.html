@@ -907,3 +907,156 @@
         ? '<span class="status active">Active</span>'
         : '<span class="status inactive">Inactive</span>';
 
+      const action = school.is_active ? "Deactivate" : "Activate";
+      const actionClass = school.is_active ? "btn-danger" : "";
+
+      const date = school.created_at
+        ? new Date(school.created_at).toLocaleDateString()
+        : "—";
+
+      return `
+        <tr>
+          <td>${escapeHtml(school.school_name)}</td>
+          <td>${escapeHtml(school.school_code)}</td>
+          <td>${escapeHtml(school.subdomain)}</td>
+          <td>${status}</td>
+          <td>${escapeHtml(date)}</td>
+          <td>
+            <button
+              class="btn btn-small ${actionClass}"
+              type="button"
+              data-id="${escapeHtml(school.id)}"
+              data-active="${school.is_active}">
+              ${action}
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    $("schoolsTableBody")
+      .querySelectorAll("button[data-id]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          changeSchoolStatus(
+            button.dataset.id,
+            button.dataset.active !== "true"
+          );
+        });
+      });
+  }
+
+  $("schoolForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!supabaseClient || !currentUser) {
+      setNotice(
+        $("dashboardMessage"),
+        "Please sign in again before registering a school.",
+        "error"
+      );
+      return;
+    }
+
+    const button = $("registerButton");
+    button.disabled = true;
+    button.textContent = "Registering...";
+
+    try {
+      const schoolName = $("schoolName").value.trim();
+      const schoolCode =
+        normalizeSchoolCode($("schoolCode").value);
+      const subdomain =
+        normalizeSubdomain($("schoolSubdomain").value);
+
+      if (!schoolName || !schoolCode || !subdomain) {
+        throw new Error("Please complete all school fields.");
+      }
+
+      const { error } = await supabaseClient
+        .from("schools")
+        .insert([{
+          school_name: schoolName,
+          school_code: schoolCode,
+          subdomain: subdomain,
+          is_active: true
+        }]);
+
+      if (error) throw error;
+
+      $("schoolForm").reset();
+      updateSubdomainPreview();
+
+      setNotice(
+        $("dashboardMessage"),
+        "School registered successfully.",
+        "success"
+      );
+
+      await loadSchools();
+
+    } catch (error) {
+      console.error("School registration error:", error);
+
+      const message = error.code === "23505"
+        ? "That school code or subdomain is already in use."
+        : error.message || "Could not register this school.";
+
+      setNotice($("dashboardMessage"), message, "error");
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "Register School";
+    }
+  });
+
+  async function changeSchoolStatus(schoolId, active) {
+    const action = active ? "activate" : "deactivate";
+
+    if (!confirm("Are you sure you want to " + action + " this school?")) {
+      return;
+    }
+
+    try {
+      const { error } = await supabaseClient
+        .from("schools")
+        .update({ is_active: active })
+        .eq("id", schoolId);
+
+      if (error) throw error;
+
+      setNotice(
+        $("dashboardMessage"),
+        "School " + (active ? "activated" : "deactivated") + " successfully.",
+        "success"
+      );
+
+      await loadSchools();
+
+    } catch (error) {
+      console.error("School status update error:", error);
+
+      setNotice(
+        $("dashboardMessage"),
+        "Could not update school status: " + error.message,
+        "error"
+      );
+    }
+  }
+
+  $("schoolSearch").addEventListener("input", renderSchools);
+  $("schoolSubdomain").addEventListener("input", updateSubdomainPreview);
+
+  $("currentYear").textContent = new Date().getFullYear();
+
+  // Expose UI functions globally so HTML onclick handlers can find them
+  window.showLogin = showLogin;
+  window.showHome = showHome;
+  window.showComingSoon = showComingSoon;
+  window.logout = logout;
+  window.loadSchools = loadSchools;
+
+  initializeEduRecord();
+  </script>  
+</body>  
+</html>
