@@ -825,24 +825,58 @@ page.classList.toggle("hidden", id !== pageId);
   }
 
   async function verifyCurrentUser(user) {
-    currentUser = user;
+async function verifyCurrentUser(user) {
+  currentUser = user;
 
-    try {
-      const { data: profile, error } = await supabaseClient
-        .from("profiles")
-        .select("role, full_name, is_active")
-        .eq("id", user.id)
-        .single();
+  try {
+    const { data: profile, error } = await supabaseClient
+      .from("profiles")
+      .select("role, full_name, is_active, school_id")
+      .eq("id", user.id)
+      .single();
 
-      if (error) throw error;
+    if (error) throw error;
 
-      if (!profile ||
-          profile.role !== "owner" ||
-          profile.is_active === false) {
+    if (!profile || profile.is_active !== true) {
+      clearUser();
+      setNotice(
+        $("connectionMessage"),
+        "This account is inactive or not authorised to access EduRecord.",
+        "error"
+      );
+      showPage("deniedPage");
+      return;
+    }
+
+    if (profile.role === "owner") {
+      showUser(profile, user);
+      showPage("dashboardPage");
+
+      setNotice(
+        $("connectionMessage"),
+        "Owner verified. EduRecord is connected.",
+        "success"
+      );
+
+      await loadSchools();
+      return;
+    }
+
+    if (profile.role === "school_admin" && profile.school_id) {
+      const { data: school, error: schoolError } =
+        await supabaseClient
+          .from("schools")
+          .select("school_name, is_active")
+          .eq("id", profile.school_id)
+          .single();
+
+      if (schoolError) throw schoolError;
+
+      if (!school || school.is_active !== true) {
         clearUser();
         setNotice(
           $("connectionMessage"),
-          "This account is not authorised to access the owner dashboard.",
+          "Your school is inactive or unavailable. Please contact the platform owner.",
           "error"
         );
         showPage("deniedPage");
@@ -850,30 +884,47 @@ page.classList.toggle("hidden", id !== pageId);
       }
 
       showUser(profile, user);
-      showPage("dashboardPage");
+
+      $("adminWelcomeName").textContent =
+        profile.full_name || "Administrator";
+
+      $("adminSchoolName").textContent = school.school_name;
+
+      showPage("schoolAdminPage");
 
       setNotice(
         $("connectionMessage"),
-        "Administrator verified. EduRecord is connected.",
+        "School administrator verified. EduRecord is connected.",
         "success"
       );
 
-      await loadSchools();
-
-    } catch (error) {
-      console.error("Profile verification error:", error);
-
-      currentUser = null;
-      clearUser();
-      showPage("loginPage");
-
-      setNotice(
-        $("loginMessage"),
-        "Unable to verify your account. Check your owner profile and try again.",
-        "error"
-      );
+      return;
     }
+
+    clearUser();
+
+    setNotice(
+      $("connectionMessage"),
+      "This account does not have permission to access this dashboard.",
+      "error"
+    );
+
+    showPage("deniedPage");
+
+  } catch (error) {
+    console.error("Profile verification error:", error);
+
+    currentUser = null;
+    clearUser();
+    showPage("loginPage");
+
+    setNotice(
+      $("loginMessage"),
+      "Unable to verify your account. Please try again.",
+      "error"
+    );
   }
+        }
 
   $("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
