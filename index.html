@@ -1,578 +1,1145 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduRecord Owner Portal</title>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>EduRecord | School Management</title>    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script>  
+<script>  
+window.addEventListener("error", function(event) {  
+  var box = document.getElementById("connectionMessage");  
   
-  <!-- 1. CRITICAL: Include Supabase JS SDK so window.supabase is available -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  if (box) {  
+    box.textContent =  
+      "JavaScript error: " + event.message +  
+      " (line " + event.lineno + ")";  
+    box.style.color = "red";  
+  }  
+});  
+  
+window.addEventListener("unhandledrejection", function(event) {  
+  var box = document.getElementById("connectionMessage");  
+  
+  if (box) {  
+    box.textContent =  
+      "Application error: " +  
+      (event.reason?.message || String(event.reason));  
+    box.style.color = "red";  
+  }  
+});  
+  
+window.addEventListener("load", function() {  
+  setTimeout(function() {  
+    var box = document.getElementById("connectionMessage");  
+  
+    if (box && box.textContent.includes("Connecting")) {  
+      box.textContent =  
+        "Supabase loaded, but application startup did not finish.";  
+      box.style.color = "red";  
+    }  
+  }, 3000);  
+});  
+</script>  </script>  
+  <style>  
+    :root {  
+      --primary: #1746a2;  
+      --primary-dark: #10377f;  
+      --background: #f3f6fb;  
+      --white: #ffffff;  
+      --text: #1e293b;  
+      --muted: #64748b;  
+      --border: #e2e8f0;  
+      --green: #15803d;  
+      --red: #b91c1c;  
+    }  * {  
+  box-sizing: border-box;  
+}  
 
-  <!-- Add your CSS styles or link your stylesheet here -->
-  <style>
-    .hidden { display: none !important; }
-    body { font-family: system-ui, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 20px; }
-    .notice { padding: 12px; margin-bottom: 16px; border-radius: 6px; }
-    .notice-info { background: #e0f2fe; color: #0369a1; }
-    .notice-success { background: #dcfce7; color: #15803d; }
-    .notice-error { background: #fee2e2; color: #b91c1c; }
-  </style>
-</head>
-<body>
+body {  
+  margin: 0;  
+  font-family: Arial, Helvetica, sans-serif;  
+  background: var(--background);  
+  color: var(--text);  
+}  
 
-  <!-- Connection / Global Notification Banner -->
-  <div id="connectionMessage" class="notice notice-info">Connecting to EduRecord...</div>
+button, input {  
+  font: inherit;  
+}  
 
-  <!-- Topbar Actions (shown when logged in) -->
-  <div id="topbarActions" class="hidden" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <span id="userLabel" style="font-weight: 600;"></span>
-    <button type="button" onclick="logout()">Logout</button>
-  </div>
+button {  
+  cursor: pointer;  
+}  
 
-  <!-- PAGE 1: Home Page -->
-  <div id="homePage" class="hidden">
-    <h1>EduRecord Owner Portal</h1>
-    <p>Welcome! Please sign in to manage registered schools.</p>
-    <button type="button" onclick="showLogin()">Go to Login</button>
-  </div>
+.hidden {  
+  display: none !important;  
+}  
 
-  <!-- PAGE 2: Login Page -->
-  <div id="loginPage" class="hidden">
-    <h2>Sign In</h2>
-    <div id="loginMessage" class="hidden"></div>
-    <form id="loginForm">
-      <div style="margin-bottom: 10px;">
-        <label>Email: <input type="email" id="loginEmail" required></label>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label>Password: <input type="password" id="loginPassword" required></label>
-      </div>
-      <button type="button" id="loginButton">Login</button> <!-- Will be handled by submit listener -->
-    </form>
-  </div>
+.topbar {  
+  background: var(--primary);  
+  color: white;  
+  padding: 17px 22px;  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+  gap: 12px;  
+  flex-wrap: wrap;  
+}  
 
-  <!-- PAGE 3: Dashboard Page -->
-  <div id="dashboardPage" class="hidden">
-    <h2>Owner Dashboard</h2>
-    <div id="dashboardMessage" class="hidden"></div>
+.brand {  
+  font-size: 23px;  
+  font-weight: bold;  
+}  
 
-    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-      <div>Total Schools: <span id="totalSchools">0</span></div>
-      <div>Active: <span id="activeSchools">0</span></div>
-      <div>Inactive: <span id="inactiveSchools">0</span></div>
-    </div>
+.brand small {  
+  display: block;  
+  font-size: 11px;  
+  font-weight: normal;  
+  margin-top: 4px;  
+  opacity: 0.85;  
+}  
 
-    <!-- Register School Form -->
-    <form id="schoolForm" style="background: white; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-      <h3>Register School</h3>
-      <div><input type="text" id="schoolName" placeholder="School Name" required></div>
-      <div><input type="text" id="schoolCode" placeholder="School Code" required></div>
-      <div><input type="text" id="schoolSubdomain" placeholder="Subdomain" required></div>
-      <small id="subdomainPreview">Enter a subdomain name to see its preview.</small>
-      <div><button type="submit" id="registerButton">Register School</button></div>
-    </form>
+.container {  
+  max-width: 1150px;  
+  margin: 25px auto;  
+  padding: 0 16px;  
+}  
 
-    <!-- School List & Search -->
-    <h3>School List</h3>
-    <input type="text" id="schoolSearch" placeholder="Search schools..." style="margin-bottom: 10px; width: 100%; padding: 8px;">
-    <div id="schoolListMessage" class="hidden"></div>
-    
-    <table border="1" width="100%" style="border-collapse: collapse; background: white;">
-      <thead>
-        <tr>
-          <th>School Name</th>
-          <th>Code</th>
-          <th>Subdomain</th>
-          <th>Status</th>
-          <th>Created</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="schoolsTableBody">
-        <tr><td colspan="6">Loading...</td></tr>
-      </tbody>
-    </table>
-  </div>
+.hero {  
+  text-align: center;  
+  padding: 36px 16px;  
+  background: var(--primary);  
+  color: white;  
+  border-radius: 14px;  
+  margin-bottom: 24px;  
+}  
 
-  <!-- PAGE 4: Access Denied Page -->
-  <div id="deniedPage" class="hidden">
-    <h2>Access Denied</h2>
-    <p>This account is not authorized to access the owner dashboard.</p>
-    <button type="button" onclick="showHome()">Return Home</button>
-  </div>
+.hero h1 {  
+  font-size: 34px;  
+  margin: 0 0 12px;  
+}  
 
-  <footer>
-    <p>&copy; <span id="currentYear"></span> EduRecord</p>
-  </footer>
+.hero p {  
+  line-height: 1.6;  
+  margin: 0 auto;  
+  max-width: 600px;  
+}  
 
-  <!-- 2. YOUR ORIGINAL JAVASCRIPT CODE -->
+.card {  
+  background: var(--white);  
+  border-radius: 12px;  
+  padding: 23px;  
+  margin-bottom: 22px;  
+  box-shadow: 0 3px 12px rgba(0,0,0,0.045);  
+}  
+
+.card h2 {  
+  margin-top: 0;  
+  font-size: 21px;  
+}  
+
+.portal-grid {  
+  display: grid;  
+  grid-template-columns: repeat(3, 1fr);  
+  gap: 18px;  
+  margin-top: 25px;  
+}  
+
+.portal {  
+  padding: 24px 18px;  
+  text-align: center;  
+  background: white;  
+  border-radius: 12px;  
+  border: 1px solid var(--border);  
+}  
+
+.portal-icon {  
+  font-size: 35px;  
+}  
+
+.portal h3 {  
+  margin-bottom: 8px;  
+}  
+
+.portal p {  
+  font-size: 14px;  
+  color: var(--muted);  
+  line-height: 1.5;  
+}  
+
+.btn {  
+  background: var(--primary);  
+  color: white;  
+  border: none;  
+  padding: 11px 16px;  
+  border-radius: 7px;  
+  font-weight: bold;  
+  margin-top: 8px;  
+}  
+
+.btn:hover {  
+  background: var(--primary-dark);  
+}  
+
+.btn:disabled {  
+  opacity: 0.6;  
+  cursor: wait;  
+}  
+
+.btn-secondary {  
+  background: #e8eef9;  
+  color: var(--primary);  
+}  
+
+.btn-secondary:hover {  
+  background: #dbe6fa;  
+}  
+
+.btn-danger {  
+  background: #fee2e2;  
+  color: var(--red);  
+}  
+
+.btn-danger:hover {  
+  background: #fecaca;  
+}  
+
+.btn-small {  
+  padding: 8px 10px;  
+  font-size: 12px;  
+  margin: 2px;  
+}  
+
+input {  
+  width: 100%;  
+  padding: 12px;  
+  border: 1px solid #cbd5e1;  
+  border-radius: 7px;  
+  margin: 7px 0 15px;  
+  background: white;  
+  color: var(--text);  
+}  
+
+input:focus {  
+  outline: 2px solid #bfdbfe;  
+  border-color: var(--primary);  
+}  
+
+label {  
+  font-weight: bold;  
+  font-size: 14px;  
+}  
+
+.login-box {  
+  max-width: 430px;  
+  margin: 35px auto;  
+}  
+
+.stats {  
+  display: grid;  
+  grid-template-columns: repeat(3, 1fr);  
+  gap: 15px;  
+  margin-bottom: 23px;  
+}  
+
+.stat {  
+  padding: 21px;  
+  border-radius: 10px;  
+  background: white;  
+  border: 1px solid var(--border);  
+}  
+
+.stat span {  
+  color: var(--muted);  
+  font-size: 14px;  
+}  
+
+.stat strong {  
+  display: block;  
+  font-size: 30px;  
+  margin-top: 10px;  
+}  
+
+.section-title {  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+  gap: 12px;  
+  flex-wrap: wrap;  
+}  
+
+.form-grid {  
+  display: grid;  
+  grid-template-columns: 1fr 1fr;  
+  gap: 12px;  
+}  
+
+.full-width {  
+  grid-column: 1 / -1;  
+}  
+
+.help {  
+  font-size: 12px;  
+  color: var(--muted);  
+  line-height: 1.5;  
+  margin-top: -8px;  
+  margin-bottom: 15px;  
+}  
+
+.notice {  
+  padding: 12px;  
+  margin-bottom: 16px;  
+  border-radius: 7px;  
+  font-size: 14px;  
+  line-height: 1.5;  
+}  
+
+.notice-info {  
+  background: #eff6ff;  
+  color: #1e40af;  
+}  
+
+.notice-success {  
+  background: #dcfce7;  
+  color: #166534;  
+}  
+
+.notice-error {  
+  background: #fee2e2;  
+  color: #991b1b;  
+}  
+
+.notice-warning {  
+  background: #fef3c7;  
+  color: #92400e;  
+}  
+
+.status {  
+  display: inline-block;  
+  padding: 5px 9px;  
+  border-radius: 20px;  
+  font-size: 12px;  
+  font-weight: bold;  
+}  
+
+.active {  
+  color: #166534;  
+  background: #dcfce7;  
+}  
+
+.inactive {  
+  color: #991b1b;  
+  background: #fee2e2;  
+}  
+
+.table-wrap {  
+  overflow-x: auto;  
+  width: 100%;  
+}  
+
+table {  
+  width: 100%;  
+  border-collapse: collapse;  
+  min-width: 650px;  
+}  
+
+th, td {  
+  text-align: left;  
+  padding: 13px 10px;  
+  border-bottom: 1px solid var(--border);  
+  font-size: 14px;  
+}  
+
+th {  
+  color: var(--muted);  
+  background: #f8fafc;  
+}  
+
+.muted {  
+  color: var(--muted);  
+}  
+
+.small {  
+  font-size: 12px;  
+}  
+
+.footer {  
+  text-align: center;  
+  padding: 25px 12px;  
+  color: var(--muted);  
+  font-size: 13px;  
+}  
+
+@media (max-width: 700px) {  
+  .portal-grid {  
+    grid-template-columns: 1fr;  
+  }  
+
+  .stats {  
+    grid-template-columns: 1fr;  
+  }  
+
+  .form-grid {  
+    grid-template-columns: 1fr;  
+  }  
+
+  .full-width {  
+    grid-column: auto;  
+  }  
+
+  .hero h1 {  
+    font-size: 27px;  
+  }  
+
+  .card {  
+    padding: 17px;  
+  }  
+}
+
+  </style>  
+</head>  <body>    <header class="topbar">  
+    <div class="brand">  
+      EduRecord  
+      <small>School Results Management System</small>  
+    </div>  <div id="topbarActions" class="hidden">  
+  <span id="userLabel" style="margin-right:12px;"></span>  
+  <button class="btn btn-secondary" onclick="logout()">  
+    Logout  
+  </button>  
+</div>
+
+  </header>    <!-- HOMEPAGE -->    <main id="homePage" class="container">  <section class="hero">  
+  <h1>Welcome to EduRecord</h1>  
+  <p>  
+    A smarter way to manage school records, assessments  
+    and academic results.  
+  </p>  
+</section>  
+
+<div id="connectionMessage"  
+     class="notice notice-info">  
+  Connecting to EduRecord...  
+</div>  
+
+<div class="portal-grid">  
+
+  <div class="portal">  
+    <div class="portal-icon">🛡️</div>  
+    <h3>Administrator Portal</h3>  
+    <p>Manage schools and school records.</p>  
+    <button class="btn" onclick="showLogin()">  
+      Administrator Login  
+    </button>  
+  </div>  
+
+  <div class="portal">  
+    <div class="portal-icon">👩‍🏫</div>  
+    <h3>Teacher Portal</h3>  
+    <p>Enter assessments and manage assigned classes.</p>  
+    <button class="btn btn-secondary"  
+            onclick="showComingSoon()">  
+      Teacher Login  
+    </button>  
+  </div>  
+
+  <div class="portal">  
+    <div class="portal-icon">🎓</div>  
+    <h3>Student Portal</h3>  
+    <p>View published academic results.</p>  
+    <button class="btn btn-secondary"  
+            onclick="showComingSoon()">  
+      Student Portal  
+    </button>  
+  </div>  
+
+</div>
+
+  </main>    <!-- LOGIN -->    <section id="loginPage" class="container hidden">  <div class="card login-box">  
+  <h2>Administrator Login</h2>  
+
+  <p class="muted">  
+    Sign in with your registered administrator email and password.  
+  </p>  
+
+  <div id="loginMessage" class="hidden notice"></div>  
+
+  <form id="loginForm">  
+    <label for="loginEmail">Email Address</label>  
+    <input  
+      id="loginEmail"  
+      type="email"  
+      autocomplete="username"  
+      placeholder="Enter your email"  
+      required  
+    >  
+
+    <label for="loginPassword">Password</label>  
+    <input  
+      id="loginPassword"  
+      type="password"  
+      autocomplete="current-password"  
+      placeholder="Enter your password"  
+      required  
+    >  
+
+    <button id="loginButton"  
+            class="btn"  
+            type="submit"  
+            style="width:100%;">  
+      Login  
+    </button>  
+  </form>  
+
+  <button class="btn btn-secondary"  
+          onclick="showHome()">  
+    Back to Homepage  
+  </button>  
+</div>
+
+  </section>    <!-- ACCESS DENIED -->    <section id="deniedPage" class="container hidden">  
+    <div class="card">  
+      <h2>Access Restricted</h2>  <div class="notice notice-error">  
+    This account does not have permission to access the  
+    Owner Dashboard. Only the EduRecord platform owner can  
+    manage registered schools here.  
+  </div>  
+
+  <button class="btn" onclick="logout()">  
+    Sign Out  
+  </button>  
+</div>
+
+  </section>    <!-- OWNER DASHBOARD -->    <section id="dashboardPage" class="container hidden">  <div class="section-title">  
+  <div>  
+    <h1 style="margin-bottom:5px;">Owner Dashboard</h1>  
+    <p class="muted" style="margin-top:0;">  
+      Manage schools registered on EduRecord.  
+    </p>  
+  </div>  
+
+  <button class="btn btn-secondary"  
+          onclick="loadSchools()">  
+    Refresh  
+  </button>  
+</div>  
+
+<div id="dashboardMessage" class="hidden notice"></div>  
+
+<div class="stats">  
+
+  <div class="stat">  
+    <span>Total Schools</span>  
+    <strong id="totalSchools">0</strong>  
+  </div>  
+
+  <div class="stat">  
+    <span>Active Schools</span>  
+    <strong id="activeSchools">0</strong>  
+  </div>  
+
+  <div class="stat">  
+    <span>Inactive Schools</span>  
+    <strong id="inactiveSchools">0</strong>  
+  </div>  
+
+</div>  
+
+<!-- REGISTER SCHOOL -->  
+
+<div class="card">  
+
+  <h2>🏫 Register a School</h2>  
+
+  <p class="muted">  
+    Enter the basic information for the new school.  
+  </p>  
+
+  <form id="schoolForm">  
+
+    <div class="form-grid">  
+
+      <div class="full-width">  
+        <label for="schoolName">School Name</label>  
+        <input  
+          id="schoolName"  
+          type="text"  
+          placeholder="e.g. Al-Huda International School"  
+          maxlength="150"  
+          required  
+        >  
+      </div>  
+
+      <div>  
+        <label for="schoolCode">School Code</label>  
+        <input  
+          id="schoolCode"  
+          type="text"  
+          placeholder="e.g. ALHUDA001"  
+          maxlength="50"  
+          pattern="[A-Za-z0-9_-]+"  
+          title="Use letters, numbers, hyphens or underscores."  
+          required  
+        >  
+        <p class="help">  
+          Use a unique code for each school.  
+        </p>  
+      </div>  
+
+      <div>  
+        <label for="schoolSubdomain">Subdomain Name</label>  
+        <input  
+          id="schoolSubdomain"  
+          type="text"  
+          placeholder="e.g. alhuda"  
+          maxlength="50"  
+          pattern="[a-z0-9]+(-[a-z0-9]+)*"  
+          title="Use lowercase letters, numbers and single hyphens."  
+          required  
+        >  
+        <p class="help">  
+          Use lowercase letters, numbers and hyphens.  
+        </p>  
+      </div>  
+
+    </div>  
+
+    <div id="subdomainPreview"  
+         class="notice notice-info">  
+      Enter a subdomain name to see its preview.  
+    </div>  
+
+    <button id="registerButton"  
+            class="btn"  
+            type="submit">  
+      Register School  
+    </button>  
+
+  </form>  
+
+</div>  
+
+<!-- SCHOOL DIRECTORY -->  
+
+<div class="card">  
+
+  <div class="section-title">  
+    <div>  
+      <h2>📋 Registered Schools</h2>  
+      <p class="muted">  
+        View and manage your registered schools.  
+      </p>  
+    </div>  
+  </div>  
+
+  <label for="schoolSearch">Search Schools</label>  
+  <input  
+    id="schoolSearch"  
+    type="search"  
+    placeholder="Search by school name or code..."  
+  >  
+
+  <div id="schoolListMessage"  
+       class="notice notice-info">  
+    Loading registered schools...  
+  </div>  
+
+  <div class="table-wrap">  
+    <table>  
+      <thead>  
+        <tr>  
+          <th>School Name</th>  
+          <th>School Code</th>  
+          <th>Subdomain</th>  
+          <th>Status</th>  
+          <th>Registered</th>  
+          <th>Action</th>  
+        </tr>  
+      </thead>  
+
+      <tbody id="schoolsTableBody"></tbody>  
+    </table>  
+  </div>  
+
+</div>  
+
+<div class="notice notice-warning">  
+  <strong>Important:</strong>  
+  Registering a school here creates its database record.  
+  It does not yet create the school's administrator account,  
+  provision a real subdomain, or configure custom branding.  
+  Those features will be added separately.  
+</div>
+
+  </section>    <footer class="footer">  
+    EduRecord &copy; <span id="currentYear"></span>.  
+    School Results Management System.  
+  </footer>  <script>  
+  // --------------------------------------------------  
+  // SUPABASE CONFIGURATION  
+  // --------------------------------------------------  
   <script>
-  "use strict";
+"use strict";
 
-  const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
+const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
 
-  let supabaseClient = null;
-  let currentSchools = [];
-  let currentUser = null;
-  let loadingSchools = false;
+let supabaseClient = null;
+let currentSchools = [];
+let currentUser = null;
+let loadingSchools = false;
 
-  const $ = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
-  function setNotice(element, message, type = "info") {
-    element.textContent = message;
-    element.className = "notice notice-" + type;
-    element.classList.remove("hidden");
-  }
+function setNotice(element, message, type = "info") {
+  element.textContent = message;
+  element.className = "notice notice-" + type;
+  element.classList.remove("hidden");
+}
 
-  function hideNotice(element) {
-    element.classList.add("hidden");
-  }
+function hideNotice(element) {
+  element.classList.add("hidden");
+}
 
-  function showPage(pageId) {
-    ["homePage", "loginPage", "dashboardPage", "deniedPage"]
-      .forEach(id => {
-        $(id).classList.toggle("hidden", id !== pageId);
-      });
-  }
+function showPage(pageId) {
+  ["homePage", "loginPage", "dashboardPage", "deniedPage"]
+    .forEach(id => {
+      $(id).classList.toggle("hidden", id !== pageId);
+    });
+}
 
-  function showHome() {
-    showPage("homePage");
-  }
+function showHome() {
+  showPage("homePage");
+}
 
-  function showLogin() {
-    $("loginForm").reset();
-    hideNotice($("loginMessage"));
-    showPage("loginPage");
-  }
+function showLogin() {
+  $("loginForm").reset();
+  hideNotice($("loginMessage"));
+  showPage("loginPage");
+}
 
-  function showComingSoon() {
-    alert("This portal will be available in a future update.");
-  }
+function showComingSoon() {
+  alert("This portal will be available in a future update.");
+}
 
-  function normalizeSchoolCode(value) {
-    return value.trim().toUpperCase();
-  }
+function normalizeSchoolCode(value) {
+  return value.trim().toUpperCase();
+}
 
-  function normalizeSubdomain(value) {
-    return value.trim().toLowerCase();
-  }
+function normalizeSubdomain(value) {
+  return value.trim().toLowerCase();
+}
 
-  function updateSubdomainPreview() {
-    const slug = normalizeSubdomain($("schoolSubdomain").value);
-    const preview = $("subdomainPreview");
+function updateSubdomainPreview() {
+  const slug = normalizeSubdomain($("schoolSubdomain").value);
+  const preview = $("subdomainPreview");
 
-    preview.textContent = slug
-      ? "Proposed school address: " + slug +
-        ".yourdomain.com (preview only; domain configuration is separate)."
-      : "Enter a subdomain name to see its preview.";
-  }
+  preview.textContent = slug
+    ? "Proposed school address: " + slug +
+      ".yourdomain.com (preview only; domain configuration is separate)."
+    : "Enter a subdomain name to see its preview.";
+}
 
-  function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>"']/g, character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[character]);
-  }
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
 
-  function showUser(profile, user) {
-    $("topbarActions").classList.remove("hidden");
-    $("userLabel").textContent =
-      profile.full_name || user.email || "EduRecord Owner";
-  }
+function showUser(profile, user) {
+  $("topbarActions").classList.remove("hidden");
+  $("userLabel").textContent =
+    profile.full_name || user.email || "EduRecord Owner";
+}
 
-  function clearUser() {
-    $("topbarActions").classList.add("hidden");
-    $("userLabel").textContent = "";
-  }
+function clearUser() {
+  $("topbarActions").classList.add("hidden");
+  $("userLabel").textContent = "";
+}
 
-  async function initializeEduRecord() {
-    const message = $("connectionMessage");
+async function initializeEduRecord() {
+  const message = $("connectionMessage");
 
-    try {
-      if (!window.supabase ||
-          typeof window.supabase.createClient !== "function") {
-        throw new Error(
-          "Supabase did not load. Check your internet connection and refresh."
-        );
-      }
-
-      supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+  try {
+    if (!window.supabase ||
+        typeof window.supabase.createClient !== "function") {
+      throw new Error(
+        "Supabase did not load. Check your internet connection and refresh."
       );
+    }
 
-      const { data, error } =
-        await supabaseClient.auth.getSession();
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
-      if (error) throw error;
+    const { data, error } =
+      await supabaseClient.auth.getSession();
 
-      if (data.session && data.session.user) {
-        await verifyCurrentUser(data.session.user);
-      } else {
-        showHome();
-        setNotice(
-          message,
-          "EduRecord connected. Please sign in to continue.",
-          "success"
-        );
-      }
+    if (error) throw error;
 
-      supabaseClient.auth.onAuthStateChange((event) => {
-        if (event === "SIGNED_OUT") {
-          currentUser = null;
-          clearUser();
-          showHome();
-        }
-      });
-
-    } catch (error) {
-      console.error("EduRecord connection error:", error);
-
+    if (data.session && data.session.user) {
+      await verifyCurrentUser(data.session.user);
+    } else {
+      showHome();
       setNotice(
         message,
-        "Connection error: " +
-          (error.message || "Please refresh and try again."),
-        "error"
-      );
-    }
-  }
-
-  async function verifyCurrentUser(user) {
-    currentUser = user;
-
-    try {
-      const { data: profile, error } = await supabaseClient
-        .from("profiles")
-        .select("role, full_name, is_active")
-        .eq("id", user.id)
-        .single();
-
-      if (error) throw error;
-
-      if (!profile ||
-          profile.role !== "owner" ||
-          profile.is_active === false) {
-        clearUser();
-        setNotice(
-          $("connectionMessage"),
-          "This account is not authorised to access the owner dashboard.",
-          "error"
-        );
-        showPage("deniedPage");
-        return;
-      }
-
-      showUser(profile, user);
-      showPage("dashboardPage");
-
-      setNotice(
-        $("connectionMessage"),
-        "Administrator verified. EduRecord is connected.",
+        "EduRecord connected. Please sign in to continue.",
         "success"
       );
-
-      await loadSchools();
-
-    } catch (error) {
-      console.error("Profile verification error:", error);
-
-      currentUser = null;
-      clearUser();
-      showPage("loginPage");
-
-      setNotice(
-        $("loginMessage"),
-        "Unable to verify your account. Check your owner profile and try again.",
-        "error"
-      );
     }
+
+    supabaseClient.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        currentUser = null;
+        clearUser();
+        showHome();
+      }
+    });
+
+  } catch (error) {
+    console.error("EduRecord connection error:", error);
+
+    setNotice(
+      message,
+      "Connection error: " +
+        (error.message || "Please refresh and try again."),
+      "error"
+    );
   }
+}
 
-  $("loginForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
+async function verifyCurrentUser(user) {
+  currentUser = user;
 
-    if (!supabaseClient) {
+  try {
+    const { data: profile, error } = await supabaseClient
+      .from("profiles")
+      .select("role, full_name, is_active")
+      .eq("id", user.id)
+      .single();
+
+    if (error) throw error;
+
+    if (!profile ||
+        profile.role !== "owner" ||
+        profile.is_active === false) {
+      clearUser();
       setNotice(
-        $("loginMessage"),
-        "EduRecord is still connecting. Please wait and try again.",
+        $("connectionMessage"),
+        "This account is not authorised to access the owner dashboard.",
         "error"
       );
+      showPage("deniedPage");
       return;
     }
 
-    const button = $("loginButton");
-    button.disabled = true;
-    button.textContent = "Signing in...";
-    hideNotice($("loginMessage"));
+    showUser(profile, user);
+    showPage("dashboardPage");
 
-    try {
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: $("loginEmail").value.trim(),
-          password: $("loginPassword").value
-        });
+    setNotice(
+      $("connectionMessage"),
+      "Administrator verified. EduRecord is connected.",
+      "success"
+    );
 
-      if (error) throw error;
+    await loadSchools();
 
-      await verifyCurrentUser(data.user);
+  } catch (error) {
+    console.error("Profile verification error:", error);
 
-    } catch (error) {
-      console.error("Login error:", error);
+    currentUser = null;
+    clearUser();
+    showPage("loginPage");
 
-      setNotice(
-        $("loginMessage"),
-        error.message || "Login failed. Please try again.",
-        "error"
-      );
+    setNotice(
+      $("loginMessage"),
+      "Unable to verify your account. Check your owner profile and try again.",
+      "error"
+    );
+  }
+}
 
-    } finally {
-      button.disabled = false;
-      button.textContent = "Login";
-    }
-  });
+$("loginForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
 
-  async function logout() {
-    if (!supabaseClient) return;
-
-    try {
-      const { error } = await supabaseClient.auth.signOut();
-
-      if (error) throw error;
-
-      currentUser = null;
-      clearUser();
-      $("loginForm").reset();
-      $("schoolForm").reset();
-      showHome();
-
-    } catch (error) {
-      alert("Could not sign out: " + error.message);
-    }
+  if (!supabaseClient) {
+    setNotice(
+      $("loginMessage"),
+      "EduRecord is still connecting. Please wait and try again.",
+      "error"
+    );
+    return;
   }
 
-  async function loadSchools() {
-    if (!currentUser || loadingSchools) return;
+  const button = $("loginButton");
+  button.disabled = true;
+  button.textContent = "Signing in...";
+  hideNotice($("loginMessage"));
 
-    loadingSchools = true;
+  try {
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: $("loginEmail").value.trim(),
+        password: $("loginPassword").value
+      });
+
+    if (error) throw error;
+
+    await verifyCurrentUser(data.user);
+
+  } catch (error) {
+    console.error("Login error:", error);
+
+    setNotice(
+      $("loginMessage"),
+      error.message || "Login failed. Please try again.",
+      "error"
+    );
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Login";
+  }
+});
+
+async function logout() {
+  if (!supabaseClient) return;
+
+  try {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) throw error;
+
+    currentUser = null;
+    clearUser();
+    $("loginForm").reset();
+    $("schoolForm").reset();
+    showHome();
+
+  } catch (error) {
+    alert("Could not sign out: " + error.message);
+  }
+}
+
+async function loadSchools() {
+  if (!currentUser || loadingSchools) return;
+
+  loadingSchools = true;
+
+  setNotice(
+    $("schoolListMessage"),
+    "Loading registered schools...",
+    "info"
+  );
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("schools")
+      .select(
+        "id, school_name, school_code, subdomain, is_active, created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    currentSchools = data || [];
+
+    $("totalSchools").textContent = currentSchools.length;
+    $("activeSchools").textContent =
+      currentSchools.filter(school => school.is_active).length;
+    $("inactiveSchools").textContent =
+      currentSchools.filter(school => !school.is_active).length;
+
+    renderSchools();
+
+    $("schoolListMessage").classList.add("hidden");
+    $("dashboardMessage").classList.add("hidden");
+
+  } catch (error) {
+    console.error("Loading schools error:", error);
 
     setNotice(
       $("schoolListMessage"),
-      "Loading registered schools...",
-      "info"
+      "Could not load schools: " + error.message,
+      "error"
     );
 
-    try {
-      const { data, error } = await supabaseClient
-        .from("schools")
-        .select(
-          "id, school_name, school_code, subdomain, is_active, created_at"
-        )
-        .order("created_at", { ascending: false });
+  } finally {
+    loadingSchools = false;
+  }
+}
 
-      if (error) throw error;
+function renderSchools() {
+  const query = $("schoolSearch").value.trim().toLowerCase();
 
-      currentSchools = data || [];
+  const schools = currentSchools.filter(school =>
+    [
+      school.school_name,
+      school.school_code,
+      school.subdomain
+    ].some(value =>
+      String(value || "").toLowerCase().includes(query)
+    )
+  );
 
-      $("totalSchools").textContent = currentSchools.length;
-      $("activeSchools").textContent =
-        currentSchools.filter(school => school.is_active).length;
-      $("inactiveSchools").textContent =
-        currentSchools.filter(school => !school.is_active).length;
-
-      renderSchools();
-
-      $("schoolListMessage").classList.add("hidden");
-      $("dashboardMessage").classList.add("hidden");
-
-    } catch (error) {
-      console.error("Loading schools error:", error);
-
-      setNotice(
-        $("schoolListMessage"),
-        "Could not load schools: " + error.message,
-        "error"
-      );
-
-    } finally {
-      loadingSchools = false;
-    }
+  if (!schools.length) {
+    $("schoolsTableBody").innerHTML =
+      '<tr><td colspan="6" class="muted">' +
+      (currentSchools.length
+        ? "No matching schools found."
+        : "No schools registered yet.") +
+      "</td></tr>";
+    return;
   }
 
-  function renderSchools() {
-    const query = $("schoolSearch").value.trim().toLowerCase();
+  $("schoolsTableBody").innerHTML = schools.map(school => {
+    const status = school.is_active
+      ? '<span class="status active">Active</span>'
+      : '<span class="status inactive">Inactive</span>';
 
-    const schools = currentSchools.filter(school =>
-      [
-        school.school_name,
-        school.school_code,
-        school.subdomain
-      ].some(value =>
-        String(value || "").toLowerCase().includes(query)
-      )
-    );
+    const action = school.is_active ? "Deactivate" : "Activate";
+    const actionClass = school.is_active ? "btn-danger" : "";
 
-    if (!schools.length) {
-      $("schoolsTableBody").innerHTML =
-        '<tr><td colspan="6" class="muted">' +
-        (currentSchools.length
-          ? "No matching schools found."
-          : "No schools registered yet.") +
-        "</td></tr>";
-      return;
-    }
+    const date = school.created_at
+      ? new Date(school.created_at).toLocaleDateString()
+      : "—";
 
-    $("schoolsTableBody").innerHTML = schools.map(school => {
-      const status = school.is_active
-        ? '<span class="status active">Active</span>'
-        : '<span class="status inactive">Inactive</span>';
+    return `
+      <tr>
+        <td>${escapeHtml(school.school_name)}</td>
+        <td>${escapeHtml(school.school_code)}</td>
+        <td>${escapeHtml(school.subdomain)}</td>
+        <td>${status}</td>
+        <td>${escapeHtml(date)}</td>
+        <td>
+          <button
+            class="btn btn-small ${actionClass}"
+            type="button"
+            data-id="${escapeHtml(school.id)}"
+            data-active="${school.is_active}">
+            ${action}
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 
-      const action = school.is_active ? "Deactivate" : "Activate";
-      const actionClass = school.is_active ? "btn-danger" : "";
-
-      const date = school.created_at
-        ? new Date(school.created_at).toLocaleDateString()
-        : "—";
-
-      return `
-        <tr>
-          <td>${escapeHtml(school.school_name)}</td>
-          <td>${escapeHtml(school.school_code)}</td>
-          <td>${escapeHtml(school.subdomain)}</td>
-          <td>${status}</td>
-          <td>${escapeHtml(date)}</td>
-          <td>
-            <button
-              class="btn btn-small ${actionClass}"
-              type="button"
-              data-id="${escapeHtml(school.id)}"
-              data-active="${school.is_active}">
-              ${action}
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join("");
-
-    $("schoolsTableBody")
-      .querySelectorAll("button[data-id]")
-      .forEach(button => {
-        button.addEventListener("click", () => {
-          changeSchoolStatus(
-            button.dataset.id,
-            button.dataset.active !== "true"
-          );
-        });
+  $("schoolsTableBody")
+    .querySelectorAll("button[data-id]")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        changeSchoolStatus(
+          button.dataset.id,
+          button.dataset.active !== "true"
+        );
       });
+    });
+}
+
+$("schoolForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  if (!supabaseClient || !currentUser) {
+    setNotice(
+      $("dashboardMessage"),
+      "Please sign in again before registering a school.",
+      "error"
+    );
+    return;
   }
 
-  $("schoolForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
+  const button = $("registerButton");
+  button.disabled = true;
+  button.textContent = "Registering...";
 
-    if (!supabaseClient || !currentUser) {
-      setNotice(
-        $("dashboardMessage"),
-        "Please sign in again before registering a school.",
-        "error"
-      );
-      return;
+  try {
+    const schoolName = $("schoolName").value.trim();
+    const schoolCode =
+      normalizeSchoolCode($("schoolCode").value);
+    const subdomain =
+      normalizeSubdomain($("schoolSubdomain").value);
+
+    if (!schoolName || !schoolCode || !subdomain) {
+      throw new Error("Please complete all school fields.");
     }
 
-    const button = $("registerButton");
-    button.disabled = true;
-    button.textContent = "Registering...";
+    const { error } = await supabaseClient
+      .from("schools")
+      .insert([{
+        school_name: schoolName,
+        school_code: schoolCode,
+        subdomain: subdomain,
+        is_active: true
+      }]);
 
-    try {
-      const schoolName = $("schoolName").value.trim();
-      const schoolCode =
-        normalizeSchoolCode($("schoolCode").value);
-      const subdomain =
-        normalizeSubdomain($("schoolSubdomain").value);
+    if (error) throw error;
 
-      if (!schoolName || !schoolCode || !subdomain) {
-        throw new Error("Please complete all school fields.");
-      }
+    $("schoolForm").reset();
+    updateSubdomainPreview();
 
-      const { error } = await supabaseClient
-        .from("schools")
-        .insert([{
-          school_name: schoolName,
-          school_code: schoolCode,
-          subdomain: subdomain,
-          is_active: true
-        }]);
+    setNotice(
+      $("dashboardMessage"),
+      "School registered successfully.",
+      "success"
+    );
 
-      if (error) throw error;
+    await loadSchools();
 
-      $("schoolForm").reset();
-      updateSubdomainPreview();
+  } catch (error) {
+    console.error("School registration error:", error);
 
-      setNotice(
-        $("dashboardMessage"),
-        "School registered successfully.",
-        "success"
-      );
+    const message = error.code === "23505"
+      ? "That school code or subdomain is already in use."
+      : error.message || "Could not register this school.";
 
-      await loadSchools();
+    setNotice($("dashboardMessage"), message, "error");
 
-    } catch (error) {
-      console.error("School registration error:", error);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Register School";
+  }
+});
 
-      const message = error.code === "23505"
-        ? "That school code or subdomain is already in use."
-        : error.message || "Could not register this school.";
+async function changeSchoolStatus(schoolId, active) {
+  const action = active ? "activate" : "deactivate";
 
-      setNotice($("dashboardMessage"), message, "error");
-
-    } finally {
-      button.disabled = false;
-      button.textContent = "Register School";
-    }
-  });
-
-  async function changeSchoolStatus(schoolId, active) {
-    const action = active ? "activate" : "deactivate";
-
-    if (!confirm("Are you sure you want to " + action + " this school?")) {
-      return;
-    }
-
-    try {
-      const { error } = await supabaseClient
-        .from("schools")
-        .update({ is_active: active })
-        .eq("id", schoolId);
-
-      if (error) throw error;
-
-      setNotice(
-        $("dashboardMessage"),
-        "School " + (active ? "activated" : "deactivated") + " successfully.",
-        "success"
-      );
-
-      await loadSchools();
-
-    } catch (error) {
-      console.error("School status update error:", error);
-
-      setNotice(
-        $("dashboardMessage"),
-        "Could not update school status: " + error.message,
-        "error"
-      );
-    }
+  if (!confirm("Are you sure you want to " + action + " this school?")) {
+    return;
   }
 
-  $("schoolSearch").addEventListener("input", renderSchools);
-  $("schoolSubdomain").addEventListener("input", updateSubdomainPreview);
+  try {
+    const { error } = await supabaseClient
+      .from("schools")
+      .update({ is_active: active })
+      .eq("id", schoolId);
 
-  $("currentYear").textContent = new Date().getFullYear();
+    if (error) throw error;
 
-  initializeEduRecord();
-  </script>
+    setNotice(
+      $("dashboardMessage"),
+      "School " + (active ? "activated" : "deactivated") + " successfully.",
+      "success"
+    );
+
+    await loadSchools();
+
+  } catch (error) {
+    console.error("School status update error:", error);
+
+    setNotice(
+      $("dashboardMessage"),
+      "Could not update school status: " + error.message,
+      "error"
+    );
+  }
+}
+
+$("schoolSearch").addEventListener("input", renderSchools);
+$("schoolSubdomain").addEventListener("input", updateSubdomainPreview);
+
+$("currentYear").textContent = new Date().getFullYear();
+
+initializeEduRecord();
+</script>
 </body>
 </html>
