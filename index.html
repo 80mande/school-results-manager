@@ -705,11 +705,19 @@
   }
 
   function showPage(pageId) {
-    ["homePage", "loginPage", "dashboardPage", "deniedPage"]
-      .forEach(id => {
-        $(id).classList.toggle("hidden", id !== pageId);
-      });
-  }
+[
+"homePage",
+"loginPage",
+"dashboardPage",
+"schoolAdminPage",
+"deniedPage"
+].forEach(id => {
+const page = $(id);
+if (page) {
+page.classList.toggle("hidden", id !== pageId);
+}
+});
+}
 
   function showHome() {
     showPage("homePage");
