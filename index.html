@@ -643,7 +643,39 @@
       Registering a school here creates its database record. It does not yet create the school's administrator account, provision a real subdomain, or configure custom branding. Those features will be added separately.  
     </div>
   </section>  
+<!-- SCHOOL ADMINISTRATOR DASHBOARD -->
+<section id="schoolAdminPage" class="container hidden">
+  <div class="section-title">
+    <div>
+      <h1 style="margin-bottom:5px;">School Administrator Dashboard</h1>
+      <p class="muted" style="margin-top:0;">
+        Welcome to EduRecord.
+      </p>
+    </div>
 
+    <button class="btn btn-secondary" onclick="logout()">
+      Sign Out
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>Welcome, <span id="adminWelcomeName">Administrator</span>!</h2>
+
+    <p class="muted">
+      You are signed in to manage your school on EduRecord.
+    </p>
+
+    <div class="notice notice-info">
+      <strong>Your School:</strong>
+      <span id="adminSchoolName">Loading school information...</span>
+    </div>
+
+    <p>
+      Student registration, classes, subjects, and results management
+      will be available here in future updates.
+    </p>
+  </div>
+</section>
   <footer class="footer">  
     EduRecord &copy; <span id="currentYear"></span>. School Results Management System.  
   </footer>  
