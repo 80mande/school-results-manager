@@ -538,8 +538,8 @@ th {
 <!-- MAIN SCRIPT -->
 <script>
 "use strict";
-const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co"; // Replace with your valid Supabase URL
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi"; // Replace with your valid key
+const SUPABASE_URL = "https://dukqweogkftgvbrhzjkk.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7yIKAC07tFFzijxPTtzShg_HB96TFQi";
 let supabaseClient = null;
 let currentSchools = [];
 let currentUser = null;
@@ -714,4 +714,258 @@ async function verifyCurrentUser(user) {
 $("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
     if (!supabaseClient) {
-        setNotice($("loginMessage"), 
+        setNotice($("loginMessage"), "EduRecord is still connecting. Please wait and try again.", "error");
+        return;
+    }
+
+    const button = $("loginButton");
+    button.disabled = true;
+    button.textContent = "Signing in...";
+    hideNotice($("loginMessage"));
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: $("loginEmail").value.trim(),
+            password: $("loginPassword").value
+        });
+        if (error) throw error;
+        await verifyCurrentUser(data.user);
+    } catch (error) {
+        console.error("Login error:", error);
+        setNotice($("loginMessage"), error.message || "Login failed. Please try again.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Login";
+    }
+});
+
+async function logout() {
+    if (!supabaseClient) return;
+    try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+        currentUser = null;
+        clearUser();
+        $("loginForm").reset();
+        $("schoolForm").reset();
+        showHome();
+    } catch (error) {
+        alert("Could not sign out: " + error.message);
+    }
+}
+
+async function loadSchools() {
+    if (!currentUser || loadingSchools) return;
+    loadingSchools = true;
+    setNotice($("schoolListMessage"), "Loading registered schools...", "info");
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("schools")
+            .select("id, school_name, school_code, subdomain, is_active, created_at")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        currentSchools = data || [];
+
+        const adminSchool = $("adminSchool");
+        if (adminSchool) {
+            adminSchool.innerHTML = '<option value="">Select a school</option>' +
+                currentSchools
+                    .filter(school => school.is_active)
+                    .map(school => `<option value="${escapeHtml(school.id)}">${escapeHtml(school.school_name)} (${escapeHtml(school.school_code)})</option>`)
+                    .join("");
+        }
+
+        $("totalSchools").textContent = currentSchools.length;
+        $("activeSchools").textContent = currentSchools.filter(school => school.is_active).length;
+        $("inactiveSchools").textContent = currentSchools.filter(school => !school.is_active).length;
+
+        renderSchools();
+        $("schoolListMessage").classList.add("hidden");
+        $("dashboardMessage").classList.add("hidden");
+    } catch (error) {
+        console.error("Loading schools error:", error);
+        setNotice($("schoolListMessage"), "Could not load schools: " + error.message, "error");
+    } finally {
+        loadingSchools = false;
+    }
+}
+
+function renderSchools() {
+    const query = $("schoolSearch").value.trim().toLowerCase();
+    const schools = currentSchools.filter(school =>
+        [school.school_name, school.school_code, school.subdomain].some(value =>
+            String(value || "").toLowerCase().includes(query)
+        )
+    );
+
+    if (!schools.length) {
+        $("schoolsTableBody").innerHTML = '<tr><td colspan="6" class="muted">' +
+            (currentSchools.length ? "No matching schools found." : "No schools registered yet.") +
+            "</td></tr>";
+        return;
+    }
+
+    $("schoolsTableBody").innerHTML = schools.map(school => {
+        const status = school.is_active
+            ? '<span class="status active">Active</span>'
+            : '<span class="status inactive">Inactive</span>';
+        const action = school.is_active ? "Deactivate" : "Activate";
+        const actionClass = school.is_active ? "btn-danger" : "";
+        const date = school.created_at
+            ? new Date(school.created_at).toLocaleDateString()
+            : "-";
+        return `
+            <tr>
+              <td>${escapeHtml(school.school_name)}</td>
+              <td>${escapeHtml(school.school_code)}</td>
+              <td>${escapeHtml(school.subdomain)}</td>
+              <td>${status}</td>
+              <td>${escapeHtml(date)}</td>
+              <td>
+                <button class="btn btn-small ${actionClass}" type="button" data-id="${escapeHtml(school.id)}" data-active="${school.is_active}">
+                  ${action}
+                </button>
+              </td>
+            </tr>
+        `;
+    }).join("");
+
+    $("schoolsTableBody").querySelectorAll("button[data-id]").forEach(button => {
+        button.addEventListener("click", () => {
+            changeSchoolStatus(button.dataset.id, button.dataset.active !== "true");
+        });
+    });
+}
+
+$("schoolForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    if (!supabaseClient || !currentUser) {
+        setNotice($("dashboardMessage"), "Please sign in again before registering a school.", "error");
+        return;
+    }
+
+    const button = $("registerButton");
+    button.disabled = true;
+    button.textContent = "Registering...";
+
+    try {
+        const schoolName = $("schoolName").value.trim();
+        const schoolCode = normalizeSchoolCode($("schoolCode").value);
+        const subdomain = normalizeSubdomain($("schoolSubdomain").value);
+
+        if (!schoolName || !schoolCode || !subdomain) {
+            throw new Error("Please complete all school fields.");
+        }
+
+        const { error } = await supabaseClient
+            .from("schools")
+            .insert([{
+                school_name: schoolName,
+                school_code: schoolCode,
+                subdomain: subdomain,
+                is_active: true
+            }]);
+
+        if (error) throw error;
+
+        $("schoolForm").reset();
+        updateSubdomainPreview();
+        setNotice($("dashboardMessage"), "School registered successfully.", "success");
+        await loadSchools();
+    } catch (error) {
+        console.error("School registration error:", error);
+        const message = error.code === "23505"
+            ? "That school code or subdomain is already in use."
+            : error.message || "Could not register this school.";
+        setNotice($("dashboardMessage"), message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Register School";
+    }
+});
+
+async function changeSchoolStatus(schoolId, active) {
+    const action = active ? "activate" : "deactivate";
+    if (!confirm("Are you sure you want to " + action + " this school?")) {
+        return;
+    }
+    try {
+        const { error } = await supabaseClient
+            .from("schools")
+            .update({ is_active: active })
+            .eq("id", schoolId);
+
+        if (error) throw error;
+
+        setNotice($("dashboardMessage"), "School " + (active ? "activated" : "deactivated") + " successfully.", "success");
+        await loadSchools();
+    } catch (error) {
+        console.error("School status update error:", error);
+        setNotice($("dashboardMessage"), "Could not update school status: " + error.message, "error");
+    }
+}
+
+$("adminForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    if (!supabaseClient || !currentUser) {
+        setNotice($("adminMessage"), "Please sign in again before creating an administrator.", "error");
+        $("adminMessage").classList.remove("hidden");
+        return;
+    }
+
+    const button = $("createAdminButton");
+    button.disabled = true;
+    button.textContent = "Creating Administrator...";
+
+    try {
+        const schoolId = $("adminSchool").value;
+        const fullName = $("adminFullName").value.trim();
+        const username = $("adminUsername").value.trim();
+        const email = $("adminEmail").value.trim();
+
+        if (!schoolId || !fullName || !username || !email) {
+            throw new Error("Please complete all fields and select a school.");
+        }
+
+        const { data, error } = await supabaseClient.functions.invoke("create-school-admin", {
+            body: {
+                school_id: schoolId,
+                full_name: fullName,
+                username: username,
+                email: email
+            }
+        });
+
+        if (error) throw error;
+        if (!data || !data.success) {
+            throw new Error(data?.error || "Could not create the administrator.");
+        }
+
+        setNotice($("adminMessage"), "Administrator created successfully. Invitation delivery still needs to be confirmed.", "success");
+        $("adminForm").reset();
+    } catch (error) {
+        console.error("Create administrator error:", error);
+        setNotice($("adminMessage"), error.message || "Could not create the administrator.", "error");
+    } finally {
+        $("adminMessage").classList.remove("hidden");
+        button.disabled = false;
+        button.textContent = "Create Administrator";
+    }
+});
+
+$("schoolSearch").addEventListener("input", renderSchools);
+$("schoolSubdomain").addEventListener("input", updateSubdomainPreview);
+$("currentYear").textContent = new Date().getFullYear();
+
+window.showLogin = showLogin;
+window.showHome = showHome;
+window.showComingSoon = showComingSoon;
+window.logout = logout;
+window.loadSchools = loadSchools;
+
+initializeEduRecord();
+</script>
+</body>
+</html>
