@@ -101,6 +101,38 @@
   /* Do not reveal unrelated hidden report panels. */
   .hidden { display: none !important; }
 }
+
+/* EduRecord dashboard refinements: preserve the existing blue theme. */
+:root{--primary:#1746a2;--primary-dark:#10377f}
+.topbar{box-shadow:0 3px 14px rgba(15,23,42,.12);position:relative;z-index:2}
+.brand{letter-spacing:.2px}
+.section-title{background:linear-gradient(135deg,#fff,#f8fbff);padding:22px 24px;border:1px solid var(--border);border-radius:15px;box-shadow:0 4px 16px rgba(15,23,42,.04)}
+.section-title h1{color:#123b86;letter-spacing:-.35px}
+.card,.portal,.stat{transition:box-shadow .18s ease,border-color .18s ease}
+.card:hover,.portal:hover{border-color:#c7d7f6;box-shadow:0 7px 22px rgba(23,70,162,.07)}
+.stats{gap:16px}
+.stat{border-top:4px solid var(--primary);padding:20px}
+.stat:nth-child(2){border-top-color:#15803d}
+.stat:nth-child(3){border-top-color:#d97706}
+.stat strong{color:#123b86;font-variant-numeric:tabular-nums}
+#adminTabs{padding:8px;background:#eaf0fb;border:1px solid #dbe5f7;border-radius:12px}
+#adminTabs .tab-btn{border:1px solid transparent}
+#adminTabs .tab-btn.active{box-shadow:0 3px 9px rgba(23,70,162,.2)}
+button:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+input,select{transition:border-color .15s ease,box-shadow .15s ease}
+input:focus,select:focus{box-shadow:0 0 0 3px rgba(147,197,253,.25)}
+table thead th{position:sticky;top:0}
+.table-wrap{border-radius:9px}
+.notice{line-height:1.55}
+@media(max-width:700px){
+ .section-title{padding:17px;margin-bottom:14px}
+ .section-title h1{font-size:24px}
+ #adminTabs{gap:6px}
+ #adminTabs .tab-btn{flex:1 1 auto}
+ .stat{padding:15px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
@@ -195,8 +227,31 @@ function updateSubdomainPreview(){const slug=normalizeSubdomain($("schoolSubdoma
 async function initializeEduRecord(){try{if(!window.supabase||typeof window.supabase.createClient!=="function")throw new Error("Supabase did not load. Check your internet connection and refresh.");supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;if(data.session?.user)await verifyCurrentUser(data.session.user);else{showHome();setNotice($("connectionMessage"),"EduRecord connected. Please sign in to continue.","success")}supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"){currentUser=null;currentProfile=null;currentSchoolId=null;clearUser();showHome()}else if(event==="SIGNED_IN"&&session?.user){setTimeout(()=>verifyCurrentUser(session.user),0)}})}catch(e){console.error(e);setNotice($("connectionMessage"),"Connection error: "+(e.message||"Please refresh and try again."),"error")}}
 async function verifyCurrentUser(user){currentUser=user;try{const {data:profile,error}=await supabaseClient.from("profiles").select("role, full_name, is_active, school_id").eq("id",user.id).single();if(error)throw error;if(!profile||profile.is_active!==true){clearUser();setNotice($("connectionMessage"),"This account is inactive or not authorised to access EduRecord.","error");showPage("deniedPage");return}currentProfile=profile;if(profile.role==="owner"){currentSchoolId=null;showUser(profile,user);showPage("dashboardPage");setNotice($("connectionMessage"),"Owner verified. EduRecord is connected.","success");await loadSchools();return}if(profile.role==="school_admin"&&profile.school_id){const {data:school,error:schoolError}=await supabaseClient.from("schools").select("id,school_name,is_active").eq("id",profile.school_id).single();if(schoolError)throw schoolError;if(!school||school.is_active!==true){clearUser();setNotice($("connectionMessage"),"Your school is inactive or unavailable. Please contact the platform owner.","error");showPage("deniedPage");return}currentSchoolId=profile.school_id;showUser(profile,user);$("adminWelcomeName").textContent=profile.full_name||"Administrator";$("adminSchoolName").textContent=school.school_name;showPage("schoolAdminPage");setNotice($("connectionMessage"),"School administrator verified. EduRecord is connected.","success");await loadSchoolData();return}if(profile.role==="teacher"&&profile.school_id){const {data:school,error:schoolError}=await supabaseClient.from("schools").select("id,school_name,is_active").eq("id",profile.school_id).single();if(schoolError)throw schoolError;if(!school||school.is_active!==true){clearUser();showPage("deniedPage");return}currentSchoolId=profile.school_id;showUser(profile,user);$("teacherWelcomeName").textContent=profile.full_name||"Teacher";$("teacherSchoolName").textContent=school.school_name;showPage("teacherDashboardPage");await loadTeacherDashboard();return}clearUser();showPage("deniedPage")}catch(e){console.error("Profile verification error:",e);currentUser=null;clearUser();showPage("loginPage");setNotice($("loginMessage"),"Unable to verify your account. Check that your profile exists and try again.","error")}}
 
+
+async function studentPortalErrorMessage(err){
+  const context=err&&err.context;
+  if(context){
+    try{
+      let response=context;
+      if(typeof context.clone==="function")response=context.clone();
+      if(typeof response.json==="function"){
+        const payload=await response.json();
+        if(payload&&typeof payload.error==="string"&&payload.error.trim())return payload.error;
+        if(payload&&typeof payload.message==="string"&&payload.message.trim())return payload.message;
+      }
+    }catch(_){}
+    const status=Number(context.status||err.status||0);
+    if(status===401||status===403)return "The school code, admission number or PIN is incorrect, or the results are not available. Please check your details and try again.";
+    if(status===429)return "Too many unsuccessful attempts. Please wait 15 minutes before trying again.";
+    if(status>=500)return "The Student Portal is temporarily unavailable. Please try again later.";
+  }
+  const msg=String(err&&err.message||"");
+  if(/non-2xx|failed to send a request|fetch/i.test(msg))return "We could not verify your details right now. Check your internet connection and try again.";
+  return msg||"We could not check your results. Please check your details and try again.";
+}
+
 // Student Portal: public lookup is performed only by the server-side Edge Function.
-$("studentPortalForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){setNotice($("studentPortalMessage"),"EduRecord is still connecting. Please wait and try again.","error");return}const b=$("studentPortalButton");b.disabled=true;b.textContent="Checking...";hideNotice($("studentPortalMessage"));$("studentPortalOutput").classList.add("hidden");$("studentPortalPrintActions").classList.add("hidden");try{const body={school_code:normalizeSchoolCode($("portalSchoolCode").value),admission_number:$("portalAdmissionNumber").value.trim(),pin:$("portalPin").value.trim()};if($("portalYear").value.trim())body.academic_year=$("portalYear").value.trim();if($("portalTerm").value)body.term=$("portalTerm").value;const {data,error}=await supabaseClient.functions.invoke("student-portal-results",{body});if(error)throw new Error(error.message||"Could not contact the Student Portal service.");if(data?.error)throw new Error(data.error);const results=Array.isArray(data?.results)?data.results:[];let html=`<div class="report-heading"><h2>${escapeHtml(data.school||"EduRecord")}</h2><h3>Student Result</h3><p>${escapeHtml(data.student?.full_name||"")} | Admission No: ${escapeHtml(data.student?.admission_number||"")}</p>${data.student?.class_name?`<p>Class: ${escapeHtml(data.student.class_name)}</p>`:""}</div>`;if(results.length){html+='<div class="table-wrap"><table><thead><tr><th>Session</th><th>Term</th><th>Subject</th><th>CA 1</th><th>CA 2</th><th>Exam</th><th>Total</th></tr></thead><tbody>'+results.map(r=>`<tr><td>${escapeHtml(r.academic_year)}</td><td>${escapeHtml(r.term)}</td><td>${escapeHtml(r.subject)}</td><td>${escapeHtml(r.ca_score??0)}</td><td>${escapeHtml(r.ca2_score??0)}</td><td>${escapeHtml(r.exam_score??0)}</td><td><strong>${escapeHtml(r.total_score??0)}</strong></td></tr>`).join("")+'</tbody></table></div>'}else{html+=`<div class="notice notice-warning">${escapeHtml(data.message||"No published results are available yet.")}</div>`}$("studentPortalOutput").innerHTML=html;$("studentPortalOutput").classList.remove("hidden");$("studentPortalPrintActions").classList.remove("hidden");setNotice($("studentPortalMessage"),data.message|| (results.length?"Results retrieved successfully.":"No results are available."),results.length?"success":"info")}catch(err){console.error("Student Portal lookup failed:",err);setNotice($("studentPortalMessage"),err.message||"Could not check results. Please try again.","error")}finally{b.disabled=false;b.textContent="Check Results"}});
+$("studentPortalForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){setNotice($("studentPortalMessage"),"EduRecord is still connecting. Please wait and try again.","error");return}const b=$("studentPortalButton");b.disabled=true;b.textContent="Checking...";hideNotice($("studentPortalMessage"));$("studentPortalOutput").classList.add("hidden");$("studentPortalPrintActions").classList.add("hidden");try{const body={school_code:normalizeSchoolCode($("portalSchoolCode").value),admission_number:$("portalAdmissionNumber").value.trim(),pin:$("portalPin").value.trim()};if($("portalYear").value.trim())body.academic_year=$("portalYear").value.trim();if($("portalTerm").value)body.term=$("portalTerm").value;const {data,error}=await supabaseClient.functions.invoke("student-portal-results",{body});if(error)throw new Error(error.message||"Could not contact the Student Portal service.");if(data?.error)throw new Error(data.error);const results=Array.isArray(data?.results)?data.results:[];let html=`<div class="report-heading"><h2>${escapeHtml(data.school||"EduRecord")}</h2><h3>Student Result</h3><p>${escapeHtml(data.student?.full_name||"")} | Admission No: ${escapeHtml(data.student?.admission_number||"")}</p>${data.student?.class_name?`<p>Class: ${escapeHtml(data.student.class_name)}</p>`:""}</div>`;if(results.length){html+='<div class="table-wrap"><table><thead><tr><th>Session</th><th>Term</th><th>Subject</th><th>CA 1</th><th>CA 2</th><th>Exam</th><th>Total</th></tr></thead><tbody>'+results.map(r=>`<tr><td>${escapeHtml(r.academic_year)}</td><td>${escapeHtml(r.term)}</td><td>${escapeHtml(r.subject)}</td><td>${escapeHtml(r.ca_score??0)}</td><td>${escapeHtml(r.ca2_score??0)}</td><td>${escapeHtml(r.exam_score??0)}</td><td><strong>${escapeHtml(r.total_score??0)}</strong></td></tr>`).join("")+'</tbody></table></div>'}else{html+=`<div class="notice notice-warning">${escapeHtml(data.message||"No published results are available yet.")}</div>`}$("studentPortalOutput").innerHTML=html;$("studentPortalOutput").classList.remove("hidden");$("studentPortalPrintActions").classList.remove("hidden");setNotice($("studentPortalMessage"),data.message|| (results.length?"Results retrieved successfully.":"No results are available."),results.length?"success":"info")}catch(err){console.error("Student Portal lookup failed:",err);setNotice($("studentPortalMessage"),await studentPortalErrorMessage(err),"error")}finally{b.disabled=false;b.textContent="Check Results"}});
 
 // Publish/unpublish results for the selected school session and term.
 async function getOrCreateAcademicTerm(sessionName,termName){let {data:term,error}=await supabaseClient.from("academic_terms").select("id,session_name,term_name,is_current,results_published").eq("school_id",currentSchoolId).eq("session_name",sessionName).eq("term_name",termName).maybeSingle();if(error)throw error;if(!term){const created=await supabaseClient.from("academic_terms").insert([{school_id:currentSchoolId,session_name:sessionName,term_name:termName,is_current:false,results_published:false}]).select("id,session_name,term_name,is_current,results_published").single();if(created.error)throw created.error;term=created.data}return term}
