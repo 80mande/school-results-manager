@@ -133,6 +133,132 @@ table thead th{position:sticky;top:0}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 
+
+/* EduRecord professional report and broadsheet presentation */
+.report-heading{position:relative;padding:16px 12px 14px;border-bottom:3px solid var(--primary);margin:0 0 18px;background:linear-gradient(180deg,#f4f8ff 0%,#fff 100%);}
+.report-heading:after{content:"EDURECORD • ACADEMIC RESULTS";display:block;margin-top:7px;color:#64748b;font-size:9px;font-weight:800;letter-spacing:2px;}
+.report-heading h2{font-size:23px;line-height:1.2;color:#123779;text-transform:uppercase;letter-spacing:.4px;}
+.report-heading h3{margin:9px auto 6px;display:table;padding:6px 18px;background:#1746a2;color:#fff;border-radius:3px;font-size:14px;letter-spacing:1.5px;}
+.report-heading p{margin:5px 0;font-size:11px;color:#334155;}
+.print-area{padding:22px!important;border:1px solid #d7e0ed!important;background:#fff!important;}
+.print-area .table-wrap{overflow:visible;margin:14px 0 18px;}
+.print-area table{width:100%;min-width:0;border-collapse:collapse;table-layout:auto;}
+.print-area th{background:#eaf1fc;color:#173a77;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.25px;border:1px solid #b9c9e2;padding:8px 7px;white-space:normal;}
+.print-area td{font-size:11px;border:1px solid #d6deea;padding:7px;color:#172033;vertical-align:middle;}
+.print-area tbody tr:nth-child(even){background:#f7f9fc;}
+.print-area .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 22px;}
+.print-area .stat{border:1px solid #cbd7e8;border-top:3px solid #1746a2;border-radius:5px;padding:12px;background:#f8faff;}
+.print-area .stat span{font-size:10px;text-transform:uppercase;font-weight:800;letter-spacing:.4px;color:#52627a;}
+.print-area .stat strong{font-size:20px;color:#123779;}
+.print-area>p{font-size:11px;line-height:1.8;margin:14px 0;}
+.print-area .signature-row{margin-top:48px;gap:22px;}
+.print-area .signature{border-top:1px solid #64748b;padding-top:8px;color:#334155;font-weight:700;}
+#broadsheetOutput .report-heading p{max-width:1100px;margin:6px auto;}
+#broadsheetOutput .table-wrap{overflow:visible;}
+#broadsheetOutput table{font-size:10px;}
+#broadsheetOutput th,#broadsheetOutput td{padding:5px 4px;font-size:9px;text-align:center;}
+#broadsheetOutput th:nth-child(1),#broadsheetOutput td:nth-child(1){text-align:left;min-width:115px;}
+#broadsheetOutput th:nth-child(2),#broadsheetOutput td:nth-child(2){text-align:left;min-width:75px;}
+#broadsheetOutput th:last-child,#broadsheetOutput td:last-child{font-weight:800;background:#edf4ff;}
+#broadsheetOutput td strong{color:#123779;}
+@media(max-width:700px){.print-area{padding:12px!important}.report-heading h2{font-size:18px}.print-area .stats{grid-template-columns:1fr}.print-area .signature-row{grid-template-columns:1fr;gap:30px}}
+@media print{
+  @page{size:A4 portrait;margin:10mm;}
+  #printHost .print-area{padding:0!important;border:0!important;}
+  #printHost .report-heading{break-after:avoid;background:#fff!important;border-bottom:2px solid #1746a2!important;}
+  #printHost .report-heading h2{font-size:18pt;color:#123779!important;}
+  #printHost .report-heading h3{background:#1746a2!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #printHost .print-area th,#printHost .print-area .stat,#printHost #broadsheetOutput th:last-child,#printHost #broadsheetOutput td:last-child{ -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #printHost .print-area tr{break-inside:avoid;page-break-inside:avoid;}
+  #printHost #broadsheetOutput .report-heading{break-after:avoid;}
+  #printHost #broadsheetOutput .table-wrap{overflow:visible;}
+  #printHost #broadsheetOutput table{width:100%;table-layout:auto;}
+  #printHost #broadsheetOutput th,#printHost #broadsheetOutput td{font-size:7pt;padding:3px 2px;}
+  #printHost #broadsheetOutput th:nth-child(1),#printHost #broadsheetOutput td:nth-child(1){min-width:0;}
+  #printHost #broadsheetOutput th:nth-child(2),#printHost #broadsheetOutput td:nth-child(2){min-width:0;}
+}
+
+
+/* EduRecord dashboard visual system: owner, school administrator and teacher */
+:root{
+  --ui-ink:#172b4d;--ui-muted:#66758b;--ui-line:#e1e8f2;
+  --ui-surface:#ffffff;--ui-soft:#f5f8fe;--ui-blue:#1746a2;
+  --ui-blue-dark:#10377f;--ui-shadow:0 10px 28px rgba(26,55,105,.065);
+}
+body{background:linear-gradient(180deg,#edf3fc 0,#f6f8fc 260px,#f5f7fb 100%);color:var(--ui-ink)}
+.topbar{padding:15px max(20px,calc((100vw - 1180px)/2));background:linear-gradient(110deg,#10377f 0%,#1746a2 62%,#2865c7 100%);box-shadow:0 5px 18px rgba(16,55,127,.18)}
+.brand{font-size:24px;letter-spacing:-.45px}.brand small{margin-top:1px;letter-spacing:.2px;color:#e5edff}
+#topbarActions{padding:5px 7px 5px 13px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px}
+#userLabel{font-size:13px;font-weight:700;color:#fff;max-width:250px;overflow-wrap:anywhere}
+#topbarActions .btn{border-radius:999px;padding:8px 13px}
+.container{max-width:1200px;margin:28px auto;padding:0 20px}
+#dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{position:relative;overflow:hidden;align-items:center;min-height:132px;padding:26px 30px;margin-bottom:22px;border:0;border-radius:18px;background:linear-gradient(115deg,#123b86 0%,#1746a2 60%,#3978d5 100%);box-shadow:0 12px 28px rgba(23,70,162,.17);color:#fff}
+#dashboardPage>.section-title:after,#schoolAdminPage>.section-title:after,#teacherDashboardPage>.section-title:after{content:"";position:absolute;width:210px;height:210px;border:32px solid rgba(255,255,255,.08);border-radius:50%;right:-48px;top:-92px;pointer-events:none}
+#dashboardPage>.section-title h1,#schoolAdminPage>.section-title h1,#teacherDashboardPage>.section-title h1{position:relative;z-index:1;color:#fff;font-size:clamp(25px,3vw,32px);letter-spacing:-.7px}
+#dashboardPage>.section-title p,#schoolAdminPage>.section-title p,#teacherDashboardPage>.section-title p{position:relative;z-index:1;margin:7px 0 0;color:#e2ebff;font-size:14px}
+#dashboardPage>.section-title>.btn,#schoolAdminPage>.section-title>.btn,#teacherDashboardPage>.section-title>.btn{position:relative;z-index:1;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.13);color:#fff;border-radius:10px;padding:10px 15px}
+#dashboardPage>.section-title>.btn:hover,#schoolAdminPage>.section-title>.btn:hover,#teacherDashboardPage>.section-title>.btn:hover{background:rgba(255,255,255,.22)}
+#schoolAdminPage>.card:first-of-type,#teacherDashboardPage>.card:first-of-type{position:relative;padding:19px 23px 19px 26px;border:1px solid #dce7f7;border-left:4px solid #2c65c5;background:linear-gradient(110deg,#fff,#f7faff);box-shadow:var(--ui-shadow)}
+#schoolAdminPage>.card:first-of-type h2,#teacherDashboardPage>.card:first-of-type h2{margin:0 0 5px;color:#173c80;font-size:19px}
+#schoolAdminPage>.card:first-of-type p,#teacherDashboardPage>.card:first-of-type p{margin:0;font-size:13px}
+.card{border:1px solid var(--ui-line);border-radius:15px;padding:24px;box-shadow:var(--ui-shadow);margin-bottom:20px;background:var(--ui-surface)}
+.card h2{color:#1a376b;font-size:18px;letter-spacing:-.2px;margin-bottom:9px}
+.card>p.muted{font-size:13px;line-height:1.65}
+#dashboardPage>.card h2,#schoolAdminPage .admin-panel>.card h2,#teacherDashboardPage>.card h2{display:flex;align-items:center;gap:9px}
+#dashboardPage>.stats{gap:18px;margin:0 0 22px}
+#dashboardPage>.stats .stat{position:relative;overflow:hidden;min-height:125px;padding:21px 22px;border:1px solid #e0e8f4;border-top:0;border-radius:15px;box-shadow:var(--ui-shadow);background:#fff}
+#dashboardPage>.stats .stat:after{content:"";position:absolute;right:-18px;bottom:-38px;width:100px;height:100px;border-radius:50%;background:rgba(37,99,235,.055)}
+#dashboardPage>.stats .stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#2458b7}
+#dashboardPage>.stats .stat:nth-child(2):before{background:#15905b}#dashboardPage>.stats .stat:nth-child(3):before{background:#d58a19}
+#dashboardPage>.stats .stat span{font-size:12px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#687991}
+#dashboardPage>.stats .stat strong{font-size:34px;line-height:1.2;color:#153d85;margin-top:12px;letter-spacing:-1px}
+#adminTabs{position:sticky;top:8px;z-index:5;display:flex;gap:7px;padding:9px;margin:0 0 19px;border:1px solid #dce5f3;border-radius:14px;background:rgba(239,244,252,.94);box-shadow:0 5px 16px rgba(25,53,100,.07);backdrop-filter:blur(10px)}
+#adminTabs .tab-btn{flex:0 0 auto;padding:10px 13px;border-radius:9px;background:transparent;color:#425675;font-size:12px;transition:background .15s,color .15s,transform .15s}
+#adminTabs .tab-btn:hover{background:#e1eafb;color:#1746a2;transform:translateY(-1px)}
+#adminTabs .tab-btn.active{background:linear-gradient(135deg,#1746a2,#2865c7);color:#fff;box-shadow:0 4px 10px rgba(23,70,162,.22)}
+.admin-panel>.card{animation:edurecordPanelIn .22s ease-out}
+@keyframes edurecordPanelIn{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.btn{border-radius:9px;padding:10px 16px;box-shadow:0 2px 4px rgba(15,23,42,.06);transition:background .15s,box-shadow .15s,transform .15s}
+.btn:hover{box-shadow:0 5px 12px rgba(23,70,162,.16);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}.btn-secondary{border:1px solid #d6dfeb;background:#f0f4fa;color:#344765}.btn-secondary:hover{background:#e2eaf5;color:#173c80}
+.btn-danger{background:#b42332}.btn-danger:hover{background:#951b28}
+label{color:#344967;font-size:12px;letter-spacing:.1px;margin-top:14px}
+input,select{border-color:#d3ddea;border-radius:9px;padding:11px 12px;font-size:14px;background:#fff}
+input::placeholder{color:#9aa7b8}
+input:focus,select:focus{outline:0;border-color:#6796e7;box-shadow:0 0 0 3px rgba(103,150,231,.18)}
+.form-grid{gap:8px 18px}
+.notice{border-radius:10px;font-size:13px}
+.table-wrap{border:1px solid #e0e7f1;border-radius:11px;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,.025)}
+table{border:0}th{background:#edf3fc;color:#234779;font-size:11px;letter-spacing:.35px;text-transform:uppercase;padding:12px 13px;border-bottom:1px solid #d8e3f2}td{padding:12px 13px;font-size:13px;color:#33445f}tbody tr:nth-child(even){background:#f8faff}tbody tr:hover{background:#f0f6ff}
+#dashboardPage .table-wrap,#schoolAdminPage .table-wrap,#teacherDashboardPage .table-wrap{margin-top:16px}
+#schoolAdminPage .admin-panel .card form+.table-wrap,#schoolAdminPage .admin-panel .card .table-wrap{margin-top:17px}
+#teacherDashboardPage>.card .table-wrap{margin-top:14px}
+#dashboardMessage,#adminMessageMain,#teacherDashboardMessage{padding:13px 16px}
+.status{padding:5px 10px;letter-spacing:.2px}
+.footer{padding:30px 12px;color:#7b899c}
+@media(max-width:800px){
+ .container{padding:0 13px;margin:18px auto}
+ #dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{padding:22px 20px;min-height:120px;border-radius:15px}
+ #adminTabs{position:static;overflow:visible;gap:6px}
+ #adminTabs .tab-btn{flex:1 1 130px;white-space:normal;line-height:1.35;padding:10px 8px}
+ #dashboardPage>.stats{gap:11px}
+ #dashboardPage>.stats .stat{min-height:100px;padding:16px}
+ #dashboardPage>.stats .stat strong{font-size:29px;margin-top:7px}
+ .card{padding:18px;border-radius:13px}
+}
+@media(max-width:480px){
+ .topbar{padding:13px 14px}.brand{font-size:21px}#topbarActions{max-width:100%;gap:7px;padding-left:9px}#userLabel{max-width:145px;font-size:11px}
+ .container{padding:0 10px}
+ #dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{align-items:flex-start;gap:15px;flex-direction:column;padding:21px 17px}
+ #dashboardPage>.section-title>.btn,#schoolAdminPage>.section-title>.btn,#teacherDashboardPage>.section-title>.btn{align-self:flex-start}
+ #dashboardPage>.stats .stat{min-height:88px}
+ #dashboardPage>.stats .stat span{font-size:10px;letter-spacing:.4px}
+ #dashboardPage>.stats .stat strong{font-size:26px}
+ #adminTabs .tab-btn{flex-basis:calc(50% - 6px);font-size:11px}
+ .toolbar{align-items:stretch}.toolbar>div{min-width:100%}.table-wrap{border-radius:8px}
+}
+@media(prefers-reduced-motion:reduce){.admin-panel>.card{animation:none!important}.btn:hover{transform:none}}
+
 </style>
 </head>
 <body>
