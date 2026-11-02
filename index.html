@@ -303,6 +303,69 @@ table{border:0}th{background:#edf3fc;color:#234779;font-size:11px;letter-spacing
  #printHost .student-report-page .report-note{font-size:7pt;}
 }
 
+
+
+/* =========================================================
+   EduRecord Modern Corporate UI — visual layer only
+   Existing HTML IDs, Supabase logic and print layout remain intact.
+   ========================================================= */
+@media screen {
+:root{
+  --primary:#1746a2;--primary-dark:#10377f;
+  --background:#f4f7fc;--text:#172b4d;--muted:#687991;
+  --border:#e4eaf3;--white:#fff;
+  --corp-navy:#102b55;--corp-blue:#2459b8;--corp-sky:#eaf1ff;
+  --corp-shadow:0 12px 32px rgba(16,43,85,.065);
+}
+html{scroll-behavior:smooth}
+body{font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;background:#f4f7fb;color:#172b4d;line-height:1.55;-webkit-font-smoothing:antialiased}
+.topbar{min-height:72px;padding:13px max(18px,calc((100vw - 1240px)/2));background:#102b55;box-shadow:0 4px 18px rgba(16,43,85,.14);border-bottom:1px solid rgba(255,255,255,.09)}
+.brand{font-size:25px;font-weight:800;letter-spacing:-.8px;color:#fff}.brand:before{content:"E";display:inline-grid;place-items:center;width:34px;height:34px;margin-right:10px;border-radius:10px;background:linear-gradient(145deg,#69a4ff,#2b63c8);font-size:20px;vertical-align:middle;box-shadow:0 4px 12px #071b3c55}.brand small{margin-left:44px;margin-top:-3px;font-size:11px;letter-spacing:.45px;color:#c5d5f0}
+#topbarActions{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:6px 8px 6px 13px}
+.container{max-width:1240px;margin:30px auto;padding:0 22px}
+.card,.portal,.stat{background:#fff;border:1px solid #e5ebf4;border-radius:16px;box-shadow:var(--corp-shadow)}
+.card{padding:25px;margin-bottom:21px}.card h2{color:#17345f;font-size:19px;font-weight:750;letter-spacing:-.35px}.muted,.help{color:#718097}
+.btn{background:#2459b8;border:1px solid #2459b8;border-radius:10px;padding:10px 16px;font-weight:700;box-shadow:0 3px 8px rgba(36,89,184,.13);transition:background .16s,border-color .16s,box-shadow .16s,transform .16s}
+.btn:hover{background:#17458f;border-color:#17458f;box-shadow:0 6px 14px rgba(36,89,184,.18);transform:translateY(-1px)}
+.btn-secondary{background:#f1f5fb;color:#344967;border-color:#dce5f0;box-shadow:none}.btn-secondary:hover{background:#e7eef8;color:#183a70;border-color:#cbd9eb}
+.btn-danger{background:#b42332;border-color:#b42332}.btn-small{border-radius:8px}
+input,select{min-height:43px;border:1px solid #d8e1ed;border-radius:10px;padding:10px 13px;background:#fff;color:#203653;font-size:14px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{outline:0;border-color:#6d9ce9;box-shadow:0 0 0 4px rgba(75,132,220,.13)}
+label{color:#3d526f;font-size:12px;font-weight:750;letter-spacing:.15px}
+.notice{border-radius:11px;padding:13px 15px;font-size:13px;line-height:1.6}
+.section-title{border:1px solid #e4eaf3;border-radius:15px;background:#fff;padding:20px 23px;box-shadow:0 6px 18px rgba(16,43,85,.04)}
+.section-title h1{color:#17345f;font-size:25px;letter-spacing:-.65px;font-weight:800}
+#dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{min-height:140px;padding:28px 32px;border-radius:18px;background:linear-gradient(115deg,#102b55 0%,#17458f 65%,#2d69c4 100%);box-shadow:0 13px 30px rgba(16,43,85,.16)}
+#dashboardPage>.section-title h1,#schoolAdminPage>.section-title h1,#teacherDashboardPage>.section-title h1{font-size:29px;letter-spacing:-.8px}
+#dashboardPage>.stats .stat{border-radius:15px;box-shadow:var(--corp-shadow)}
+#adminTabs{position:static;display:flex;gap:7px;flex-wrap:wrap;padding:10px;margin:0 0 20px;border:1px solid #e1e8f2;border-radius:14px;background:#fff;box-shadow:0 5px 16px rgba(16,43,85,.045)}
+#adminTabs .tab-btn{flex:0 0 auto;border:1px solid transparent;border-radius:9px;padding:10px 14px;background:transparent;color:#536782;font-size:12px;font-weight:750}
+#adminTabs .tab-btn:hover{background:#f0f5fd;color:#17458f;transform:none}
+#adminTabs .tab-btn.active{background:#17458f;color:#fff;box-shadow:0 4px 10px rgba(23,69,143,.17)}
+.tabs:not(#adminTabs) .btn{border-radius:9px}
+.table-wrap{border:1px solid #e2e9f2;border-radius:12px;box-shadow:0 3px 12px rgba(16,43,85,.025)}
+table{background:#fff}th{background:#f0f4fa;color:#405a7b;border-bottom:1px solid #e0e7f0;font-size:10px;font-weight:800;letter-spacing:.55px;padding:13px;text-transform:uppercase}td{padding:12px 13px;color:#354a66;border-bottom:1px solid #edf1f6;font-size:13px}tbody tr:nth-child(even){background:#fafbfd}tbody tr:hover{background:#f1f6ff}
+.status{border-radius:7px;padding:4px 9px;font-weight:750}
+.home-hero{border-radius:20px;background:radial-gradient(circle at 88% 15%,rgba(125,174,255,.23),transparent 26%),linear-gradient(120deg,#102b55 0%,#17458f 58%,#2e69c2 100%);box-shadow:0 18px 40px rgba(16,43,85,.18)}
+.home-eyebrow{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.25);letter-spacing:.08em}
+.home-hero h1{font-weight:850;letter-spacing:-1.4px;line-height:1.08}
+.home-hero p{color:#e0eaff}
+.home-feature{border-radius:13px;border-color:#e3eaf4;box-shadow:0 5px 16px rgba(16,43,85,.035)}
+.home-feature-icon,.portal-icon{background:#eaf1ff;color:#2459b8;border-radius:12px}
+.portal{border-radius:15px;padding:23px;box-shadow:0 7px 22px rgba(16,43,85,.045)}
+.portal h2{color:#18375f;font-weight:800}
+.portal:hover{border-color:#b9cdef;box-shadow:0 13px 28px rgba(36,89,184,.09)}
+.student-portal-banner{background:linear-gradient(120deg,#102b55,#2459b8);border-radius:17px 17px 0 0}
+.student-portal-form-card{border-radius:0 0 17px 17px}
+.owner-action{border-radius:14px;border-color:#e0e8f3;background:#fff;box-shadow:0 5px 16px rgba(16,43,85,.035)}
+.owner-action-icon{background:#eaf1ff;color:#2459b8;border-radius:12px}
+.site-footer{background:#102b55;border-top-color:#4d8be5}
+.site-footer-inner{max-width:1200px}
+*:focus-visible{outline:3px solid rgba(85,145,231,.55);outline-offset:2px}
+@media(max-width:800px){.container{padding:0 14px;margin:20px auto}.card{padding:19px}#adminTabs{gap:6px}#adminTabs .tab-btn{flex:1 1 145px}.section-title{padding:17px}}
+@media(max-width:480px){.topbar{padding:12px 14px}.brand{font-size:22px}.brand small{margin-left:43px}.container{padding:0 11px}.card{padding:16px}.home-hero h1{font-size:31px}.section-title h1{font-size:22px}#dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{min-height:0;padding:21px 18px}#adminTabs .tab-btn{flex-basis:calc(50% - 6px);font-size:11px}}
+}
+
 </style>
 </head>
 <body>
