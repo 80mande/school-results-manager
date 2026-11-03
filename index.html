@@ -366,7 +366,93 @@ table{background:#fff}th{background:#f0f4fa;color:#405a7b;border-bottom:1px soli
 @media(max-width:480px){.topbar{padding:12px 14px}.brand{font-size:22px}.brand small{margin-left:43px}.container{padding:0 11px}.card{padding:16px}.home-hero h1{font-size:31px}.section-title h1{font-size:22px}#dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{min-height:0;padding:21px 18px}#adminTabs .tab-btn{flex-basis:calc(50% - 6px);font-size:11px}}
 }
 
+
+/* EduRecord homepage refresh: visual layer only; existing application logic is untouched. */
+@media screen {
+.edurecord-home{max-width:1240px;padding-top:26px}
+.home-hero-premium{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(330px,.92fr);align-items:center;gap:34px;min-height:430px;padding:clamp(28px,5vw,58px);background:radial-gradient(circle at 78% 12%,rgba(116,166,255,.2),transparent 28%),linear-gradient(125deg,#0d2346 0%,#12396f 55%,#1d559c 100%);border:1px solid rgba(255,255,255,.1);border-radius:25px;box-shadow:0 22px 50px rgba(16,43,85,.17)}
+.home-hero-copy{position:relative;z-index:1}.home-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border:1px solid rgba(213,229,255,.25);border-radius:999px;background:rgba(255,255,255,.08);color:#dceaff;font-size:11px;font-weight:800;letter-spacing:.075em;text-transform:uppercase}
+.home-live-dot{width:7px;height:7px;border-radius:50%;background:#79dfa8;box-shadow:0 0 0 4px rgba(121,223,168,.13)}
+.home-hero-premium h1{max-width:610px;margin:22px 0 15px;color:#fff;font-size:clamp(35px,4.7vw,55px);line-height:1.07;letter-spacing:-1.9px;font-weight:850}.home-hero-premium h1 span{color:#9fc5ff}
+.home-hero-premium p{max-width:570px;margin:0;color:#d6e4f8;font-size:15px;line-height:1.8}
+.home-hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.home-hero-actions .btn{min-height:46px;padding:12px 17px}
+.home-primary-cta{background:#fff;color:#153b70;border-color:#fff;box-shadow:0 7px 18px rgba(0,0,0,.12)}.home-primary-cta:hover{background:#eaf2ff;color:#102e59;border-color:#eaf2ff}
+.home-secondary-cta{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.35);box-shadow:none}.home-secondary-cta:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.55)}
+.home-trust-note{display:flex;align-items:center;gap:8px;margin-top:19px;color:#c5d8f3;font-size:12px}.home-trust-note span{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(121,223,168,.17);color:#9af0bc;font-weight:900}
+.home-visual{position:relative;max-width:490px;width:100%;justify-self:end;padding:19px;border:1px solid rgba(255,255,255,.55);border-radius:18px;background:linear-gradient(145deg,#fff,#f3f7ff);box-shadow:0 24px 48px rgba(3,19,44,.28);transform:rotate(1deg)}
+.home-visual-top,.home-visual-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}.home-visual-brand{font-size:13px;font-weight:850;color:#173c75}.home-visual-brand i{display:inline-block;width:9px;height:9px;margin-right:6px;border-radius:3px;background:#3477d5}
+.home-visual-status{font-size:9px;color:#72829a;background:#edf3fc;padding:6px 8px;border-radius:20px}.home-visual-status b,.home-visual-foot b{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:#36b879}
+.home-visual-title{display:flex;justify-content:space-between;margin:24px 0 12px;color:#1c3558;font-size:16px;font-weight:800}.home-visual-title span{color:#94a3b8;letter-spacing:2px}
+.home-visual-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.home-visual-cards>div{padding:11px 9px;border:1px solid #e6edf6;border-radius:10px;background:#fff}.home-visual-cards small,.home-visual-cards strong,.home-visual-cards em{display:block}.home-visual-cards small{font-size:9px;color:#75849a}.home-visual-cards strong{margin:4px 0;color:#173d79;font-size:15px}.home-visual-cards em{font-size:9px;color:#219565;font-style:normal}
+.home-visual-chart{margin-top:12px;padding:13px 13px 9px;border:1px solid #e6edf6;border-radius:11px;background:#fff}.home-chart-heading{display:flex;justify-content:space-between;gap:8px;color:#314967;font-size:10px;font-weight:800}.home-chart-heading small{color:#96a2b3;font-size:8px;font-weight:500}
+.home-chart-bars{height:95px;display:flex;align-items:end;justify-content:space-around;gap:10px;padding:10px 8px 0;border-bottom:1px solid #e7edf5}.home-chart-bars i{display:block;width:9%;max-width:27px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#7db4ff,#2e69bd)}
+.home-chart-labels{display:flex;justify-content:space-around;padding-top:6px;color:#8b99ad;font-size:8px}.home-visual-foot{justify-content:flex-start;gap:18px;margin-top:13px;color:#73829a;font-size:9px}.home-visual-foot b{background:#4b87d1}
+.home-value-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 52px}.home-value-strip>div{display:flex;align-items:center;gap:12px;padding:17px 18px;border:1px solid #e3eaf4;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(16,43,85,.035)}
+.home-value-icon{display:grid;place-items:center;flex:0 0 39px;height:39px;border-radius:11px;background:#edf4ff;color:#2862b7;font-size:19px;font-weight:800}.home-value-strip strong,.home-value-strip small{display:block}.home-value-strip strong{color:#1b365c;font-size:12px}.home-value-strip small{margin-top:3px;color:#77869b;font-size:10px;line-height:1.4}
+.home-section{margin:0 0 52px}.home-section-heading{max-width:690px;margin:0 auto 23px;text-align:center}.home-section-kicker{color:#3974c4;font-size:10px;font-weight:850;letter-spacing:.15em}
+.home-section-heading h2,.home-bottom-cta h2{margin:8px 0;color:#17345f;font-size:clamp(24px,3vw,32px);letter-spacing:-.8px;line-height:1.2}.home-section-heading p,.home-bottom-cta p{margin:0;color:#718097;font-size:14px;line-height:1.7}
+.home-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.home-feature-card{padding:22px;border:1px solid #e3eaf4;border-radius:15px;background:#fff;box-shadow:0 7px 22px rgba(16,43,85,.035);transition:transform .18s,border-color .18s,box-shadow .18s}
+.home-feature-card:hover{transform:translateY(-3px);border-color:#c5d8f3;box-shadow:0 13px 27px rgba(36,89,184,.08)}.home-feature-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#edf4ff;color:#2862b7;font-size:20px}
+.home-feature-card h3{margin:15px 0 6px;color:#1b365c;font-size:15px}.home-feature-card p{margin:0;color:#74839a;font-size:12px;line-height:1.7}
+.home-portals-section{padding:37px 30px 32px;border:1px solid #e4eaf3;border-radius:20px;background:linear-gradient(180deg,#f8faff,#fff)}.home-portals{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.home-portal-card{min-height:260px;padding:23px;border:1px solid #e2eaf5;box-shadow:0 8px 22px rgba(16,43,85,.045)}.home-portal-label{margin-top:15px;color:#6680a3;font-size:9px;font-weight:850;letter-spacing:.12em}
+.home-portal-card h2{margin:7px 0;color:#19385f;font-size:18px}.home-portal-card p{font-size:12px;line-height:1.7}.home-portal-card .btn{font-size:12px}
+.home-student-card{border-color:#cfe2dc;background:linear-gradient(160deg,#fff,#f7fcfa)}.home-student-card .portal-icon{background:#e5f5ed;color:#178153}
+.home-bottom-cta{display:flex;justify-content:space-between;align-items:center;gap:22px;margin:48px 0 12px;padding:26px 30px;border-radius:17px;background:#eaf1fb;border:1px solid #dce7f5}.home-bottom-cta h2{font-size:22px}.home-bottom-cta p{font-size:12px}.home-bottom-cta .btn{white-space:nowrap}.home-footnote{padding:20px 0 8px}
+}
+@media(max-width:850px){.home-hero-premium{grid-template-columns:1fr;gap:28px}.home-visual{justify-self:center;max-width:520px}.home-value-strip{grid-template-columns:1fr}.home-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.edurecord-home{padding-top:14px}.home-hero-premium{padding:25px 20px;border-radius:19px;gap:25px}.home-hero-premium h1{font-size:36px;letter-spacing:-1.25px}.home-hero-premium p{font-size:13px}.home-hero-actions{flex-direction:column}.home-hero-actions .btn{width:100%}.home-visual{padding:13px;transform:none}.home-visual-cards{gap:5px}.home-visual-cards>div{padding:9px 7px}.home-visual-cards strong{font-size:13px}.home-visual-chart{padding:10px}.home-value-strip{margin:15px 0 39px;gap:9px}.home-value-strip>div{padding:13px}.home-section{margin-bottom:39px}.home-section-heading{margin-bottom:17px}.home-section-heading h2{font-size:25px}.home-feature-grid,.home-portals{grid-template-columns:1fr}.home-feature-card{padding:19px}.home-portals-section{padding:26px 14px 18px}.home-portal-card{min-height:0}.home-bottom-cta{align-items:stretch;flex-direction:column;padding:22px 19px;margin-top:36px}.home-bottom-cta .btn{width:100%;text-align:center}}
+@media(prefers-reduced-motion:reduce){.home-feature-card{transition:none}}
+
 </style>
+
+<style id="edurecord-owner-dashboard-refresh">
+/* EduRecord Owner Dashboard — visual refresh only; existing IDs and scripts are preserved. */
+#dashboardPage{max-width:1240px;padding-bottom:42px}
+#dashboardPage>.section-title{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(120deg,#102b59 0%,#1746a2 58%,#2868c7 100%);color:#fff;border-radius:20px;padding:27px 28px;margin:0 0 22px;box-shadow:0 14px 32px rgba(16,43,89,.16)}
+#dashboardPage>.section-title:after{content:"";position:absolute;z-index:-1;width:230px;height:230px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-45px;top:-125px;box-shadow:0 0 0 25px rgba(255,255,255,.035),0 0 0 55px rgba(255,255,255,.025)}
+#dashboardPage>.section-title h1{font-size:clamp(25px,4vw,32px);letter-spacing:-.6px;color:#fff}
+#dashboardPage>.section-title .muted{color:#d9e7ff;margin:5px 0 0;font-size:14px}
+#dashboardPage>.section-title .btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.32);color:#fff;border-radius:10px;padding:10px 15px}
+#dashboardPage>.section-title .btn:hover{background:rgba(255,255,255,.22)}
+#dashboardPage>.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:22px}
+#dashboardPage>.stats .stat{position:relative;overflow:hidden;border:1px solid #e2eaf5;border-radius:16px;padding:20px 21px;background:#fff;box-shadow:0 5px 18px rgba(20,48,90,.045)}
+#dashboardPage>.stats .stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#2862bd}
+#dashboardPage>.stats .stat:nth-child(2):before{background:#16a36a}
+#dashboardPage>.stats .stat:nth-child(3):before{background:#e0a12d}
+#dashboardPage>.stats .stat span{font-size:13px;font-weight:700;color:#64748b;letter-spacing:.1px}
+#dashboardPage>.stats .stat strong{font-size:32px;line-height:1.2;margin-top:9px;color:#142b50;font-weight:800}
+#dashboardPage .owner-quick-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:22px}
+#dashboardPage .owner-action{min-width:0;min-height:150px;align-items:flex-start;flex-direction:column;justify-content:space-between;padding:18px;border:1px solid #e0e8f3;border-radius:16px;background:linear-gradient(150deg,#fff,#f8faff);box-shadow:0 5px 18px rgba(20,48,90,.045);transition:transform .18s ease,box-shadow .18s ease}
+#dashboardPage .owner-action:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(20,48,90,.09)}
+#dashboardPage .owner-action-copy{align-items:flex-start}
+#dashboardPage .owner-action-icon{width:42px;height:42px;flex-basis:42px;border-radius:13px;background:#eaf1ff;color:#2459b8;font-size:21px}
+#dashboardPage .owner-action h2{font-size:15px;color:#17345f;margin:1px 0 5px}
+#dashboardPage .owner-action p{font-size:12px;line-height:1.5;color:#718096}
+#dashboardPage .owner-action .btn{width:100%;border-radius:9px;min-height:39px}
+#dashboardPage>.card,#dashboardPage .owner-panel>.card{border:1px solid #e1e9f3;border-radius:16px;padding:22px;box-shadow:0 6px 22px rgba(20,48,90,.045)}
+#dashboardPage>.card>h2,#dashboardPage .owner-panel h2{color:#18365f;font-size:18px}
+#dashboardPage .owner-panel{margin-bottom:18px;scroll-margin-top:16px}
+#dashboardPage .owner-panel>.card{border-top:3px solid #2862bd}
+#dashboardPage .owner-panel-head{align-items:center;margin-bottom:15px}
+#dashboardPage .owner-panel-head h2{margin:0 0 4px}
+#dashboardPage .owner-panel-head p{margin:0;font-size:13px}
+#dashboardPage label{color:#334b6c}
+#dashboardPage input,#dashboardPage select{border-color:#d5dfec;border-radius:9px;min-height:42px}
+#dashboardPage input:focus,#dashboardPage select:focus{outline:3px solid rgba(37,99,235,.13);border-color:#4b7fd0}
+#dashboardPage .btn{border-radius:9px}
+#dashboardPage .table-wrap{border:1px solid #e5ebf3;border-radius:12px;margin-top:15px}
+#dashboardPage table{min-width:720px}
+#dashboardPage th{background:#f1f5fb;color:#29466e;font-size:12px;text-transform:uppercase;letter-spacing:.35px;padding:13px 12px}
+#dashboardPage td{padding:12px;font-size:13px;vertical-align:middle}
+#dashboardPage tbody tr:hover{background:#f8fbff}
+#dashboardPage .status{padding:4px 10px}
+#dashboardPage #schoolListMessage{border-radius:10px}
+#dashboardPage>.notice-warning{border-radius:12px;line-height:1.6}
+@media(max-width:850px){#dashboardPage .owner-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){#dashboardPage{padding-left:12px;padding-right:12px;margin-top:14px}#dashboardPage>.section-title{padding:22px 18px;border-radius:16px;align-items:flex-start}#dashboardPage>.section-title .btn{width:100%;margin-top:8px}#dashboardPage>.stats{grid-template-columns:1fr;gap:10px}#dashboardPage>.stats .stat{padding:15px 18px}#dashboardPage>.stats .stat strong{font-size:27px}#dashboardPage .owner-quick-actions{grid-template-columns:1fr;gap:11px}#dashboardPage .owner-action{min-height:0;padding:16px}#dashboardPage>.card,#dashboardPage .owner-panel>.card{padding:16px;border-radius:13px}#dashboardPage .owner-panel-head{align-items:flex-start}#dashboardPage .owner-panel-head .btn{width:auto}}
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -374,16 +460,54 @@ table{background:#fff}th{background:#f0f4fa;color:#405a7b;border-bottom:1px soli
  <div id="topbarActions" class="topbar-actions hidden"><span id="userLabel"></span><button class="btn btn-secondary" onclick="logout()">Sign Out</button></div>
 </header>
 <main>
-<section id="homePage" class="container">
- <div class="hero home-hero"><div class="home-eyebrow">● School Results Management System</div><h1>Better school records.<br>Clearer academic results.</h1><p>EduRecord helps schools organise students, manage assessments and share published results securely — all in one simple platform.</p></div>
+
+<section id="homePage" class="container edurecord-home">
  <div id="connectionMessage" class="notice">Connecting to EduRecord...</div>
- <div class="home-features"><div class="home-feature"><div class="home-feature-icon">▤</div><div><strong>Organised school records</strong><span>Keep classes, subjects and student information in one place.</span></div></div><div class="home-feature"><div class="home-feature-icon">✓</div><div><strong>Manage academic results</strong><span>Record scores and prepare clear student reports.</span></div></div><div class="home-feature"><div class="home-feature-icon">⌑</div><div><strong>Secure student access</strong><span>Students check results only after their school publishes them.</span></div></div></div>
- <div class="portal-section-heading"><h2>Choose your portal</h2><p>Select the option that matches your role.</p></div>
- <div class="portals">
-  <div class="portal"><div class="portal-icon">▦</div><h2>School Administrator</h2><p class="muted">Manage your school's classes, subjects, students, teachers and academic results.</p><button class="btn" onclick="showLogin()">Administrator Sign In <span aria-hidden="true">→</span></button></div>
-  <div class="portal"><div class="portal-icon">✎</div><h2>Teacher</h2><p class="muted">Access assigned classes and enter scores for the subjects you teach.</p><button class="btn" onclick="showLogin()">Teacher Sign In <span aria-hidden="true">→</span></button></div>
-  <div class="portal"><div class="portal-icon">▤</div><h2>Student Portal</h2><p class="muted">View published academic results using your school code, admission number and private PIN.</p><button class="btn" onclick="showStudentPortal()">Check My Results <span aria-hidden="true">→</span></button></div>
- </div><div class="home-footnote">EduRecord · School Results Management System · <span id="currentYear"></span></div>
+ <div class="home-hero home-hero-premium">
+  <div class="home-hero-copy">
+   <div class="home-eyebrow"><span class="home-live-dot"></span> A smarter way to manage school records</div>
+   <h1>Give your school records the <span>clarity they deserve.</span></h1>
+   <p>EduRecord brings student information, classes, assessments and academic results together in one organised platform — helping schools work with greater confidence.</p>
+   <div class="home-hero-actions">
+    <button class="btn home-primary-cta" onclick="showLogin()">Sign in to your dashboard <span aria-hidden="true">→</span></button>
+    <button class="btn home-secondary-cta" onclick="showStudentPortal()">Check student results</button>
+   </div>
+   <div class="home-trust-note"><span aria-hidden="true">✓</span> Secure access for school teams and students</div>
+  </div>
+  <div class="home-visual" aria-label="Illustrative academic dashboard">
+   <div class="home-visual-top"><span class="home-visual-brand"><i></i> EduRecord</span><span class="home-visual-status"><b></b> Academic overview</span></div>
+   <div class="home-visual-title">School overview <span>•••</span></div>
+   <div class="home-visual-cards"><div><small>Students</small><strong>Records</strong><em>Organised</em></div><div><small>Assessments</small><strong>Scores</strong><em>Managed</em></div><div><small>Results</small><strong>Reports</strong><em>Prepared</em></div></div>
+   <div class="home-visual-chart"><div class="home-chart-heading"><span>Academic performance</span><small>Illustrative dashboard</small></div><div class="home-chart-bars"><i style="height:42%"></i><i style="height:68%"></i><i style="height:53%"></i><i style="height:82%"></i><i style="height:62%"></i><i style="height:94%"></i><i style="height:74%"></i></div><div class="home-chart-labels"><span>Term 1</span><span>Term 2</span><span>Term 3</span></div></div>
+   <div class="home-visual-foot"><span><b></b> School records</span><span><b></b> Results workflow</span></div>
+  </div>
+ </div>
+ <div class="home-value-strip">
+  <div><span class="home-value-icon">▦</span><span><strong>One organised workspace</strong><small>Classes, students and subjects together</small></span></div>
+  <div><span class="home-value-icon">✓</span><span><strong>Clear results workflow</strong><small>Enter, review and publish results</small></span></div>
+  <div><span class="home-value-icon">⌑</span><span><strong>Controlled student access</strong><small>Students view published results securely</small></span></div>
+ </div>
+ <section class="home-section home-portals-section">
+  <div class="home-section-heading"><span class="home-section-kicker">GET STARTED</span><h2>Choose the right portal.</h2><p>Sign in according to your role, or check a published student result.</p></div>
+  <div class="portals home-portals">
+   <article class="portal home-portal-card"><div class="portal-icon">▦</div><div class="home-portal-label">FOR SCHOOL LEADERS</div><h2>School Administrator</h2><p class="muted">Manage your school's classes, subjects, students, teachers and academic results.</p><button class="btn" onclick="showLogin()">Administrator sign in <span aria-hidden="true">→</span></button></article>
+   <article class="portal home-portal-card"><div class="portal-icon">✎</div><div class="home-portal-label">FOR TEACHERS</div><h2>Teacher Portal</h2><p class="muted">Access assigned classes and enter scores for the subjects you teach.</p><button class="btn" onclick="showLogin()">Teacher sign in <span aria-hidden="true">→</span></button></article>
+   <article class="portal home-portal-card home-student-card"><div class="portal-icon">▤</div><div class="home-portal-label">FOR STUDENTS</div><h2>Student Results Portal</h2><p class="muted">View published academic results using your school code, admission number and private PIN.</p><button class="btn" onclick="showStudentPortal()">Check my results <span aria-hidden="true">→</span></button></article>
+  </div>
+ </section>
+ <section class="home-section">
+  <div class="home-section-heading"><span class="home-section-kicker">THE EDURECORD PLATFORM</span><h2>Everything important, in one organised place.</h2><p>Keep everyday academic administration connected, from student records to the final report.</p></div>
+  <div class="home-feature-grid">
+   <article class="home-feature-card"><span class="home-feature-icon">▤</span><h3>Student and class records</h3><p>Organise student information, classes and subjects in a central school workspace.</p></article>
+   <article class="home-feature-card"><span class="home-feature-icon">✎</span><h3>Assessment management</h3><p>Record assessment scores and manage academic results through a structured workflow.</p></article>
+   <article class="home-feature-card"><span class="home-feature-icon">▧</span><h3>Report cards and broadsheets</h3><p>Prepare clear academic reports for individual students and whole classes.</p></article>
+   <article class="home-feature-card"><span class="home-feature-icon">♙</span><h3>Teacher access</h3><p>Give teachers access to their assigned classes and subjects for score entry.</p></article>
+   <article class="home-feature-card"><span class="home-feature-icon">⌑</span><h3>Student results portal</h3><p>Allow students to check results after the school has reviewed and published them.</p></article>
+   <article class="home-feature-card"><span class="home-feature-icon">⚙</span><h3>School-controlled settings</h3><p>Configure scoring, grading and result display settings for your school.</p></article>
+  </div>
+ </section>
+ <section class="home-bottom-cta"><div><span class="home-section-kicker">EDURECORD SUPPORT</span><h2>Need help getting started?</h2><p>Contact the EduRecord support team for assistance with your school account.</p></div><a href="https://wa.me/2348035572311?text=Hello%20EduRecord%20Support%2C%20I%20would%20like%20to%20know%20more%20about%20the%20platform." target="_blank" rel="noopener noreferrer" class="btn">Contact support <span aria-hidden="true">↗</span></a></section>
+ <div class="home-footnote">EduRecord · School Results Management System · <span id="currentYear"></span></div>
 </section>
 <section id="loginPage" class="container hidden">
  <div class="login-box card"><h1>Sign In</h1><p class="muted">Sign in with your EduRecord account.</p>
