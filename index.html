@@ -367,6 +367,23 @@ table{background:#fff}th{background:#f0f4fa;color:#405a7b;border-bottom:1px soli
 }
 
 </style>
+
+<style id="edurecord-public-school-registration">
+.home-school-register{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:25px;align-items:center;margin:28px 0 52px;padding:28px;border:1px solid #dce7f5;border-radius:18px;background:linear-gradient(135deg,#f2f6fc,#fff)}
+.home-school-register-copy h2{margin:8px 0;color:#17345f;font-size:clamp(24px,3vw,31px);letter-spacing:-.7px}
+.home-school-register-copy p{color:#718097;font-size:14px;line-height:1.7;margin:0 0 18px}
+.home-school-application{padding:22px}
+.home-school-application h3{margin:0 0 5px;color:#17345f}
+.home-school-application>.muted{font-size:12px;line-height:1.6}
+.home-school-application .form-grid{margin:16px 0}
+.home-school-application label{display:block;margin:0 0 6px;font-size:12px;font-weight:750;color:#314761}
+.home-school-application input{width:100%;box-sizing:border-box}
+.home-school-application .help{display:block;margin-top:5px;color:#718097;font-size:11px}
+.home-school-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.home-school-form-actions .btn{min-width:145px}
+@media(max-width:760px){.home-school-register{grid-template-columns:1fr;padding:20px;gap:18px}.home-school-form-actions{flex-direction:column}.home-school-form-actions .btn{width:100%}}
+</style>
+
 </head>
 <body>
 <header class="topbar">
@@ -383,7 +400,18 @@ table{background:#fff}th{background:#f0f4fa;color:#405a7b;border-bottom:1px soli
   <div class="portal"><div class="portal-icon">▦</div><h2>School Administrator</h2><p class="muted">Manage your school's classes, subjects, students, teachers and academic results.</p><button class="btn" onclick="showLogin()">Administrator Sign In <span aria-hidden="true">→</span></button></div>
   <div class="portal"><div class="portal-icon">✎</div><h2>Teacher</h2><p class="muted">Access assigned classes and enter scores for the subjects you teach.</p><button class="btn" onclick="showLogin()">Teacher Sign In <span aria-hidden="true">→</span></button></div>
   <div class="portal"><div class="portal-icon">▤</div><h2>Student Portal</h2><p class="muted">View published academic results using your school code, admission number and private PIN.</p><button class="btn" onclick="showStudentPortal()">Check My Results <span aria-hidden="true">→</span></button></div>
- </div><div class="home-footnote">EduRecord · School Results Management System · <span id="currentYear"></span></div>
+ </div>
+ <section class="home-school-register" id="schoolRegistrationSection">
+  <div class="home-school-register-copy"><span class="home-section-kicker">JOIN EDURECORD</span><h2>Register your school</h2><p>Interested in using EduRecord? Submit your school's details and our team will review your application. Your administrator account will be prepared after approval.</p><button class="btn" type="button" id="showSchoolApplicationButton" onclick="toggleSchoolApplication()">Apply for a school account <span aria-hidden="true">→</span></button></div>
+  <form id="schoolApplicationForm" class="card home-school-application hidden">
+   <h3>School registration application</h3><p class="muted">Complete the details below. Submitting this form does not create an account immediately; EduRecord will review your application first.</p>
+   <div class="form-grid"><div><label for="applicationSchoolName">School name *</label><input id="applicationSchoolName" required maxlength="160" autocomplete="organization" placeholder="Enter the school's full name"></div><div><label for="applicationPhone">School contact phone *</label><input id="applicationPhone" required type="tel" maxlength="30" autocomplete="tel" placeholder="e.g. 08012345678"></div><div><label for="applicationContactEmail">School contact email</label><input id="applicationContactEmail" type="email" maxlength="254" autocomplete="email" placeholder="School email (optional)"></div><div><label for="applicationAddress">School address *</label><input id="applicationAddress" required maxlength="300" autocomplete="street-address" placeholder="School address and town"></div><div><label for="applicationApplicantName">Your full name *</label><input id="applicationApplicantName" required maxlength="120" autocomplete="name" placeholder="Name of the person applying"></div><div><label for="applicationAdminEmail">Your administrator email *</label><input id="applicationAdminEmail" required type="email" maxlength="254" autocomplete="email" placeholder="Email for your future admin account"></div><div><label for="applicationAdminUsername">Preferred administrator username *</label><input id="applicationAdminUsername" required minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]+" autocomplete="username" placeholder="Choose a username"><small class="help">Use 3–40 letters, numbers, dots, underscores or hyphens.</small></div></div>
+   <div class="notice notice-info">Your application will remain pending until the EduRecord owner reviews it. Do not submit passwords or payment details here.</div>
+   <div id="schoolApplicationMessage" class="notice hidden" role="status" aria-live="polite"></div>
+   <div class="home-school-form-actions"><button class="btn" id="submitSchoolApplicationButton" type="submit">Submit application</button><button class="btn btn-secondary" type="button" onclick="toggleSchoolApplication(false)">Cancel</button></div>
+  </form>
+ </section>
+ <div class="home-footnote">EduRecord · School Results Management System · <span id="currentYear"></span></div>
 </section>
 <section id="loginPage" class="container hidden">
  <div class="login-box card"><h1>Sign In</h1><p class="muted">Sign in with your EduRecord account.</p>
@@ -694,7 +722,11 @@ function printReport(elementId) {
   });
 }
 $("currentYear").textContent=new Date().getFullYear();const footerYear=$("footerYear");if(footerYear)footerYear.textContent=new Date().getFullYear();window.showLogin=showLogin;window.showHome=showHome;window.showStudentPortal=showStudentPortal;window.showOwnerPanel=showOwnerPanel;window.showComingSoon=showComingSoon;window.logout=logout;window.loadSchools=loadSchools;window.printReport=printReport;
-window.addEventListener("error",e=>{const box=$("connectionMessage");if(box){box.textContent="JavaScript error: "+e.message+" (line "+e.lineno+")";box.className="notice notice-error"}});window.addEventListener("unhandledrejection",e=>console.error("Unhandled promise rejection:",e.reason));initializeEduRecord();
+window.addEventListener("error",e=>{const box=$("connectionMessage");if(box){box.textContent="JavaScript error: "+e.message+" (line "+e.lineno+")";box.className="notice notice-error"}});window.addEventListener("unhandledrejection",e=>console.error("Unhandled promise rejection:",e.reason));
+function toggleSchoolApplication(show=true){const form=$("schoolApplicationForm");if(!form)return;const open=show===true;form.classList.toggle("hidden",!open);const trigger=$("showSchoolApplicationButton");if(trigger)trigger.classList.toggle("hidden",open);if(open)form.scrollIntoView({behavior:"smooth",block:"center"});else{form.reset();hideNotice($("schoolApplicationMessage"));if(trigger)trigger.classList.remove("hidden")}}
+$("schoolApplicationForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){setNotice($("schoolApplicationMessage"),"EduRecord is still connecting. Please wait and try again.","error");return}const button=$("submitSchoolApplicationButton");button.disabled=true;button.textContent="Submitting...";hideNotice($("schoolApplicationMessage"));try{const payload={school_name:$("applicationSchoolName").value.trim(),contact_phone:$("applicationPhone").value.trim(),contact_email:$("applicationContactEmail").value.trim()||null,contact_address:$("applicationAddress").value.trim(),applicant_full_name:$("applicationApplicantName").value.trim(),admin_email:$("applicationAdminEmail").value.trim().toLowerCase(),admin_username:$("applicationAdminUsername").value.trim()};if(payload.admin_username.length<3||!/^[A-Za-z0-9._-]+$/.test(payload.admin_username))throw new Error("Choose a username with at least 3 characters using only letters, numbers, dots, underscores or hyphens.");const {error}=await supabaseClient.from("school_applications").insert([payload]);if(error){if(error.code==="42501"||/row-level security|permission denied/i.test(error.message||""))throw new Error("The registration form is not authorised yet. Please contact EduRecord support while we complete the setup.");throw error}$("schoolApplicationForm").reset();setNotice($("schoolApplicationMessage"),"Your school application has been submitted successfully. It is now pending review. EduRecord will contact you after it has been reviewed.","success")}catch(err){console.error("School application submission failed:",err);setNotice($("schoolApplicationMessage"),err.message||"We could not submit your application. Please try again.","error")}finally{button.disabled=false;button.textContent="Submit application"}});
+
+initializeEduRecord();
 </script>
 </body>
 </html>
