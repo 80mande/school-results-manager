@@ -465,6 +465,40 @@ body.public-school-site>.topbar,body.public-school-site>.site-footer{display:non
 @media(max-width:760px){.public-site-nav-inner{align-items:flex-start;flex-direction:column}.public-site-links{gap:12px}.public-site-hero{padding:62px 20px;min-height:320px}.public-site-grid,.public-site-gallery{grid-template-columns:1fr 1fr}.public-site-two{grid-template-columns:1fr}.public-site-section{padding:42px 18px}.public-site-gallery img{height:160px}}
 @media(max-width:460px){.public-site-grid,.public-site-gallery{grid-template-columns:1fr}.public-site-gallery img{height:210px}}
 
+
+<style>
+/* Template 1: EduRecord Professional — visual refinement */
+.public-site-nav{backdrop-filter:blur(14px);background:rgba(255,255,255,.96)}
+.public-site-nav-inner{min-height:82px}
+.public-site-brand{font-size:clamp(16px,2vw,21px);letter-spacing:-.35px;max-width:48%;line-height:1.25}
+.public-site-brand img{width:54px;height:54px;border:1px solid #e8edf4;background:#fff;padding:4px}
+.public-site-links{align-items:center;justify-content:flex-end;gap:clamp(10px,1.7vw,22px)}
+.public-site-links a{font-size:12px;letter-spacing:.15px;transition:color .2s ease}
+.public-site-hero{position:relative;isolation:isolate;overflow:hidden;min-height:440px;padding:clamp(66px,9vw,112px) 24px;background-color:#102d50}
+.public-site-hero:before{content:"";position:absolute;z-index:-1;width:420px;height:420px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-100px;top:-170px;box-shadow:0 0 0 45px rgba(255,255,255,.035),0 0 0 95px rgba(255,255,255,.025)}
+.public-site-hero-inner{position:relative}
+.public-site-kicker{display:inline-flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);font-size:10px;letter-spacing:1.7px}
+.public-site-hero h1{font-weight:850;letter-spacing:-1.7px;text-wrap:balance}
+.public-site-hero p{max-width:680px;font-size:clamp(15px,1.7vw,18px);line-height:1.85}
+.public-site-section{padding-top:clamp(48px,6vw,76px);padding-bottom:clamp(48px,6vw,76px)}
+.public-site-section h2{font-weight:850;letter-spacing:-.8px}
+.public-site-lead{font-size:16px;line-height:1.95}
+.public-site-two{margin-top:22px}
+.public-site-panel{border-radius:18px;padding:clamp(22px,3vw,30px);box-shadow:0 12px 34px rgba(15,35,65,.055)}
+.public-site-panel h3,.public-site-card h3{font-size:17px;font-weight:800;letter-spacing:-.2px}
+.public-site-grid{gap:18px}
+.public-site-card{border-radius:17px;padding:23px;box-shadow:0 10px 30px rgba(15,35,65,.055);transition:transform .2s ease,box-shadow .2s ease}
+.public-site-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(15,35,65,.10)}
+.public-site-gallery{gap:14px}
+.public-site-gallery img{height:230px;border:1px solid #e8edf4;box-shadow:0 8px 22px rgba(15,35,65,.08)}
+.public-site-contact{max-width:none;padding-left:max(22px,calc((100% - 1136px)/2));padding-right:max(22px,calc((100% - 1136px)/2));background:linear-gradient(125deg,#102d50,#173b63)}
+.public-site-contact h2{font-size:clamp(26px,3vw,36px)}
+.public-site-contact p{line-height:1.9}
+.public-site-footer{font-size:12px;letter-spacing:.2px}
+@media(max-width:760px){.public-site-nav-inner{gap:12px;padding:12px 17px}.public-site-brand{max-width:100%;font-size:17px}.public-site-brand img{width:44px;height:44px}.public-site-links{width:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:3px 0 7px;scrollbar-width:thin}.public-site-links a{white-space:nowrap;font-size:12px}.public-site-hero{min-height:350px;padding:62px 19px}.public-site-hero h1{letter-spacing:-1px}.public-site-section{padding-left:19px;padding-right:19px}.public-site-grid,.public-site-gallery{gap:12px}.public-site-card{padding:17px}.public-site-gallery img{height:170px}}
+@media(max-width:460px){.public-site-grid,.public-site-gallery{grid-template-columns:1fr}.public-site-card{padding:19px}.public-site-gallery img{height:215px}.public-site-hero{min-height:330px}.public-site-kicker{font-size:9px;letter-spacing:1.2px}}
+@media(prefers-reduced-motion:reduce){.public-site-card,.public-site-links a{transition:none}}
+</style>
 </style>
 </head>
 <body>
