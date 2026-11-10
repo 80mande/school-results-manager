@@ -466,37 +466,42 @@ body.public-school-site>.topbar,body.public-school-site>.site-footer{display:non
 @media(max-width:460px){.public-site-grid,.public-site-gallery{grid-template-columns:1fr}.public-site-gallery img{height:210px}}
 
 
-/* Template 1: EduRecord Professional — visual refinement */
-.public-site-nav{backdrop-filter:blur(14px);background:rgba(255,255,255,.96)}
-.public-site-nav-inner{min-height:82px}
-.public-site-brand{font-size:clamp(16px,2vw,21px);letter-spacing:-.35px;max-width:48%;line-height:1.25}
-.public-site-brand img{width:54px;height:54px;border:1px solid #e8edf4;background:#fff;padding:4px}
-.public-site-links{align-items:center;justify-content:flex-end;gap:clamp(10px,1.7vw,22px)}
-.public-site-links a{font-size:12px;letter-spacing:.15px;transition:color .2s ease}
-.public-site-hero{position:relative;isolation:isolate;overflow:hidden;min-height:440px;padding:clamp(66px,9vw,112px) 24px;background-color:#102d50}
-.public-site-hero:before{content:"";position:absolute;z-index:-1;width:420px;height:420px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-100px;top:-170px;box-shadow:0 0 0 45px rgba(255,255,255,.035),0 0 0 95px rgba(255,255,255,.025)}
-.public-site-hero-inner{position:relative}
-.public-site-kicker{display:inline-flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);font-size:10px;letter-spacing:1.7px}
-.public-site-hero h1{font-weight:850;letter-spacing:-1.7px;text-wrap:balance}
-.public-site-hero p{max-width:680px;font-size:clamp(15px,1.7vw,18px);line-height:1.85}
-.public-site-section{padding-top:clamp(48px,6vw,76px);padding-bottom:clamp(48px,6vw,76px)}
-.public-site-section h2{font-weight:850;letter-spacing:-.8px}
-.public-site-lead{font-size:16px;line-height:1.95}
-.public-site-two{margin-top:22px}
-.public-site-panel{border-radius:18px;padding:clamp(22px,3vw,30px);box-shadow:0 12px 34px rgba(15,35,65,.055)}
-.public-site-panel h3,.public-site-card h3{font-size:17px;font-weight:800;letter-spacing:-.2px}
-.public-site-grid{gap:18px}
-.public-site-card{border-radius:17px;padding:23px;box-shadow:0 10px 30px rgba(15,35,65,.055);transition:transform .2s ease,box-shadow .2s ease}
-.public-site-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(15,35,65,.10)}
-.public-site-gallery{gap:14px}
-.public-site-gallery img{height:230px;border:1px solid #e8edf4;box-shadow:0 8px 22px rgba(15,35,65,.08)}
-.public-site-contact{max-width:none;padding-left:max(22px,calc((100% - 1136px)/2));padding-right:max(22px,calc((100% - 1136px)/2));background:linear-gradient(125deg,#102d50,#173b63)}
-.public-site-contact h2{font-size:clamp(26px,3vw,36px)}
-.public-site-contact p{line-height:1.9}
-.public-site-footer{font-size:12px;letter-spacing:.2px}
-@media(max-width:760px){.public-site-nav-inner{gap:12px;padding:12px 17px}.public-site-brand{max-width:100%;font-size:17px}.public-site-brand img{width:44px;height:44px}.public-site-links{width:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding:3px 0 7px;scrollbar-width:thin}.public-site-links a{white-space:nowrap;font-size:12px}.public-site-hero{min-height:350px;padding:62px 19px}.public-site-hero h1{letter-spacing:-1px}.public-site-section{padding-left:19px;padding-right:19px}.public-site-grid,.public-site-gallery{gap:12px}.public-site-card{padding:17px}.public-site-gallery img{height:170px}}
-@media(max-width:460px){.public-site-grid,.public-site-gallery{grid-template-columns:1fr}.public-site-card{padding:19px}.public-site-gallery img{height:215px}.public-site-hero{min-height:330px}.public-site-kicker{font-size:9px;letter-spacing:1.2px}}
-@media(prefers-reduced-motion:reduce){.public-site-card,.public-site-links a{transition:none}}
+/* TEMPLATE 1 — EDURECORD SIGNATURE: bold navy, warm gold and editorial layout */
+#publicSchoolWebsitePage{background:#f5f7fa!important;color:#1c2b3d!important;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important}
+.public-site-nav{position:sticky;top:0;background:#102b49!important;border:0!important;box-shadow:0 8px 30px rgba(8,25,45,.22)!important}
+.public-site-nav-inner{max-width:1240px!important;min-height:88px!important;padding:16px 28px!important}
+.public-site-brand{color:#fff!important;font-size:clamp(17px,2vw,22px)!important;letter-spacing:-.35px;font-weight:850!important}
+.public-site-brand img{width:54px!important;height:54px!important;border:2px solid rgba(226,184,91,.85)!important;border-radius:14px!important;background:#fff!important;padding:3px!important}
+.public-site-links{gap:clamp(10px,1.8vw,25px)!important;align-items:center}
+.public-site-links a{color:#e4ebf3!important;font-size:12px!important;letter-spacing:.7px;text-transform:uppercase;font-weight:800!important;padding:10px 0;border-bottom:2px solid transparent;transition:.2s}
+.public-site-links a:hover{color:#f0c66d!important;border-color:#d8ad55}
+.public-site-hero{position:relative;isolation:isolate;overflow:hidden;min-height:540px!important;padding:110px 28px 120px!important;background:radial-gradient(circle at 82% 18%,rgba(221,177,86,.25),transparent 28%),linear-gradient(120deg,#0a2038 0%,#173d61 58%,#245477 100%)!important}
+.public-site-hero:before{content:"";position:absolute;z-index:-1;width:440px;height:440px;border:1px solid rgba(236,195,111,.25);border-radius:50%;right:-110px;top:-180px;box-shadow:0 0 0 35px rgba(236,195,111,.045),0 0 0 75px rgba(236,195,111,.035)}
+.public-site-hero:after{content:"";position:absolute;z-index:-1;left:0;right:0;bottom:0;height:9px;background:linear-gradient(90deg,#bd9140,#f0d28d,#bd9140)}
+.public-site-hero-inner{max-width:1180px!important}
+.public-site-kicker{display:inline-flex;align-items:center;gap:10px;color:#f1cc7c!important;font-size:12px!important;letter-spacing:2.4px!important;font-weight:900!important;text-transform:uppercase}
+.public-site-kicker:before{content:"";display:inline-block;width:34px;height:2px;background:#d9ad57}
+.public-site-hero h1{max-width:850px!important;margin:24px 0 20px!important;color:#fff!important;font-size:clamp(42px,6.5vw,76px)!important;line-height:1.02!important;letter-spacing:-2.4px!important;font-weight:850!important;text-shadow:0 4px 24px rgba(0,0,0,.16)}
+.public-site-hero p{max-width:680px!important;color:#e3edf6!important;font-size:18px!important;line-height:1.9!important}
+.public-site-section{max-width:1240px!important;padding:76px 28px!important}
+.public-site-section h2{position:relative;margin-bottom:22px!important;color:#102b49!important;font-size:clamp(28px,3.4vw,40px)!important;letter-spacing:-1px!important;font-weight:850!important}
+.public-site-section h2:after{content:"";display:block;width:58px;height:4px;margin-top:14px;border-radius:5px;background:#d5a84f}
+.public-site-lead{max-width:900px!important;color:#53657a!important;font-size:17px!important;line-height:2!important}
+.public-site-two{gap:22px!important}
+.public-site-panel{position:relative;background:#fff!important;border:1px solid #e3e9f0!important;border-radius:18px!important;padding:30px!important;box-shadow:0 14px 38px rgba(16,43,73,.07)!important}
+.public-site-panel:before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:4px;border-radius:0 4px 4px 0;background:#d5a84f}
+.public-site-panel h3,.public-site-card h3{color:#153b5d!important;font-size:19px!important;font-weight:850!important}
+.public-site-panel p,.public-site-card p{color:#5c6d80!important;line-height:1.8!important}
+.public-site-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:20px!important;margin-top:30px!important}
+.public-site-card{border:1px solid #e4eaf1!important;border-radius:18px!important;padding:26px!important;box-shadow:0 12px 30px rgba(16,43,73,.06)!important;transition:transform .2s,box-shadow .2s}
+.public-site-card:hover{transform:translateY(-5px);box-shadow:0 18px 38px rgba(16,43,73,.12)!important}
+.public-site-gallery{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+.public-site-gallery img{height:250px!important;border-radius:16px!important;box-shadow:0 10px 28px rgba(16,43,73,.12)}
+.public-site-contact{max-width:none!important;background:linear-gradient(120deg,#0c233d,#173e61)!important;color:#fff!important;padding-left:max(28px,calc((100% - 1184px)/2))!important;padding-right:max(28px,calc((100% - 1184px)/2))!important;border-top:7px solid #d5a84f}
+.public-site-contact h2{color:#fff!important}.public-site-contact h2:after{background:#e5bd69}.public-site-contact p{color:#e0eaf4!important;line-height:1.9!important}.public-site-contact a{color:#f0ca78!important;font-weight:750}
+.public-site-footer{background:#071a2d!important;color:#aebfd1!important;padding:30px 20px!important;letter-spacing:.3px}
+@media(max-width:760px){.public-site-nav-inner{padding:14px 18px!important;gap:12px!important}.public-site-links{gap:8px 15px!important}.public-site-links a{font-size:10px!important}.public-site-hero{min-height:440px!important;padding:78px 20px 90px!important}.public-site-hero h1{font-size:clamp(38px,10vw,58px)!important;letter-spacing:-1.5px!important}.public-site-hero p{font-size:16px!important}.public-site-section{padding:54px 20px!important}.public-site-grid,.public-site-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important}.public-site-gallery img{height:180px!important}}
+@media(max-width:460px){.public-site-nav-inner{align-items:flex-start!important}.public-site-brand{font-size:16px!important}.public-site-links{width:100%;overflow-x:auto;flex-wrap:nowrap!important;padding-bottom:5px}.public-site-links a{white-space:nowrap}.public-site-hero{min-height:410px!important}.public-site-grid,.public-site-gallery{grid-template-columns:1fr!important}.public-site-gallery img{height:220px!important}.public-site-panel,.public-site-card{padding:22px!important}}
 </style>
 </head>
 <body>
