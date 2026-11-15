@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EduRecord | School Management</title>
+<script>
+/* Identify EduRecord-managed school subdomains before the page is painted. */
+(function () {
+  var host = window.location.hostname.toLowerCase();
+  var suffix = ".edurecord.com.ng";
+  if (host.endsWith(suffix)) {
+    var label = host.slice(0, -suffix.length);
+    if (label && label !== "www" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(label)) {
+      document.documentElement.setAttribute("data-edurecord-school-host", "true");
+    }
+  }
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--primary:#1746a2;--primary-dark:#10377f;--background:#f3f6fb;--white:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--green:#15803d;--red:#b91c1c;--amber:#92400e}
@@ -609,6 +622,23 @@ body.public-school-site.public-template-horizon .public-site-section h2:after{ba
 body.public-school-site.public-template-horizon .public-site-panel,body.public-school-site.public-template-horizon .public-site-card{border:1px solid #d4e8ef!important;border-radius:18px!important;box-shadow:0 12px 30px rgba(16,55,82,.08)!important}
 body.public-school-site.public-template-horizon .public-site-contact{background:#10263f!important}
 body.public-school-site.public-template-horizon .public-site-footer{background:#081727!important}
+
+/* Prevent the platform homepage from flashing on school subdomains. */
+html[data-edurecord-school-host="true"] body > .topbar,
+html[data-edurecord-school-host="true"] body > .footer {
+  display: none !important;
+}
+html[data-edurecord-school-host="true"] body > main > section:not(#publicSchoolWebsitePage) {
+  display: none !important;
+}
+html[data-edurecord-school-host="true"] #publicSchoolWebsitePage {
+  display: block !important;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #fff;
+}
 </style>
 </head>
 <body>
@@ -617,7 +647,7 @@ body.public-school-site.public-template-horizon .public-site-footer{background:#
  <div id="topbarActions" class="topbar-actions hidden"><span id="userLabel"></span><button class="btn btn-secondary" onclick="logout()">Sign Out</button></div>
 </header>
 <main>
-<section id="publicSchoolWebsitePage" class="hidden" aria-live="polite"><div id="ownerWebsitePreviewBar"><div>OWNER PREVIEW — PRIVATE DRAFT<small>This preview is visible only to the EduRecord owner. The school website has not been published.</small></div><button class="btn btn-secondary" type="button" onclick="closeOwnerWebsitePreview()">← Return to Owner Dashboard</button></div><div id="adminWebsitePreviewBar" style="display:none;position:sticky;top:0;z-index:1000;background:#e8f3ff;border-bottom:1px solid #9fc6ec;padding:12px 18px;align-items:center;justify-content:space-between;gap:12px;color:#173b63;font-weight:750"><div>ADMIN PREVIEW — UNSAVED CHANGES<small style="display:block;font-weight:500">This is a private preview. Your changes have not been saved or published.</small></div><button class="btn btn-secondary" type="button" onclick="closeAdminWebsitePreview()">← Return to Website Editor</button></div><div id="publicSchoolWebsiteContent"></div></section>
+<section id="publicSchoolWebsitePage" class="hidden" aria-live="polite"><div id="ownerWebsitePreviewBar"><div>OWNER PREVIEW — PRIVATE DRAFT<small>This preview is visible only to the EduRecord owner. The school website has not been published.</small></div><button class="btn btn-secondary" type="button" onclick="closeOwnerWebsitePreview()">← Return to Owner Dashboard</button></div><div id="adminWebsitePreviewBar" style="display:none;position:sticky;top:0;z-index:1000;background:#e8f3ff;border-bottom:1px solid #9fc6ec;padding:12px 18px;align-items:center;justify-content:space-between;gap:12px;color:#173b63;font-weight:750"><div>ADMIN PREVIEW — UNSAVED CHANGES<small style="display:block;font-weight:500">This is a private preview. Your changes have not been saved or published.</small></div><button class="btn btn-secondary" type="button" onclick="closeAdminWebsitePreview()">← Return to Website Editor</button></div><div id="publicSchoolWebsiteContent"><div class="public-site-message"><h1>Loading school website…</h1><p>Please wait while we retrieve the published website.</p></div></div></section>
 <section id="homePage" class="container">
  <div class="hero home-hero"><div class="home-eyebrow">● School Results Management System</div><h1>Better school records.<br>Clearer academic results.</h1><p>EduRecord helps schools organise students, manage assessments and share published results securely — all in one simple platform.</p></div>
  <div id="connectionMessage" class="notice">Connecting to EduRecord...</div>
