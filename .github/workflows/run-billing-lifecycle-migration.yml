@@ -30,4 +30,4 @@ jobs:
           fi
           psql "$SUPABASE_DB_URL" \
             --set ON_ERROR_STOP=1 \
-            --file edurecord_billing_lifecycle_migration.sql
+            --file 20261120_billing_lifecycle.sql
