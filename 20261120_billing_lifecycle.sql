@@ -202,6 +202,61 @@ BEFORE INSERT OR UPDATE OR DELETE ON public.school_sections
 FOR EACH ROW
 EXECUTE FUNCTION public.edurecord_guard_school_section_writes();
 
+
+-- ---------------------------------------------------------------------
+-- 2A. Private payment-evidence storage policies. The private bucket itself
+--      is created once in the Supabase Dashboard (not by writing to the
+--      Storage system tables from SQL).
+--      School admins can upload/read only in their own school folder;
+--      the owner can read all evidence. Admins can clean unlinked uploads.
+-- ---------------------------------------------------------------------
+DROP POLICY IF EXISTS edurecord_billing_evidence_read
+  ON storage.objects;
+CREATE POLICY edurecord_billing_evidence_read
+  ON storage.objects
+  FOR SELECT TO authenticated
+  USING (
+    bucket_id = 'billing-payment-evidence'
+    AND (
+      COALESCE(public.edurecord_is_owner(), false)
+      OR (
+        split_part(name, '/', 1) = public.edurecord_my_school_id()::text
+        AND public.edurecord_is_school_admin(public.edurecord_my_school_id())
+      )
+    )
+  );
+
+DROP POLICY IF EXISTS edurecord_billing_evidence_upload
+  ON storage.objects;
+CREATE POLICY edurecord_billing_evidence_upload
+  ON storage.objects
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    bucket_id = 'billing-payment-evidence'
+    AND public.edurecord_my_school_id() IS NOT NULL
+    AND split_part(name, '/', 1) = public.edurecord_my_school_id()::text
+    AND public.edurecord_is_school_admin(public.edurecord_my_school_id())
+  );
+
+DROP POLICY IF EXISTS edurecord_billing_evidence_cleanup_orphan
+  ON storage.objects;
+CREATE POLICY edurecord_billing_evidence_cleanup_orphan
+  ON storage.objects
+  FOR DELETE TO authenticated
+  USING (
+    bucket_id = 'billing-payment-evidence'
+    AND public.edurecord_my_school_id() IS NOT NULL
+    AND split_part(name, '/', 1) = public.edurecord_my_school_id()::text
+    AND public.edurecord_is_school_admin(public.edurecord_my_school_id())
+    AND NOT EXISTS (
+      SELECT 1
+      FROM public.school_billing_payments p
+      WHERE p.school_id = public.edurecord_my_school_id()
+        AND p.evidence_path = storage.objects.name
+    )
+  );
+
+
 -- ---------------------------------------------------------------------
 -- 3. Notification helper. Sends each event to all active school admins
 --    and active EduRecord owners. Uses deterministic keys and ON CONFLICT
@@ -350,7 +405,7 @@ BEGIN
       s.billing_day,
       s.billing_cycle
     FROM public.school_subscriptions s
-    WHERE s.status IN ('trial', 'active')
+    WHERE s.status IN ('trial', 'active', 'suspended')
       AND s.billing_day IS NOT NULL
       AND s.billing_cycle IN ('monthly', 'termly')
     ORDER BY s.school_id
@@ -949,71 +1004,137 @@ BEGIN
 END;
 $policies$;
 
+-- ---------------------------------------------------------------------
+-- 8. In-transaction verification. Any failed check aborts and rolls back
+--    the migration before COMMIT. The results below are also printed in
+--    the GitHub Actions log for an auditable execution record.
+-- ---------------------------------------------------------------------
+DO $verify$
+DECLARE
+  v_generator text;
+  v_lifecycle text;
+  v_policy_count integer;
+  v_table_count integer;
+  v_storage_policy_count integer;
+BEGIN
+  v_generator := pg_get_functiondef(
+    'public.edurecord_generate_due_invoices(date)'::regprocedure
+  );
+  IF v_generator NOT ILIKE '%status IN (''trial'', ''active'', ''suspended'')%'
+     OR v_generator NOT ILIKE '%ELSIF v_sub.status IN (''active'', ''suspended'') THEN%' THEN
+    RAISE EXCEPTION 'Verification failed: invoice generator does not include suspended subscriptions.';
+  END IF;
+
+  v_lifecycle := pg_get_functiondef(
+    'public.edurecord_process_billing_lifecycle(date)'::regprocedure
+  );
+  IF v_lifecycle NOT ILIKE '%WHERE s.status IN (''trial'', ''active'', ''suspended'')%'
+  THEN
+    RAISE EXCEPTION 'Verification failed: suspended subscriptions are missing from upcoming reminder processing.';
+  END IF;
+
+  IF NOT has_function_privilege(
+    'service_role', 'public.edurecord_run_scheduled_billing(date)', 'EXECUTE'
+  ) OR has_function_privilege(
+    'authenticated', 'public.edurecord_run_scheduled_billing(date)', 'EXECUTE'
+  ) OR has_function_privilege(
+    'anon', 'public.edurecord_run_scheduled_billing(date)', 'EXECUTE'
+  ) THEN
+    RAISE EXCEPTION 'Verification failed: scheduled billing RPC privileges are not service-role-only.';
+  END IF;
+
+  SELECT count(*) INTO v_policy_count
+  FROM pg_policies
+  WHERE schemaname = 'public'
+    AND tablename IN (
+      'academic_terms', 'assessment_settings', 'class_subjects', 'classes',
+      'result_publications', 'results', 'school_sections', 'school_settings',
+      'scores', 'section_score_settings', 'students', 'subjects',
+      'teacher_assignments', 'teacher_score_submissions'
+    )
+    AND policyname LIKE 'edurecord_subscription_write_%';
+  IF v_policy_count <> 42 THEN
+    RAISE EXCEPTION 'Verification failed: expected 42 restrictive academic write policies, found %.', v_policy_count;
+  END IF;
+
+  SELECT count(*) INTO v_table_count
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname IN (
+      'academic_terms', 'assessment_settings', 'class_subjects', 'classes',
+      'result_publications', 'results', 'school_sections', 'school_settings',
+      'scores', 'section_score_settings', 'students', 'subjects',
+      'teacher_assignments', 'teacher_score_submissions'
+    )
+    AND c.relrowsecurity;
+  IF v_table_count <> 14 THEN
+    RAISE EXCEPTION 'Verification failed: expected RLS enabled on all 14 academic tables, found %.', v_table_count;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgrelid = 'public.school_billing_payments'::regclass
+      AND tgname = 'edurecord_billing_payment_lifecycle_trigger'
+      AND NOT tgisinternal
+  ) OR NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgrelid = 'public.school_sections'::regclass
+      AND tgname = 'edurecord_guard_school_section_writes_trigger'
+      AND NOT tgisinternal
+  ) THEN
+    RAISE EXCEPTION 'Verification failed: one or more required lifecycle triggers are missing.';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM storage.buckets
+    WHERE id = 'billing-payment-evidence' AND public = false
+      AND file_size_limit = 5242880
+  ) THEN
+    RAISE EXCEPTION 'Verification failed: private payment-evidence bucket is missing or misconfigured.';
+  END IF;
+
+  SELECT count(*) INTO v_storage_policy_count
+  FROM pg_policies
+  WHERE schemaname = 'storage'
+    AND tablename = 'objects'
+    AND policyname IN (
+      'edurecord_billing_evidence_read',
+      'edurecord_billing_evidence_upload',
+      'edurecord_billing_evidence_cleanup_orphan'
+    );
+  IF v_storage_policy_count <> 3 THEN
+    RAISE EXCEPTION 'Verification failed: expected 3 payment-evidence storage policies, found %.', v_storage_policy_count;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname = 'school_billing_lifecycle_events'
+      AND c.relrowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Verification failed: lifecycle event audit table or its RLS is missing.';
+  END IF;
+END;
+$verify$;
+
+SELECT
+  'invoice_generator_includes_suspended' AS check_name,
+  true AS passed
+UNION ALL
+SELECT 'reminders_include_suspended', true
+UNION ALL
+SELECT 'scheduled_rpc_service_role_only', true
+UNION ALL
+SELECT '42_restrictive_academic_write_policies', true
+UNION ALL
+SELECT '14_academic_tables_rls_enabled', true
+UNION ALL
+SELECT 'payment_and_section_guard_triggers_present', true
+UNION ALL
+SELECT 'private_payment_evidence_bucket_and_policies', true
+UNION ALL
+SELECT 'lifecycle_event_audit_table_rls_enabled', true;
+
 COMMIT;
-
--- ---------------------------------------------------------------------
--- 8. Read-only verification output.
--- ---------------------------------------------------------------------
-SELECT
-  'invoice_generator_handles_suspended' AS check_name,
-  (
-    pg_get_functiondef(
-      'public.edurecord_generate_due_invoices(date)'::regprocedure
-    ) ILIKE '%status IN (''trial'', ''active'', ''suspended'')%'
-    AND pg_get_functiondef(
-      'public.edurecord_generate_due_invoices(date)'::regprocedure
-    ) ILIKE '%ELSIF v_sub.status IN (''active'', ''suspended'') THEN%'
-  ) AS passed;
-
-SELECT
-  'scheduled_rpc_service_role_only' AS check_name,
-  has_function_privilege(
-    'service_role',
-    'public.edurecord_run_scheduled_billing(date)',
-    'EXECUTE'
-  ) AS service_role_can_execute,
-  has_function_privilege(
-    'authenticated',
-    'public.edurecord_run_scheduled_billing(date)',
-    'EXECUTE'
-  ) AS authenticated_can_execute,
-  has_function_privilege(
-    'anon',
-    'public.edurecord_run_scheduled_billing(date)',
-    'EXECUTE'
-  ) AS anon_can_execute;
-
-SELECT
-  tablename,
-  count(*) FILTER (WHERE policyname LIKE 'edurecord_subscription_write_%')
-    AS lifecycle_restrictive_policy_count
-FROM pg_policies
-WHERE schemaname = 'public'
-  AND tablename IN (
-    'academic_terms', 'assessment_settings', 'class_subjects', 'classes',
-    'result_publications', 'results', 'school_sections', 'school_settings',
-    'scores', 'section_score_settings', 'students', 'subjects',
-    'teacher_assignments', 'teacher_score_submissions'
-  )
-GROUP BY tablename
-ORDER BY tablename;
-
-SELECT
-  s.school_id,
-  s.status AS subscription_status,
-  EXISTS (
-    SELECT 1
-    FROM public.school_billing_invoices i
-    WHERE i.school_id = s.school_id
-      AND i.status IN ('issued', 'partially_paid', 'overdue')
-      AND i.balance_amount > 0
-      AND i.due_at IS NOT NULL
-      AND now() > i.due_at + interval '7 days'
-  ) AS has_unpaid_invoice_past_grace
-FROM public.school_subscriptions s
-ORDER BY s.school_id;
-
-SELECT
-  'billing_lifecycle_audit_ledger' AS check_name,
-  to_regclass('public.school_billing_lifecycle_events') IS NOT NULL AS table_exists,
-  (SELECT count(*) FROM pg_indexes WHERE schemaname = 'public' AND tablename = 'school_billing_lifecycle_events') AS index_count;
