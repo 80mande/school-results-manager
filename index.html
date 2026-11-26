@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EduRecord | School Management</title>
+<meta name="theme-color" content="#1746a2">
+<link rel="manifest" href="/manifest.webmanifest">
 <script>
 /* Identify EduRecord-managed school subdomains before the page is painted. */
 (function () {
@@ -1336,6 +1338,18 @@ function toggleSchoolApplication(show=true){const form=$("schoolApplicationForm"
 $("schoolApplicationForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){setNotice($("schoolApplicationMessage"),"EduRecord is still connecting. Please wait and try again.","error");return}const button=$("submitSchoolApplicationButton");button.disabled=true;button.textContent="Submitting...";hideNotice($("schoolApplicationMessage"));try{const payload={school_name:$("applicationSchoolName").value.trim(),contact_phone:$("applicationPhone").value.trim(),contact_email:$("applicationContactEmail").value.trim()||null,contact_address:$("applicationAddress").value.trim(),applicant_full_name:$("applicationApplicantName").value.trim(),admin_email:$("applicationAdminEmail").value.trim().toLowerCase(),admin_username:$("applicationAdminUsername").value.trim(),offered_sections:[...[...["applicationSectionNursery","applicationSectionPrimary","applicationSectionSecondary"]].filter(id=>$(id).checked).map(id=>$(id).value)]};if(payload.offered_sections.length===0)throw new Error("Please select at least one school section: Nursery, Primary or Secondary.");if(payload.admin_username.length<3||!/^[A-Za-z0-9._-]+$/.test(payload.admin_username))throw new Error("Choose a username with at least 3 characters using only letters, numbers, dots, underscores or hyphens.");const {error}=await supabaseClient.from("school_applications").insert([payload]);if(error){if(error.code==="42501"||/row-level security|permission denied/i.test(error.message||""))throw new Error("The registration form is not authorised yet. Please contact EduRecord support while we complete the setup.");throw error}$("schoolApplicationForm").reset();setNotice($("schoolApplicationMessage"),"Your school application has been submitted successfully. It is now pending review. EduRecord will contact you after it has been reviewed.","success")}catch(err){console.error("School application submission failed:",err);setNotice($("schoolApplicationMessage"),err.message||"We could not submit your application. Please try again.","error")}finally{button.disabled=false;button.textContent="Submit application"}});
 
 $("ownerPaymentSettingsForm").addEventListener("submit",saveOwnerPaymentSettings);$("websiteBillingForm").addEventListener("submit",saveWebsiteBilling);$("websitePaymentForm").addEventListener("submit",recordWebsitePayment);$("websiteBillingSchool").addEventListener("change",e=>loadSelectedWebsiteBilling(e.target.value));$("clearWebsiteBillingButton").addEventListener("click",()=>{const schoolId=$("websiteBillingSchool").value;$("websiteBillingAmount").value="";$("websiteBillingCycle").value="monthly";$("websiteBillingStatus").value="pending";$("websiteBillingStart").value="";$("websiteBillingExpiry").value="";$("websiteBillingNotes").value="";selectedWebsiteSubscriptionId="";$("websitePaymentSection").classList.add("hidden");$("websitePaymentHistoryBody").innerHTML='<tr><td colspan="5" class="muted">Save a website subscription for this school before recording payments.</td></tr>';if(schoolId)setNotice($("ownerWebsiteBillingMessage"),"Form cleared. Save to create or update the selected school's website subscription.","info")});$("websitePaymentDate").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+
+/* Register a lightweight, network-first PWA worker on EduRecord domains. */
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  const pwaHost = location.hostname.toLowerCase();
+  if (pwaHost === "edurecord.com.ng" || pwaHost === "www.edurecord.com.ng" || pwaHost.endsWith(".edurecord.com.ng")) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js", { scope: "/" })
+        .catch(error => console.warn("EduRecord PWA worker registration failed:", error));
+    });
+  }
+}
+
 initializeEduRecord();
 </script>
 
