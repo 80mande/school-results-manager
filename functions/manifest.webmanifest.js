@@ -1,8 +1,10 @@
+
 import { getPwaContext } from "./_lib/pwa.js";
 
 export async function onRequest({ request }) {
   const app = await getPwaContext(request);
   const origin = new URL(request.url).origin;
+
   const manifest = {
     id: `${origin}/`,
     name: app.name,
@@ -14,8 +16,22 @@ export async function onRequest({ request }) {
     orientation: "any",
     background_color: "#ffffff",
     theme_color: app.primary,
-    icons: [{ src: "/pwa-icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }]
+    icons: [
+      {
+        src: "/pwa-icon.svg",
+        sizes: "192x192",
+        type: "image/svg+xml",
+        purpose: "any"
+      },
+      {
+        src: "/pwa-icon.svg",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ]
   };
+
   return new Response(JSON.stringify(manifest), {
     headers: {
       "Content-Type": "application/manifest+json; charset=utf-8",
