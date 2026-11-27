@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EduRecord | School Management</title>
-<meta name="theme-color" content="#1746a2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650;12..96,700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a1830">
 <link rel="manifest" href="/manifest.webmanifest">
 <script>
 /* Identify EduRecord-managed school subdomains before the page is painted. */
@@ -654,6 +657,458 @@ html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-appl
 <style id="edurecord-dashboard-controls-style">.owner-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.owner-action{background:#fff;border:1px solid #e4eaf4;border-radius:16px;padding:18px;box-shadow:0 7px 22px rgba(20,42,88,.04)}.owner-panel .card{box-shadow:var(--shadow)}.owner-panel-head{gap:16px}.notification-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin:18px 0 10px}.notification-toolbar h3{margin:0}.notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.notification-actions select{width:auto;min-width:125px;padding:8px 10px}.owner-notification-check{accent-color:#2457d6}@media(max-width:700px){.owner-quick-actions{grid-template-columns:1fr}.notification-actions{width:100%}.notification-actions select{flex:1}}</style>
 
 <style>.public-school-site .public-site-hero{background-image:linear-gradient(115deg,rgba(4,60,48,.78),rgba(7,91,70,.62)),var(--public-site-hero-image,linear-gradient(120deg,#043c30,#11765d))!important;background-size:cover!important;background-position:center!important}</style>
+
+<style id="edurecord-ink-brass">
+/* =====================================================================
+   EduRecord — Ink & Brass design layer
+   Visual layer only: every ID, class hook, Supabase call and print rule
+   is untouched. Screen-only so report cards and broadsheets print as before.
+   ===================================================================== */
+@media screen{
+:root{
+  --ink:#0a1830;--ink-2:#10264a;--royal:#1b3f86;--royal-2:#2a5bb8;
+  --brass:#9c7628;--brass-2:#d4b46a;--champagne:#f0e3bf;
+  --porcelain:#f4f6fa;--line:#e2e7ef;--text:#14223b;--muted:#64738a;
+  --primary:#1b3f86;--primary-dark:#10264a;--background:#f4f6fa;--border:#e2e7ef;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --lift:0 1px 2px rgba(10,24,48,.05),0 14px 34px -16px rgba(10,24,48,.16);
+  --lift-lg:0 2px 4px rgba(10,24,48,.06),0 34px 64px -28px rgba(10,24,48,.34);
+}
+::selection{background:var(--champagne);color:var(--ink)}
+body:not(.public-school-site){font-family:var(--sans);background:var(--porcelain);color:var(--text);letter-spacing:0;line-height:1.6}
+button,input,select,textarea{font-family:inherit}
+*:focus-visible{outline:2px solid #2f63c7;outline-offset:3px}
+.topbar :focus-visible,.home-hero :focus-visible,.home-bottom-cta :focus-visible,.section-title :focus-visible,.site-footer :focus-visible,.student-portal-banner :focus-visible{outline-color:var(--champagne)}
+
+/* ---------- Top bar ---------- */
+.topbar{min-height:70px;padding:14px max(20px,calc((100vw - 1240px)/2 + 22px));background:var(--ink);box-shadow:none;backdrop-filter:none;border-bottom:1px solid;border-image:linear-gradient(90deg,transparent,var(--brass) 18%,var(--brass-2) 50%,var(--brass) 82%,transparent) 1}
+.brand{font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;color:#fff;line-height:1.15}
+.brand:before{content:"E";width:36px;height:36px;margin-right:11px;border-radius:10px;background:linear-gradient(150deg,#16305c,#0a1830);border:1px solid var(--brass-2);color:var(--brass-2);font-family:var(--serif);font-style:italic;font-size:21px;font-weight:500;box-shadow:inset 0 0 0 3px rgba(212,180,106,.08),0 4px 12px rgba(0,0,0,.35)}
+.brand small{margin-left:47px;margin-top:-1px;font-family:var(--sans);font-size:11.5px;font-weight:500;letter-spacing:.02em;text-transform:none;color:#9db0d2;opacity:1}
+#topbarActions{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px}
+#userLabel{color:#d6e0f3}
+.topbar .btn-secondary{background:transparent;color:#e8eefb;border-color:rgba(255,255,255,.22)}
+.topbar .btn-secondary:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.35)}
+
+/* ---------- Buttons ---------- */
+.btn{background:var(--ink-2);border:1px solid var(--ink-2);color:#fff;border-radius:9px;padding:11px 19px;font-size:14px;font-weight:650;letter-spacing:.005em;box-shadow:0 1px 2px rgba(10,24,48,.2);transition:background .18s,border-color .18s,box-shadow .18s,transform .18s}
+.btn:hover{background:var(--royal);border-color:var(--royal);box-shadow:0 10px 20px -10px rgba(16,38,74,.6);transform:translateY(-1px)}
+.btn:active{transform:none;box-shadow:none}
+.btn-secondary{background:#fff;color:var(--ink-2);border-color:var(--line);box-shadow:none}
+.btn-secondary:hover{background:#f6f8fc;color:var(--ink);border-color:#c8d2e3;box-shadow:none}
+.btn-danger{background:#9b1c2c;border-color:#9b1c2c}.btn-danger:hover{background:#7f1523;border-color:#7f1523}
+.btn-small{border-radius:7px}
+.btn:disabled{opacity:.5;transform:none;box-shadow:none}
+
+/* ---------- Surfaces & forms ---------- */
+.card,.portal,.stat{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--lift)}
+.card{padding:26px}.card:hover{border-color:var(--line);box-shadow:var(--lift)}
+.card h2{color:var(--ink);font-size:19px;font-weight:700;letter-spacing:-.01em}
+.muted,.help{color:var(--muted)}
+label{color:#33445f;font-size:12.5px;font-weight:650;letter-spacing:.005em}
+input,select,textarea{min-height:44px;border:1px solid #d5dde9;border-radius:9px;background:#fff;color:var(--ink);padding:11px 13px;font-size:14.5px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--royal);box-shadow:0 0 0 4px rgba(27,63,134,.12)}
+input::placeholder,textarea::placeholder{color:#9aa6b8}
+input[type=checkbox],input[type=radio]{min-height:0;accent-color:var(--royal)}
+fieldset{border-color:var(--line)!important}
+
+.notice{border-radius:10px;border:1px solid #cfdcf3;border-left:3px solid var(--royal);background:#f3f7fd;color:#1c3a6e;padding:13px 16px;font-size:13.5px;line-height:1.6}
+.notice-success{background:#f0f8f3;border-color:#c7e4d3;border-left-color:#1f8a57;color:#14573a}
+.notice-error{background:#fdf2f3;border-color:#f1cdd1;border-left-color:#b3202f;color:#8a1623}
+.notice-warning{background:#fdf7e8;border-color:#efdfae;border-left-color:#b9831c;color:#7a5410}
+
+/* ---------- Tables ---------- */
+.table-wrap{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:none}
+th{background:#f6f8fb;color:#586882;font-size:12px;font-weight:650;letter-spacing:.01em;text-transform:none;padding:13px 16px;border-bottom:1px solid var(--line)}
+td{padding:13px 16px;color:#25354e;font-size:13.5px;border-bottom:1px solid #edf0f5}
+tbody tr:nth-child(even){background:transparent}
+tbody tr:hover{background:#f7f9fc}
+tbody tr:last-child td{border-bottom:0}
+.status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px 4px 9px;font-size:12px;font-weight:650;letter-spacing:0}
+.status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.status.active{background:#e8f5ee;color:#176a41}.status.inactive{background:#fbeaec;color:#9b1c2c}.status.pending{background:#fbf1dc;color:#85560b}
+
+/* ---------- Page headers, stats, tabs ---------- */
+.section-title{padding:22px 26px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--lift)}
+.section-title h1{color:var(--ink);font-family:var(--serif);font-size:30px;font-weight:500;letter-spacing:-.02em}
+#dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{min-height:0;padding:32px 36px;border:1px solid #16315c;border-radius:20px;background:radial-gradient(90% 150% at 100% 0,rgba(42,91,184,.5),transparent 56%),radial-gradient(60% 90% at 0 100%,rgba(156,118,40,.16),transparent 62%),linear-gradient(160deg,#0a1830,#10264a);box-shadow:var(--lift-lg);color:#fff}
+#dashboardPage>.section-title h1,#schoolAdminPage>.section-title h1,#teacherDashboardPage>.section-title h1{color:#fff;font-size:clamp(28px,3.4vw,38px);font-weight:500;letter-spacing:-.02em}
+#dashboardPage>.section-title .muted,#schoolAdminPage>.section-title .muted,#teacherDashboardPage>.section-title .muted{color:#b4c3df}
+#dashboardPage>.section-title .btn-secondary,#schoolAdminPage>.section-title .btn-secondary,#teacherDashboardPage>.section-title .btn-secondary{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.24)}
+#dashboardPage>.section-title .btn-secondary:hover,#schoolAdminPage>.section-title .btn-secondary:hover,#teacherDashboardPage>.section-title .btn-secondary:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.38)}
+
+.stats{gap:16px}
+.stat,.stat:nth-child(2),.stat:nth-child(3),#dashboardPage>.stats .stat{border-top:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--lift)}
+.stat span{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;font-weight:600}
+.stat span:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--royal)}
+.stat:nth-child(2) span:before{background:#2a9560}.stat:nth-child(3) span:before{background:var(--brass-2)}
+.stat strong{font-family:var(--serif);font-size:40px;font-weight:500;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-top:8px}
+
+.tab-btn{background:#fff;color:#4a5b75;border:1px solid var(--line);box-shadow:none}
+.tab-btn:hover{background:#f5f7fb;color:var(--ink);transform:none;box-shadow:none}
+.tab-btn.active{background:var(--ink-2);color:#fff;border-color:var(--ink-2)}
+#adminTabs{padding:6px;gap:4px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:var(--lift)}
+#adminTabs .tab-btn{background:transparent;color:#52627b;border:0;border-radius:8px;padding:10px 15px;font-size:13px;font-weight:600;box-shadow:none}
+#adminTabs .tab-btn:hover{background:#f1f4f9;color:var(--ink);box-shadow:none}
+#adminTabs .tab-btn.active{background:var(--ink-2);color:#fff;box-shadow:inset 0 -2px 0 var(--brass-2)}
+
+.owner-action{border:1px solid var(--line);border-radius:14px;background:#fff;padding:20px;box-shadow:var(--lift);transition:border-color .2s,box-shadow .2s}
+.owner-action:hover{border-color:#cdb77f;box-shadow:var(--lift-lg)}
+.owner-action-icon{background:var(--ink-2);color:var(--brass-2);border-radius:12px;font-size:20px}
+.owner-action h2{font-size:15.5px;font-weight:700;color:var(--ink)}
+.owner-panel>.card{border-top:3px solid var(--brass-2)}
+
+/* ---------- Homepage ---------- */
+.home-nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px 8px 7px 14px;gap:4px;margin:0 0 20px;box-shadow:var(--lift)}
+.home-nav a{color:#4a5a73;font-size:14px;font-weight:600;padding:9px 13px;border-radius:8px}
+.home-nav a:hover{background:#f1f4f9;color:var(--ink)}
+.home-nav .btn{margin-left:auto;color:#fff}
+
+.home-hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr);align-content:center;align-items:center;min-height:480px;padding:clamp(36px,6vw,80px) clamp(26px,5vw,76px);border-radius:26px;border:1px solid #16315c;color:#fff;background:radial-gradient(110% 90% at 100% 0,rgba(42,91,184,.55),transparent 56%),radial-gradient(70% 60% at 0 100%,rgba(156,118,40,.16),transparent 62%),linear-gradient(160deg,#0a1830 0%,#0d2147 62%,#10264a 100%);box-shadow:var(--lift-lg)}
+.home-hero:before{content:"";position:absolute;z-index:-1;inset:14px;border:1px solid rgba(212,180,106,.18);border-radius:16px;pointer-events:none}
+.home-hero:after{display:none}
+.home-hero>*{grid-column:1}
+.home-hero .home-eyebrow{justify-self:start;display:inline-flex;align-items:center;gap:8px;padding:0;margin:0 0 20px;border:0;background:none;color:var(--brass-2);font-size:14px;font-weight:600;letter-spacing:.01em;text-transform:none}
+.home-hero h1{font-family:var(--serif);font-size:clamp(38px,5.4vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.025em;color:#fff;max-width:14em;text-wrap:balance;margin:0 0 20px}
+.home-hero p{max-width:34em;margin:0;font-size:clamp(16px,1.5vw,18px);line-height:1.7;color:#c3d0e8}
+.home-hero-actions{margin-top:30px}
+.home-hero .btn{background:linear-gradient(180deg,#f3e4b4,#d6b565);border-color:#e6cf8c;color:#1b1406;font-weight:700;box-shadow:0 10px 24px -12px rgba(212,180,106,.7)}
+.home-hero .btn:hover{background:linear-gradient(180deg,#f8ecc6,#e0c176);border-color:#efdca0;color:#1b1406;box-shadow:0 14px 28px -12px rgba(212,180,106,.8)}
+.home-hero .btn-secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow:none}
+.home-hero .btn-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);color:#fff;box-shadow:none}
+.hero-assurances{list-style:none;display:flex;flex-wrap:wrap;gap:10px 26px;margin:34px 0 0;padding:22px 0 0;border-top:1px solid rgba(255,255,255,.12);color:#aebddb;font-size:13.5px}
+.hero-assurances li{display:flex;align-items:center;gap:8px}
+.hero-assurances li:before{content:"✓";color:var(--brass-2);font-weight:700}
+
+
+/* feature strip: one joined panel instead of three loose cards */
+.home-features{gap:0;margin:22px 0 60px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--lift);overflow:hidden}
+.home-feature{padding:26px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.home-feature+.home-feature{border-left:1px solid var(--line)}
+.home-feature strong{color:var(--ink);font-size:15.5px;font-weight:700}
+.home-feature span{color:var(--muted);font-size:13.5px}
+.home-feature-icon,.portal-icon{background:var(--ink-2);color:var(--brass-2);border-radius:12px;font-size:19px}
+
+.home-school-register{display:block;margin:0 0 60px;padding:clamp(24px,4vw,40px);border:1px solid var(--line);border-left:3px solid var(--brass-2);border-radius:16px;background:#fff;box-shadow:var(--lift)}
+.home-school-register-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:36px;align-items:center}
+.home-school-register-copy>*{grid-column:1}
+.home-school-register-copy>.btn{grid-column:2;grid-row:1/span 3;align-self:center}
+.home-school-register-copy h2{font-family:var(--serif);font-size:clamp(28px,3.2vw,38px);font-weight:500;letter-spacing:-.02em;color:var(--ink);margin:6px 0 10px}
+.home-school-register-copy p{max-width:36em;margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+.home-section-kicker{display:inline-flex;align-items:center;gap:10px;color:var(--brass);font-size:13.5px;font-weight:700;letter-spacing:.01em;text-transform:none}
+.home-section-kicker:before{content:"";width:26px;height:2px;background:var(--brass-2)}
+.home-school-application{margin-top:28px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe;box-shadow:none}
+.home-school-application h3{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.01em;margin:0 0 4px;color:var(--ink)}
+
+.pricing-section{margin:0 0 60px;padding:clamp(28px,5vw,60px);border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--lift)}
+.pricing-heading{max-width:640px}
+.pricing-heading h2{font-family:var(--serif);font-size:clamp(32px,4.2vw,46px);font-weight:500;line-height:1.08;letter-spacing:-.025em;color:var(--ink);margin:10px 0 14px}
+.pricing-heading p{color:var(--muted);font-size:15.5px;line-height:1.7}
+.pricing-heading .home-section-kicker{justify-content:center}
+.pricing-switch{padding:4px;border-radius:999px;background:#eef1f6;margin:22px auto 34px}
+.pricing-switch button{padding:10px 20px;border-radius:999px;font-size:13.5px;font-weight:650;color:#566783}
+.pricing-switch button.active{background:var(--ink-2);color:#fff;box-shadow:none}
+.pricing-grid{gap:16px;align-items:stretch}
+.pricing-card{padding:28px 22px;border:1px solid var(--line);border-radius:14px;background:#fff;transition:border-color .2s}
+.pricing-card:hover{border-color:#cdb77f}
+.pricing-students{color:var(--muted);font-size:13px;font-weight:600}
+.pricing-amount{font-family:var(--serif);font-size:clamp(32px,3.4vw,44px);font-weight:500;letter-spacing:-.025em;line-height:1.1;color:var(--ink);font-variant-numeric:lining-nums tabular-nums;margin:14px 0 4px}
+.pricing-period{color:#8391a7;font-size:13px}
+.pricing-card.featured{background:linear-gradient(170deg,#0e2348,#0a1830);border-color:var(--ink);box-shadow:var(--lift-lg);transform:translateY(-10px)}
+.pricing-card.featured .pricing-students{color:var(--brass-2)}
+.pricing-card.featured .pricing-amount{color:#fff}
+.pricing-card.featured .pricing-period{color:#a2b3d2}
+.pricing-includes span{background:transparent;border:1px solid var(--line);border-radius:999px;color:#3a4d6b;font-weight:650;padding:8px 14px}
+.pricing-note{color:var(--muted)}
+
+.portal-section-heading{margin:0 0 20px}
+.portal-section-heading h2{font-family:var(--serif);font-size:clamp(28px,3.4vw,38px);font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+.portal-section-heading p{color:var(--muted);font-size:15.5px}
+.portal{position:relative;overflow:hidden;padding:28px 26px;border-radius:14px;min-height:0}
+.portal:after{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--brass),var(--brass-2));transition:width .35s ease}
+.portal:hover{transform:translateY(-3px);border-color:#d3dbe8;box-shadow:var(--lift-lg)}
+.portal:hover:after{width:100%}
+.portal h2{font-family:var(--serif);font-size:24px;font-weight:500;letter-spacing:-.015em;color:var(--ink);margin:18px 0 8px}
+.portal p{font-size:14.5px;line-height:1.65}
+
+.home-bottom-cta{position:relative;overflow:hidden;margin:60px 0 28px;padding:clamp(30px,4.5vw,48px);border:1px solid #16315c;border-radius:20px;background:radial-gradient(80% 150% at 100% 0,rgba(42,91,184,.5),transparent 60%),var(--ink);box-shadow:var(--lift-lg)}
+.home-bottom-cta:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--brass-2),transparent)}
+.home-bottom-cta h2{font-family:var(--serif);font-size:clamp(26px,3.2vw,36px);font-weight:500;letter-spacing:-.02em;color:#fff}
+.home-bottom-cta p{color:#b8c7e2;font-size:15.5px}
+.home-bottom-cta .btn{background:linear-gradient(180deg,#f3e4b4,#d6b565);border-color:#e6cf8c;color:#1b1406;font-weight:700}
+.home-bottom-cta .btn:hover{background:linear-gradient(180deg,#f8ecc6,#e0c176);border-color:#efdca0;color:#1b1406}
+.home-footnote{color:#8a98ad}
+
+/* ---------- Sign-in, student portal, footer ---------- */
+.login-box{max-width:460px;margin:48px auto;padding:38px;border-radius:18px;border-top:3px solid var(--brass-2);box-shadow:var(--lift-lg)}
+.login-box h1{margin:0 0 6px;font-family:var(--serif);font-size:36px;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+.student-portal-banner{padding:36px;border:1px solid #16315c;border-bottom:3px solid var(--brass-2);border-radius:18px 18px 0 0;background:radial-gradient(90% 150% at 100% 0,rgba(42,91,184,.5),transparent 56%),linear-gradient(160deg,#0a1830,#10264a)}
+.student-portal-banner h1{font-family:var(--serif);font-weight:500;letter-spacing:-.02em}
+.student-portal-form-card{border-top:0;border-radius:0 0 18px 18px;box-shadow:var(--lift-lg)}
+.portal-security-note{background:#fbf6e8;border-color:#ead9a6;color:#5b4614}
+.site-footer{margin-top:56px;background:var(--ink);border-top:1px solid;border-image:linear-gradient(90deg,transparent,var(--brass) 18%,var(--brass-2) 50%,var(--brass) 82%,transparent) 1}
+.site-footer-mark{background:linear-gradient(150deg,#16305c,#0a1830);border:1px solid var(--brass-2);color:var(--brass-2);font-family:var(--serif);font-style:italic;font-weight:500;box-shadow:inset 0 0 0 3px rgba(212,180,106,.08)}
+.site-footer-brand strong{font-family:var(--serif);font-weight:600;letter-spacing:-.01em}
+
+/* ---------- Responsive ---------- */
+@media(max-width:960px){
+  .home-hero{display:block;min-height:0}
+  .pricing-card.featured{transform:none}
+}
+@media(max-width:800px){
+  .home-features{grid-template-columns:1fr}
+  .home-feature+.home-feature{border-left:0;border-top:1px solid var(--line)}
+  .home-school-register-copy{display:block}
+  .home-school-register-copy>.btn{margin-top:18px}
+  #dashboardPage>.section-title,#schoolAdminPage>.section-title,#teacherDashboardPage>.section-title{padding:26px 22px}
+}
+@media(max-width:620px){
+  .home-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:8px}
+  .home-nav .btn{grid-column:1/-1;margin:4px 0 0}
+  .home-hero{padding:34px 22px;border-radius:20px}
+  .hero-assurances{gap:8px 18px}
+  .login-box{margin:24px auto;padding:26px 22px}
+  .student-portal-banner{padding:26px 22px}
+  .stat strong{font-size:34px}
+  .card{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){.portal:after{transition:none}}
+}
+
+/* ===== Website templates — Ink & Brass redesign (CSS only) ===== */
+
+html body.public-school-site{--p-deep:#04352a!important;--p-deep-rgb:4,53,42!important;--p-main:#075b46!important;--p-mid:#0f7a5e!important;--p-accent:#c9a24a!important;--p-acc-rgb:201,162,74!important;--p-accent-2:#ecd392!important;--p-glow:rgba(201,162,74,.30)!important;--p-paper:#f5f7f5!important;--p-surface:#ffffff!important;--p-ink:#16261f!important;--p-muted:#566a61!important;--p-line:#dfe8e3!important;--p-display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:500!important;--p-h1ls:-.03em!important;--p-h1size:clamp(42px,6.4vw,82px)!important;--p-r:16px!important;--p-btnr:10px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+html body.public-school-site.public-template-signature{--p-deep:#04352a!important;--p-deep-rgb:4,53,42!important;--p-main:#075b46!important;--p-mid:#0f7a5e!important;--p-accent:#c9a24a!important;--p-acc-rgb:201,162,74!important;--p-accent-2:#ecd392!important;--p-glow:rgba(201,162,74,.30)!important;--p-paper:#f5f7f5!important;--p-surface:#ffffff!important;--p-ink:#16261f!important;--p-muted:#566a61!important;--p-line:#dfe8e3!important;--p-display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:500!important;--p-h1ls:-.03em!important;--p-h1size:clamp(42px,6.4vw,82px)!important;--p-r:16px!important;--p-btnr:10px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-classic{--p-deep:#081a38!important;--p-deep-rgb:8,26,56!important;--p-main:#0f2a57!important;--p-mid:#1d4688!important;--p-accent:#c4a052!important;--p-acc-rgb:196,160,82!important;--p-accent-2:#e9d49b!important;--p-glow:rgba(196,160,82,.26)!important;--p-paper:#f6f7fa!important;--p-surface:#ffffff!important;--p-ink:#1a2438!important;--p-muted:#5b6679!important;--p-line:#dfe4ec!important;--p-display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:500!important;--p-h1ls:-.025em!important;--p-h1size:clamp(40px,6vw,76px)!important;--p-r:6px!important;--p-btnr:4px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-modern{--p-deep:#3b1420!important;--p-deep-rgb:59,20,32!important;--p-main:#6a2536!important;--p-mid:#9a4358!important;--p-accent:#d6b98c!important;--p-acc-rgb:214,185,140!important;--p-accent-2:#ecdcc0!important;--p-glow:rgba(214,185,140,.30)!important;--p-paper:#faf6f0!important;--p-surface:#ffffff!important;--p-ink:#2f2326!important;--p-muted:#75655f!important;--p-line:#eaded3!important;--p-display:"Bricolage Grotesque","Hanken Grotesk","Segoe UI",system-ui,sans-serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:650!important;--p-h1ls:-.045em!important;--p-h1size:clamp(42px,6.6vw,84px)!important;--p-r:24px!important;--p-btnr:999px!important;--p-nav-bg:#faf6f0!important;--p-nav-brand:#6a2536!important;--p-nav-link:#5a4a48!important;--p-nav-hover:#6a2536!important;--p-nav-border:#eaded3!important;--p-nav-shadow:0 8px 30px -18px rgba(59,20,32,.35)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-academic{--p-deep:#0c2147!important;--p-deep-rgb:12,33,71!important;--p-main:#17407f!important;--p-mid:#2f6bb8!important;--p-accent:#d1b36a!important;--p-acc-rgb:209,179,106!important;--p-accent-2:#ecdca8!important;--p-glow:rgba(209,179,106,.24)!important;--p-paper:#f8f7f1!important;--p-surface:#fffefa!important;--p-ink:#1e2b44!important;--p-muted:#5a6780!important;--p-line:#e3e1d4!important;--p-display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-body:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-h1w:500!important;--p-h1ls:-.02em!important;--p-h1size:clamp(40px,6vw,76px)!important;--p-r:8px!important;--p-btnr:6px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important;--p-pattern:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 36px)!important}
+
+html body.public-school-site.public-template-heritage{--p-deep:#12301f!important;--p-deep-rgb:18,48,31!important;--p-main:#24503a!important;--p-mid:#46704f!important;--p-accent:#bf9f5f!important;--p-acc-rgb:191,159,95!important;--p-accent-2:#e6d29c!important;--p-glow:rgba(191,159,95,.26)!important;--p-paper:#faf7ec!important;--p-surface:#fffdf6!important;--p-ink:#2b372d!important;--p-muted:#66705f!important;--p-line:#e6e0cb!important;--p-display:"Instrument Serif","Newsreader","Iowan Old Style",Georgia,serif!important;--p-body:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif!important;--p-h1w:400!important;--p-h1ls:-.015em!important;--p-h1size:clamp(46px,7vw,90px)!important;--p-r:4px!important;--p-btnr:3px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-skyline{--p-deep:#05444d!important;--p-deep-rgb:5,68,77!important;--p-main:#0a7380!important;--p-mid:#12a1a3!important;--p-accent:#f6b04a!important;--p-acc-rgb:246,176,74!important;--p-accent-2:#fdd592!important;--p-glow:rgba(246,176,74,.30)!important;--p-paper:#f3fafb!important;--p-surface:#ffffff!important;--p-ink:#17363c!important;--p-muted:#547077!important;--p-line:#d9eaed!important;--p-display:"Bricolage Grotesque","Hanken Grotesk","Segoe UI",system-ui,sans-serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:650!important;--p-h1ls:-.04em!important;--p-h1size:clamp(42px,6.4vw,82px)!important;--p-r:20px!important;--p-btnr:999px!important;--p-nav-bg:#ffffff!important;--p-nav-brand:#0a7380!important;--p-nav-link:#3f6169!important;--p-nav-hover:#0a7380!important;--p-nav-border:#d9eaed!important;--p-nav-shadow:0 8px 30px -18px rgba(5,68,77,.35)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-sunrise{--p-deep:#5e241a!important;--p-deep-rgb:94,36,26!important;--p-main:#a6432e!important;--p-mid:#d36a47!important;--p-accent:#f0b068!important;--p-acc-rgb:240,176,104!important;--p-accent-2:#fbd7a8!important;--p-glow:rgba(240,176,104,.34)!important;--p-paper:#fff8f2!important;--p-surface:#ffffff!important;--p-ink:#44312b!important;--p-muted:#86675d!important;--p-line:#f0e0d3!important;--p-display:"Bricolage Grotesque","Hanken Grotesk","Segoe UI",system-ui,sans-serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:650!important;--p-h1ls:-.04em!important;--p-h1size:clamp(42px,6.4vw,82px)!important;--p-r:24px!important;--p-btnr:999px!important;--p-nav-bg:#fff8f2!important;--p-nav-brand:#a6432e!important;--p-nav-link:#7a5a50!important;--p-nav-hover:#a6432e!important;--p-nav-border:#f0e0d3!important;--p-nav-shadow:0 8px 30px -18px rgba(94,36,26,.3)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-minimal{--p-deep:#14181d!important;--p-deep-rgb:20,24,29!important;--p-main:#252b33!important;--p-mid:#4a5563!important;--p-accent:#b4bec9!important;--p-acc-rgb:180,190,201!important;--p-accent-2:#e3e8ee!important;--p-glow:rgba(180,190,201,.12)!important;--p-paper:#f6f7f8!important;--p-surface:#ffffff!important;--p-ink:#20252b!important;--p-muted:#66707b!important;--p-line:#e1e4e8!important;--p-display:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:400!important;--p-h1ls:-.04em!important;--p-h1size:clamp(38px,5.6vw,70px)!important;--p-r:2px!important;--p-btnr:2px!important;--p-nav-bg:#ffffff!important;--p-nav-brand:#14181d!important;--p-nav-link:#4a525c!important;--p-nav-hover:#14181d!important;--p-nav-border:#e1e4e8!important;--p-nav-shadow:none!important;--p-hero-bg:linear-gradient(120deg,#14181d 0%,#222932 60%,#2e3742 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-royal{--p-deep:#21123d!important;--p-deep-rgb:33,18,61!important;--p-main:#432a6b!important;--p-mid:#6d4a9e!important;--p-accent:#d2b469!important;--p-acc-rgb:210,180,105!important;--p-accent-2:#efdfa6!important;--p-glow:rgba(210,180,105,.28)!important;--p-paper:#faf8fd!important;--p-surface:#ffffff!important;--p-ink:#2d2540!important;--p-muted:#6c6483!important;--p-line:#e6e0f0!important;--p-display:"Instrument Serif","Newsreader","Iowan Old Style",Georgia,serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:400!important;--p-h1ls:-.015em!important;--p-h1size:clamp(46px,7vw,92px)!important;--p-r:10px!important;--p-btnr:8px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important}
+
+html body.public-school-site.public-template-horizon{--p-deep:#07142a!important;--p-deep-rgb:7,20,42!important;--p-main:#10284a!important;--p-mid:#17506f!important;--p-accent:#35c6d3!important;--p-acc-rgb:53,198,211!important;--p-accent-2:#8fe6ec!important;--p-glow:rgba(53,198,211,.30)!important;--p-paper:#f1f6fa!important;--p-surface:#ffffff!important;--p-ink:#1b2d44!important;--p-muted:#587087!important;--p-line:#d7e3ed!important;--p-display:"Bricolage Grotesque","Hanken Grotesk","Segoe UI",system-ui,sans-serif!important;--p-body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif!important;--p-h1w:650!important;--p-h1ls:-.04em!important;--p-h1size:clamp(42px,6.4vw,82px)!important;--p-r:14px!important;--p-btnr:10px!important;--p-nav-bg:var(--p-deep)!important;--p-nav-brand:#ffffff!important;--p-nav-link:rgba(255,255,255,.78)!important;--p-nav-hover:#ffffff!important;--p-nav-border:rgba(var(--p-acc-rgb),.35)!important;--p-nav-shadow:0 10px 34px -14px rgba(0,0,0,.55)!important;--p-hero-bg:radial-gradient(70% 110% at 88% 6%,var(--p-glow),transparent 62%),linear-gradient(135deg,var(--p-deep) 0%,var(--p-main) 58%,var(--p-mid) 100%)!important;--p-overlay:linear-gradient(98deg,rgba(var(--p-deep-rgb),.93) 0%,rgba(var(--p-deep-rgb),.76) 48%,rgba(var(--p-deep-rgb),.40) 100%)!important;--p-pattern:repeating-linear-gradient(90deg,rgba(53,198,211,.06) 0 1px,transparent 1px 64px)!important}
+
+
+html body.public-school-site #publicSchoolWebsitePage{background:var(--p-paper)!important;color:var(--p-ink)!important;font-family:var(--p-body)!important;font-size:16px!important;line-height:1.7!important;-webkit-font-smoothing:antialiased!important}
+html body.public-school-site #publicSchoolWebsitePage :focus-visible{outline:2px solid var(--p-accent-2)!important;outline-offset:3px!important}
+
+/* navigation */
+html body.public-school-site #publicSchoolWebsitePage .public-site-nav{position:sticky!important;top:0!important;z-index:30!important;background:var(--p-nav-bg)!important;border:0!important;border-bottom:1px solid var(--p-nav-border)!important;box-shadow:var(--p-nav-shadow)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-nav-inner{max-width:1240px!important;min-height:84px!important;margin:0 auto!important;padding:14px clamp(20px,4vw,40px)!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-brand{display:flex!important;align-items:center!important;gap:14px!important;font-family:var(--p-display)!important;font-size:clamp(19px,2vw,24px)!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.15!important;color:var(--p-nav-brand)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-brand img{width:52px!important;height:52px!important;padding:4px!important;object-fit:contain!important;border-radius:12px!important;background:#fff!important;border:1px solid rgba(var(--p-acc-rgb),.7)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-links{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:clamp(14px,2vw,30px)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-links a{padding:8px 0!important;border-bottom:2px solid transparent!important;color:var(--p-nav-link)!important;font-size:14px!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important;text-decoration:none!important;transition:color .2s,border-color .2s!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-links a:hover{color:var(--p-nav-hover)!important;border-bottom-color:var(--p-accent)!important}
+
+/* hero */
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero{position:relative!important;isolation:isolate!important;overflow:hidden!important;display:flex!important;align-items:center!important;min-height:clamp(540px,80vh,740px)!important;padding:clamp(80px,11vw,150px) clamp(20px,4vw,40px) clamp(90px,12vw,160px)!important;color:#fff!important;background-color:var(--p-deep)!important;background-image:var(--p-pattern,none),var(--p-overlay),var(--public-site-hero-image,var(--p-hero-bg))!important;background-size:auto,cover,cover!important;background-position:0 0,center,center!important;background-repeat:repeat,no-repeat,no-repeat!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero:before{content:""!important;position:absolute!important;z-index:-1!important;pointer-events:none!important;inset:auto!important;width:0!important;height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero:after{content:""!important;position:absolute!important;z-index:-1!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;background:linear-gradient(90deg,transparent,var(--p-accent) 25%,var(--p-accent-2) 50%,var(--p-accent) 75%,transparent)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero-inner{position:relative!important;width:100%!important;max-width:1240px!important;margin:0 auto!important;animation:pub-rise .9s cubic-bezier(.2,.7,.2,1) both!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-kicker{display:inline-flex!important;align-items:center!important;gap:14px!important;color:var(--p-accent-2)!important;font-size:14px!important;font-weight:600!important;letter-spacing:.02em!important;text-transform:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-kicker:before{content:""!important;width:38px!important;height:2px!important;background:var(--p-accent)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero h1{max-width:15em!important;margin:22px 0 22px!important;color:#fff!important;font-family:var(--p-display)!important;font-size:var(--p-h1size)!important;font-weight:var(--p-h1w)!important;line-height:1.03!important;letter-spacing:var(--p-h1ls)!important;text-shadow:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-hero p{max-width:36em!important;margin:0!important;color:rgba(255,255,255,.84)!important;font-size:clamp(16px,1.6vw,19px)!important;line-height:1.8!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions{display:flex!important;flex-wrap:wrap!important;gap:12px!important;margin-top:40px!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button{font:inherit!important;font-size:14px!important;font-weight:700!important;letter-spacing:.005em!important;padding:14px 24px!important;border-radius:var(--p-btnr)!important;border:1px solid var(--p-accent)!important;background:var(--p-accent)!important;color:var(--p-deep)!important;cursor:pointer!important;box-shadow:0 16px 32px -16px rgba(0,0,0,.65)!important;transition:transform .2s,background .2s,box-shadow .2s,border-color .2s!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button:hover{transform:translateY(-2px)!important;background:var(--p-accent-2)!important;border-color:var(--p-accent-2)!important;filter:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button:nth-child(2){background:transparent!important;color:var(--p-accent-2)!important;border-color:rgba(var(--p-acc-rgb),.65)!important;box-shadow:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button:nth-child(2):hover{background:rgba(var(--p-acc-rgb),.14)!important;color:#fff!important;border-color:var(--p-accent)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button.student{background:rgba(255,255,255,.08)!important;color:#fff!important;border-color:rgba(255,255,255,.34)!important;box-shadow:none!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button.student:hover{background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.6)!important;color:#fff!important}
+
+/* sections */
+html body.public-school-site #publicSchoolWebsitePage .public-site-section{max-width:1240px!important;margin:0 auto!important;padding:clamp(56px,8vw,104px) clamp(20px,4vw,40px)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-section h2{margin:0 0 22px!important;font-family:var(--p-display)!important;font-size:clamp(30px,3.8vw,48px)!important;font-weight:500!important;line-height:1.08!important;letter-spacing:-.02em!important;color:var(--p-main)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-section h2:after{content:""!important;display:block!important;width:48px!important;height:3px!important;margin-top:18px!important;border-radius:2px!important;background:var(--p-accent)!important}
+html body.public-school-site #publicSchoolWebsitePage #public-about{display:grid!important;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important;column-gap:clamp(30px,6vw,96px)!important;align-items:start!important}
+html body.public-school-site #publicSchoolWebsitePage #public-about h2{margin:0!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-lead{max-width:none!important;margin:0!important;color:var(--p-muted)!important;font-size:clamp(17px,1.5vw,20px)!important;line-height:1.9!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-two{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-panel{position:relative!important;padding:40px 38px!important;background:var(--p-surface)!important;border:1px solid var(--p-line)!important;border-radius:var(--p-r)!important;box-shadow:0 1px 2px rgba(var(--p-deep-rgb),.05),0 24px 48px -28px rgba(var(--p-deep-rgb),.28)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-panel:before{content:""!important;position:absolute!important;left:38px!important;top:0!important;right:auto!important;bottom:auto!important;width:56px!important;height:3px!important;border-radius:0 0 3px 3px!important;background:var(--p-accent)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-panel h3{margin:0 0 12px!important;font-family:var(--p-display)!important;font-size:clamp(24px,2.4vw,30px)!important;font-weight:500!important;letter-spacing:-.015em!important;color:var(--p-main)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-panel p{margin:0!important;color:var(--p-muted)!important;font-size:16.5px!important;line-height:1.85!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:22px!important;margin-top:34px!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card{position:relative!important;overflow:hidden!important;padding:30px 28px 32px!important;background:var(--p-surface)!important;border:1px solid var(--p-line)!important;border-radius:var(--p-r)!important;box-shadow:0 1px 2px rgba(var(--p-deep-rgb),.04),0 18px 40px -26px rgba(var(--p-deep-rgb),.3)!important;transition:transform .25s,box-shadow .25s,border-color .25s!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card:after{content:""!important;position:absolute!important;left:0!important;bottom:0!important;width:0!important;height:3px!important;background:var(--p-accent)!important;transition:width .35s ease!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card:hover{transform:translateY(-4px)!important;border-color:rgba(var(--p-acc-rgb),.7)!important;box-shadow:0 2px 4px rgba(var(--p-deep-rgb),.05),0 30px 56px -28px rgba(var(--p-deep-rgb),.4)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card:hover:after{width:100%!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card h3{margin:0 0 10px!important;font-family:var(--p-display)!important;font-size:21px!important;font-weight:600!important;letter-spacing:-.01em!important;line-height:1.25!important;color:var(--p-main)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card p{margin:0!important;color:var(--p-muted)!important;font-size:15.5px!important;line-height:1.8!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-card img{width:100%!important;height:230px!important;margin:-2px 0 20px!important;object-fit:cover!important;border-radius:calc(var(--p-r) - 4px)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-gallery{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))!important;gap:16px!important;margin-top:34px!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-gallery img{width:100%!important;height:260px!important;object-fit:cover!important;border-radius:var(--p-r)!important;background:var(--p-line)!important;box-shadow:0 20px 44px -26px rgba(var(--p-deep-rgb),.5)!important;transition:transform .35s,box-shadow .35s!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-gallery img:hover{transform:scale(1.015)!important;box-shadow:0 28px 54px -26px rgba(var(--p-deep-rgb),.6)!important}
+
+/* contact + footer */
+html body.public-school-site #publicSchoolWebsitePage section.public-site-contact{max-width:none!important;display:grid!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)!important;column-gap:clamp(30px,6vw,96px)!important;align-items:start!important;margin:0!important;padding:clamp(64px,8vw,108px) max(clamp(20px,4vw,40px),calc((100% - 1160px)/2))!important;background:radial-gradient(70% 140% at 100% 0,rgba(var(--p-acc-rgb),.14),transparent 60%),var(--p-deep)!important;color:#fff!important;border-top:3px solid var(--p-accent)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact>*{grid-column:2!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact>h2{grid-column:1!important;grid-row:1/span 4!important;color:#fff!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact h2:after{background:var(--p-accent-2)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact p{margin:0 0 12px!important;color:rgba(255,255,255,.78)!important;font-size:clamp(16px,1.5vw,19px)!important;line-height:1.8!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact a{color:var(--p-accent-2)!important;font-weight:650!important;text-decoration:none!important;border-bottom:1px solid rgba(var(--p-acc-rgb),.5)!important;transition:color .2s,border-color .2s!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-contact a:hover{color:#fff!important;border-bottom-color:#fff!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-footer{padding:28px 20px!important;background:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),var(--p-deep)!important;color:rgba(255,255,255,.6)!important;font-size:13px!important;letter-spacing:.01em!important;text-align:center!important;border-top:1px solid rgba(var(--p-acc-rgb),.25)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-message{max-width:640px!important;margin:120px auto!important;padding:30px 22px!important;text-align:center!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-message h1{font-family:var(--p-display)!important;font-size:clamp(30px,4vw,44px)!important;font-weight:500!important;letter-spacing:-.02em!important;color:var(--p-main)!important}
+html body.public-school-site #publicSchoolWebsitePage .public-site-message p{color:var(--p-muted)!important}
+
+/* responsive */
+@media(max-width:960px){
+ html body.public-school-site #publicSchoolWebsitePage .public-site-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html body.public-school-site #publicSchoolWebsitePage #public-about{grid-template-columns:minmax(0,1fr)!important;row-gap:22px!important}
+ html body.public-school-site #publicSchoolWebsitePage section.public-site-contact{grid-template-columns:minmax(0,1fr)!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-contact>*,html body.public-school-site #publicSchoolWebsitePage .public-site-contact>h2{grid-column:1!important;grid-row:auto!important}
+}
+@media(max-width:760px){
+ html body.public-school-site #publicSchoolWebsitePage .public-site-nav-inner{flex-direction:column!important;align-items:flex-start!important;gap:12px!important;min-height:0!important;padding-top:14px!important;padding-bottom:6px!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-links{width:100%!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:22px!important;padding-bottom:2px!important;scrollbar-width:none!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-links a{white-space:nowrap!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-two{grid-template-columns:minmax(0,1fr)!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-panel{padding:32px 26px!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-panel:before{left:26px!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-hero{min-height:0!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions{flex-direction:column!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button{width:100%!important}
+}
+@media(max-width:620px){
+ html body.public-school-site #publicSchoolWebsitePage .public-site-grid{grid-template-columns:minmax(0,1fr)!important}
+ html body.public-school-site #publicSchoolWebsitePage .public-site-gallery img{height:220px!important}
+}
+@media(prefers-reduced-motion:reduce){html body.public-school-site #publicSchoolWebsitePage .public-site-hero-inner{animation:none!important} html body.public-school-site #publicSchoolWebsitePage .public-site-card,html body.public-school-site #publicSchoolWebsitePage .public-site-gallery img,html body.public-school-site #publicSchoolWebsitePage .public-site-portal-actions button{transition:none!important}}
+
+/* signature */
+html body.public-school-site.public-template-signature #publicSchoolWebsitePage .public-site-hero:before{right:-120px!important;top:-200px!important;width:540px!important;height:540px!important;border:1px solid rgba(var(--p-acc-rgb),.28)!important;border-radius:50%!important;box-shadow:0 0 0 40px rgba(var(--p-acc-rgb),.045),0 0 0 84px rgba(var(--p-acc-rgb),.03)!important}
+
+/* classic */
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero:before{inset:16px!important;width:auto!important;height:auto!important;border:1px solid rgba(var(--p-acc-rgb),.45)!important;border-radius:2px!important;outline:1px solid rgba(var(--p-acc-rgb),.2)!important;outline-offset:6px!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero-inner{text-align:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero h1,html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero p{margin-left:auto!important;margin-right:auto!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-kicker{justify-content:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-kicker:after{content:""!important;width:38px!important;height:2px!important;background:var(--p-accent)!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-portal-actions{justify-content:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-section>h2{text-align:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-section>h2:after{margin-left:auto!important;margin-right:auto!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage #public-about{display:block!important;text-align:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage #public-about .public-site-lead{max-width:820px!important;margin:0 auto!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-panel{text-align:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-panel:before{left:calc(50% - 28px)!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage section.public-site-contact{display:block!important;text-align:center!important}
+html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-contact h2:after{margin-left:auto!important;margin-right:auto!important}
+
+@media(max-width:760px){html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero:before{inset:9px!important}html body.public-school-site.public-template-classic #publicSchoolWebsitePage .public-site-hero{padding-left:30px!important;padding-right:30px!important}}
+
+/* modern */
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-hero:before{right:-140px!important;top:-180px!important;width:600px!important;height:600px!important;border-radius:50%!important;background:radial-gradient(circle,rgba(var(--p-acc-rgb),.34),transparent 68%)!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-hero:after{height:0!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-section h2{font-weight:650!important;letter-spacing:-.04em!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-section h2:after{width:56px!important;height:6px!important;border-radius:999px!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-panel h3,html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-card h3{font-weight:650!important;letter-spacing:-.03em!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-panel{box-shadow:0 30px 60px -34px rgba(106,37,54,.4)!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-card:after{display:none!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage .public-site-portal-actions button{padding:15px 28px!important}
+html body.public-school-site.public-template-modern #publicSchoolWebsitePage section.public-site-contact{border-top:0!important;border-radius:36px 36px 0 0!important}
+
+/* academic */
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-hero:before{inset:16px!important;width:auto!important;height:auto!important;border:1px solid rgba(var(--p-acc-rgb),.3)!important;border-radius:4px!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-section h2{padding-left:20px!important;border-left:4px solid var(--p-accent)!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-section h2:after{display:none!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-lead,html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-card p,html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-panel p{font-size:17.5px!important;line-height:1.85!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-panel{box-shadow:0 1px 2px rgba(var(--p-deep-rgb),.05),0 14px 34px -26px rgba(var(--p-deep-rgb),.3)!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-card h3{font-weight:600!important}
+html body.public-school-site.public-template-academic #publicSchoolWebsitePage section.public-site-contact{border-top:4px solid var(--p-accent)!important}
+
+@media(max-width:760px){html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-hero:before{inset:9px!important}html body.public-school-site.public-template-academic #publicSchoolWebsitePage .public-site-hero{padding-left:30px!important;padding-right:30px!important}}
+
+/* heritage */
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-hero:before{inset:18px!important;width:auto!important;height:auto!important;border:1px solid rgba(var(--p-acc-rgb),.4)!important;border-radius:2px!important;box-shadow:inset 0 0 0 7px transparent,inset 0 0 0 8px rgba(var(--p-acc-rgb),.18)!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-hero:after{height:6px!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-section h2{font-weight:400!important;letter-spacing:-.01em!important;font-size:clamp(34px,4.4vw,56px)!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-panel{box-shadow:inset 0 0 0 6px var(--p-surface),inset 0 0 0 7px var(--p-line),0 20px 40px -30px rgba(var(--p-deep-rgb),.35)!important;padding:36px 34px!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-panel:before{left:34px!important;top:6px!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-panel h3{font-family:var(--p-display)!important;font-weight:400!important;font-size:26px!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-card img{border-radius:2px!important}
+html body.public-school-site.public-template-heritage #publicSchoolWebsitePage section.public-site-contact{border-top:6px solid var(--p-accent)!important}
+
+@media(max-width:760px){html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-hero:before{inset:9px!important}html body.public-school-site.public-template-heritage #publicSchoolWebsitePage .public-site-hero{padding-left:30px!important;padding-right:30px!important}}
+
+/* skyline */
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-hero{clip-path:polygon(0 0,100% 0,100% calc(100% - 54px),0 100%)!important;padding-bottom:clamp(120px,14vw,190px)!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-hero:after{display:none!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-hero:before{right:-100px!important;top:-120px!important;width:520px!important;height:520px!important;border-radius:50%!important;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 66%)!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-section h2{font-weight:650!important;letter-spacing:-.04em!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-section h2:after{width:56px!important;height:6px!important;border-radius:999px!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-panel h3{font-weight:650!important;letter-spacing:-.03em!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-panel{box-shadow:0 30px 60px -36px rgba(10,115,128,.5)!important}
+html body.public-school-site.public-template-skyline #publicSchoolWebsitePage .public-site-portal-actions button{padding:15px 28px!important}
+
+/* sunrise */
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-hero:before{right:-180px!important;bottom:-360px!important;width:760px!important;height:760px!important;border-radius:50%!important;background:radial-gradient(circle,rgba(251,215,168,.55),rgba(240,176,104,.2) 44%,transparent 68%)!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-hero:after{height:0!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-section h2{font-weight:650!important;letter-spacing:-.04em!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-section h2:after{width:56px!important;height:6px!important;border-radius:999px!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-panel h3{font-weight:650!important;letter-spacing:-.03em!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-panel{box-shadow:0 30px 60px -36px rgba(166,67,46,.45)!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-card:after{display:none!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage .public-site-portal-actions button{padding:15px 28px!important}
+html body.public-school-site.public-template-sunrise #publicSchoolWebsitePage section.public-site-contact{border-top:0!important;border-radius:36px 36px 0 0!important}
+
+/* minimal */
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-hero{min-height:clamp(480px,70vh,640px)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-hero:after{height:1px!important;background:rgba(180,190,201,.35)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-kicker:before{width:28px!important;height:1px!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-section{padding-top:clamp(64px,9vw,120px)!important;padding-bottom:clamp(64px,9vw,120px)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-section h2{font-weight:400!important;letter-spacing:-.04em!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-section h2:after{width:32px!important;height:2px!important;border-radius:0!important;background:var(--p-ink)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-panel,html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-card{box-shadow:none!important;border:1px solid var(--p-line)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-card:hover{box-shadow:none!important;transform:none!important;border-color:var(--p-ink)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-card:after{height:2px!important;background:var(--p-ink)!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-panel:before{background:var(--p-ink)!important;height:2px!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-panel h3{font-weight:500!important;letter-spacing:-.02em!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-gallery img{box-shadow:none!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage .public-site-portal-actions button{box-shadow:none!important}
+html body.public-school-site.public-template-minimal #publicSchoolWebsitePage section.public-site-contact{background:var(--p-deep)!important;border-top:0!important}
+
+/* royal */
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-hero:before{inset:16px!important;width:auto!important;height:auto!important;border:1px solid rgba(var(--p-acc-rgb),.42)!important;border-radius:4px!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-hero:after{height:4px!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-kicker:before{content:"◆"!important;width:auto!important;height:auto!important;background:none!important;color:var(--p-accent)!important;font-size:11px!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-section h2{font-weight:400!important;letter-spacing:-.015em!important;font-size:clamp(36px,4.6vw,58px)!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-section h2:after{width:96px!important;height:9px!important;margin-top:20px!important;border-radius:0!important;background:radial-gradient(circle at 50% 50%,var(--p-accent) 0 3.5px,transparent 4.5px) center/9px 9px no-repeat,linear-gradient(var(--p-accent),var(--p-accent)) center/100% 1px no-repeat!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-panel h3{font-weight:400!important;font-size:28px!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-card{border-color:var(--p-line)!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-card:hover{border-color:var(--p-accent)!important}
+html body.public-school-site.public-template-royal #publicSchoolWebsitePage section.public-site-contact{border-top:4px solid var(--p-accent)!important}
+
+@media(max-width:760px){html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-hero:before{inset:9px!important}html body.public-school-site.public-template-royal #publicSchoolWebsitePage .public-site-hero{padding-left:30px!important;padding-right:30px!important}}
+
+/* horizon */
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-hero:before{left:0!important;right:0!important;bottom:0!important;top:auto!important;width:auto!important;height:58%!important;background:linear-gradient(180deg,transparent,rgba(var(--p-acc-rgb),.14))!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-hero:after{height:2px!important;box-shadow:0 0 28px 2px rgba(var(--p-acc-rgb),.55)!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-kicker{padding:7px 14px!important;border:1px solid rgba(var(--p-acc-rgb),.4)!important;border-radius:999px!important;background:rgba(var(--p-acc-rgb),.08)!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-kicker:before{width:7px!important;height:7px!important;border-radius:50%!important;box-shadow:0 0 0 4px rgba(var(--p-acc-rgb),.2)!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-section h2{font-weight:650!important;letter-spacing:-.04em!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-section h2:after{width:56px!important;height:4px!important;border-radius:999px!important;box-shadow:0 0 18px rgba(var(--p-acc-rgb),.6)!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-card h3,html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-panel h3{font-weight:650!important;letter-spacing:-.03em!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-card:hover{box-shadow:0 0 0 1px rgba(var(--p-acc-rgb),.6),0 30px 56px -28px rgba(var(--p-acc-rgb),.5)!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-card,html body.public-school-site.public-template-horizon #publicSchoolWebsitePage .public-site-panel{border-color:#d4e4ee!important}
+html body.public-school-site.public-template-horizon #publicSchoolWebsitePage section.public-site-contact{border-top:2px solid var(--p-accent)!important}
+
+@keyframes pub-rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -663,10 +1118,10 @@ html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-appl
 <main>
 <section id="publicSchoolWebsitePage" class="hidden" aria-live="polite"><div id="ownerWebsitePreviewBar"><div>OWNER PREVIEW — PRIVATE DRAFT<small>This preview is visible only to the EduRecord owner. The school website has not been published.</small></div><button class="btn btn-secondary" type="button" onclick="closeOwnerWebsitePreview()">← Return to Owner Dashboard</button></div><div id="adminWebsitePreviewBar" style="display:none;position:sticky;top:0;z-index:1000;background:#e8f3ff;border-bottom:1px solid #9fc6ec;padding:12px 18px;align-items:center;justify-content:space-between;gap:12px;color:#173b63;font-weight:750"><div>ADMIN PREVIEW — UNSAVED CHANGES<small style="display:block;font-weight:500">This is a private preview. Your changes have not been saved or published.</small></div><button class="btn btn-secondary" type="button" onclick="closeAdminWebsitePreview()">← Return to Website Editor</button></div><div id="publicSchoolWebsiteContent"><div class="public-site-message"><h1>Loading school website…</h1><p>Please wait while we retrieve the published website.</p></div></div></section>
 <section id="homePage" class="container">
- <div class="hero home-hero"><div class="home-eyebrow">● A smarter way to manage your school</div><h1>Run your school with clarity and confidence.</h1><p>Manage students, teachers, classes and academic results in one secure platform. Give your school a professional online presence and make result access simple for families.</p><div class="home-hero-actions"><button class="btn" type="button" onclick="document.getElementById('schoolRegistrationSection').scrollIntoView({behavior:'smooth'});toggleSchoolApplication(true)">Register your school <span aria-hidden="true">→</span></button><button class="btn btn-secondary" type="button" onclick="document.getElementById('homePricing').scrollIntoView({behavior:'smooth'})">Explore pricing</button></div></div>
+ <div class="hero home-hero"><div class="home-eyebrow">● A smarter way to manage your school</div><h1>Run your school with clarity and confidence.</h1><p>Manage students, teachers, classes and academic results in one secure platform. Give your school a professional online presence and make result access simple for families.</p><div class="home-hero-actions"><button class="btn" type="button" onclick="document.getElementById('schoolRegistrationSection').scrollIntoView({behavior:'smooth'});toggleSchoolApplication(true)">Register your school <span aria-hidden="true">→</span></button><button class="btn btn-secondary" type="button" onclick="document.getElementById('homePricing').scrollIntoView({behavior:'smooth'})">Explore pricing</button></div><ul class="hero-assurances"><li>14-day free trial</li><li>Free school website</li><li>PIN-protected student results</li></ul></div>
  <div id="connectionMessage" class="notice">Connecting to EduRecord...</div>
  <section class="home-school-register" id="schoolRegistrationSection">
-  <div class="home-school-register-copy"><span class="home-section-kicker">JOIN EDURECORD</span><h2>Start with EduRecord</h2><p>Give your school a better way to manage academic records, publish results and build its online presence. Apply today and get started with a 14-day free trial.</p><button class="btn" type="button" id="showSchoolApplicationButton" onclick="toggleSchoolApplication()">Register your school <span aria-hidden="true">→</span></button></div>
+  <div class="home-school-register-copy"><span class="home-section-kicker">Join EduRecord</span><h2>Start with EduRecord</h2><p>Give your school a better way to manage academic records, publish results and build its online presence. Apply today and get started with a 14-day free trial.</p><button class="btn" type="button" id="showSchoolApplicationButton" onclick="toggleSchoolApplication()">Register your school <span aria-hidden="true">→</span></button></div>
   <form id="schoolApplicationForm" class="card home-school-application hidden">
    <h3>School registration application</h3><p class="muted">Complete the details below. Submitting this form does not create an account immediately; EduRecord will review your application first.</p>
    <div class="form-grid"><div><label for="applicationSchoolName">School name *</label><input id="applicationSchoolName" required maxlength="160" autocomplete="organization" placeholder="Enter the school's full name"></div><div><label for="applicationPhone">School contact phone *</label><input id="applicationPhone" required type="tel" maxlength="30" autocomplete="tel" placeholder="e.g. 08012345678"></div><div><label for="applicationContactEmail">School contact email</label><input id="applicationContactEmail" type="email" maxlength="254" autocomplete="email" placeholder="School email (optional)"></div><div><label for="applicationAddress">School address *</label><input id="applicationAddress" required maxlength="300" autocomplete="street-address" placeholder="School address and town"></div><div><label for="applicationApplicantName">Your full name *</label><input id="applicationApplicantName" required maxlength="120" autocomplete="name" placeholder="Name of the person applying"></div><div><label for="applicationAdminEmail">Your administrator email *</label><input id="applicationAdminEmail" required type="email" maxlength="254" autocomplete="email" placeholder="Email for your future admin account"></div><div><label for="applicationAdminUsername">Preferred administrator username *</label><input id="applicationAdminUsername" required minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]+" autocomplete="username" placeholder="Choose a username"><small class="help">Use 3–40 letters, numbers, dots, underscores or hyphens.</small></div><fieldset class="full-width" style="border:1px solid var(--border-color,#ddd);border-radius:12px;padding:14px 16px;margin:0"><legend style="font-weight:700;padding:0 6px">Which sections does your school offer? *</legend><p class="help">Select at least one. You can add more sections later.</p><div style="display:flex;flex-wrap:wrap;gap:18px"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="applicationSectionNursery" value="nursery"> Nursery</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="applicationSectionPrimary" value="primary"> Primary</label><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="applicationSectionSecondary" value="secondary"> Secondary</label></div></fieldset></div>
@@ -676,7 +1131,7 @@ html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-appl
   </form>
  </section>
  <div class="home-features" id="homeFeatures"><div class="home-feature"><div class="home-feature-icon">▤</div><div><strong>Organised school records</strong><span>Keep students, classes, subjects and teachers together in one place.</span></div></div><div class="home-feature"><div class="home-feature-icon">✓</div><div><strong>Academic results made simpler</strong><span>Record assessments, prepare report cards and publish results securely.</span></div></div><div class="home-feature"><div class="home-feature-icon">⌑</div><div><strong>Your school's online presence</strong><span>Every package includes a school website with a free EduRecord subdomain.</span></div></div></div>
- <section class="pricing-section" id="homePricing"><div class="pricing-heading"><span class="home-section-kicker">SIMPLE, TRANSPARENT PRICING</span><h2>One platform. Clear pricing.</h2><p>Choose the package that matches your school's active student enrollment. Every package includes the core EduRecord features and a free school website.</p></div><div class="pricing-switch" role="group" aria-label="Billing period"><button type="button" class="active" id="monthlyPricingButton" aria-pressed="true" onclick="setHomePricingCycle('monthly')">Monthly</button><button type="button" id="termlyPricingButton" aria-pressed="false" onclick="setHomePricingCycle('termly')">Termly · 3 months</button></div><div class="pricing-grid"><article class="pricing-card"><div class="pricing-students">1–200 active students</div><div class="pricing-amount" data-monthly="₦10,000" data-termly="₦30,000">₦10,000</div><div class="pricing-period">per month</div></article><article class="pricing-card featured"><div class="pricing-students">201–500 active students</div><div class="pricing-amount" data-monthly="₦15,000" data-termly="₦45,000">₦15,000</div><div class="pricing-period">per month</div></article><article class="pricing-card"><div class="pricing-students">501–1,000 active students</div><div class="pricing-amount" data-monthly="₦20,000" data-termly="₦60,000">₦20,000</div><div class="pricing-period">per month</div></article><article class="pricing-card"><div class="pricing-students">Above 1,000 active students</div><div class="pricing-amount" data-monthly="₦25,000" data-termly="₦75,000">₦25,000</div><div class="pricing-period">per month</div></article></div><div class="pricing-includes"><span>✓ Free school subdomain</span><span>✓ Free school website</span><span>✓ 14-day free trial</span></div><p class="pricing-note">Optional custom .com.ng domain: additional ₦5,000, charged separately. Termly billing is three times the monthly price.</p><div style="text-align:center;margin-top:22px"><button class="btn" type="button" onclick="document.getElementById('schoolRegistrationSection').scrollIntoView({behavior:'smooth'});toggleSchoolApplication(true)">Register your school →</button></div></section>
+ <section class="pricing-section" id="homePricing"><div class="pricing-heading"><span class="home-section-kicker">Simple, transparent pricing</span><h2>One platform. Clear pricing.</h2><p>Choose the package that matches your school's active student enrollment. Every package includes the core EduRecord features and a free school website.</p></div><div class="pricing-switch" role="group" aria-label="Billing period"><button type="button" class="active" id="monthlyPricingButton" aria-pressed="true" onclick="setHomePricingCycle('monthly')">Monthly</button><button type="button" id="termlyPricingButton" aria-pressed="false" onclick="setHomePricingCycle('termly')">Termly · 3 months</button></div><div class="pricing-grid"><article class="pricing-card"><div class="pricing-students">1–200 active students</div><div class="pricing-amount" data-monthly="₦10,000" data-termly="₦30,000">₦10,000</div><div class="pricing-period">per month</div></article><article class="pricing-card featured"><div class="pricing-students">201–500 active students</div><div class="pricing-amount" data-monthly="₦15,000" data-termly="₦45,000">₦15,000</div><div class="pricing-period">per month</div></article><article class="pricing-card"><div class="pricing-students">501–1,000 active students</div><div class="pricing-amount" data-monthly="₦20,000" data-termly="₦60,000">₦20,000</div><div class="pricing-period">per month</div></article><article class="pricing-card"><div class="pricing-students">Above 1,000 active students</div><div class="pricing-amount" data-monthly="₦25,000" data-termly="₦75,000">₦25,000</div><div class="pricing-period">per month</div></article></div><div class="pricing-includes"><span>✓ Free school subdomain</span><span>✓ Free school website</span><span>✓ 14-day free trial</span></div><p class="pricing-note">Optional custom .com.ng domain: additional ₦5,000, charged separately. Termly billing is three times the monthly price.</p><div style="text-align:center;margin-top:22px"><button class="btn" type="button" onclick="document.getElementById('schoolRegistrationSection').scrollIntoView({behavior:'smooth'});toggleSchoolApplication(true)">Register your school →</button></div></section>
  
  <div class="home-bottom-cta"><div><h2>Ready to bring your school onto EduRecord?</h2><p>Apply online. Our team will review your school registration.</p></div><button class="btn" type="button" onclick="document.getElementById('schoolRegistrationSection').scrollIntoView({behavior:'smooth'});toggleSchoolApplication(true)">Get started →</button></div><div class="home-footnote">EduRecord · School Results Management System · <span id="currentYear"></span></div>
 </section>
